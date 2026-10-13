@@ -1,0 +1,110 @@
+# Chunk 2 — Free-text keyword semantics
+
+Status: planning. Depends on: 0, 1. Feeds: 10 (test cases).
+
+## Scope
+
+What a plain keyword search means: AND/OR/NOT, phrases, stop words, prefix and wildcard matching,
+typo tolerance, punctuation and commas, synonyms/related keywords, words that are not metadata (type
+names, usernames, years), and what to do with a word core cannot find.
+
+## What we know
+
+- Core: every keyword is a node/keyword union; keywords AND; `;` ORs within a keyword; `-word`
+  omits over **all** fields including hidden and inactive ones; `"phrase"` checks positions; stop
+  words (`$noadd`) are skipped, and a phrase with a stop word only checks distance (`"black and
+  white"` matches "black or white"); a search of only a stop word returns everything; `word*` is
+  MySQL full text over every node, indexed or not; a single token with punctuation (`foo-bar`) or
+  no-whitespace comma string is a phrase; core returns a suggestion (never calling the plugin)
+  when a word is not in the keyword table; no typo tolerance; related keywords are ORed in; a
+  type name matches every resource of that type; a bare year matches date values as words.
+- Plugin: `q` with `drop_tokens_threshold=0` (AND); Typesense honours `-word`; quoted phrases pass
+  through; `prefix` was unset so the **last word of every search is prefix-matched** (`land`
+  3,172 / 69,408); `max_candidates` caps wildcard completions (`zeb*` 41 / 10); `split_join_tokens`
+  retries zero-hit searches (`sun set` → "sunset"); stop words are required (`the sculpture`
+  49,468 / 17,228); with `$stemming` on, **quoted phrases return nothing** (`"sculpture park"`
+  6,883 / 0 — the index holds stems, phrase tokens are not stemmed); `-"phrase"` is dropped
+  (returns everything); OR-groups veto; two wildcards veto; leading/middle wildcards are sent
+  literally (`*scape` 68,601 / 381); `foo-bar` is AND of parts; a year as a word finds nothing;
+  type names only text-match; the synonym sync never worked (and v30 has no per-collection
+  synonyms); `num_typos` is set by the plan (value to check); `-landscape` differs by 10 because an
+  inactive field keeps keyword rows in core.
+- Stemmer drift 34/40; accents folded by Typesense.
+
+## Candidate work items
+
+- Send explicit query parameters on every search: `prefix` per field (false unless a wildcard),
+  `num_typos`, `split_join_tokens=off`, raised candidate caps for wildcards, `drop_tokens_threshold=0`.
+- Strip `$noadd` stop words from `q` as core does; decide the phrase-with-stop-word case.
+- A policy for phrases under stemming (Q2.5).
+- Related keywords via synonym sets, or veto.
+
+## Questions to answer before coding
+
+### Q2.1 — Target: identical sets to core, or sensible semantics?
+Core's keyword behaviour includes quirks (stop-word skipping, NOT over hidden fields, the comma
+rule, the bare-OR side effect). Identical means copying them. Which quirks are copied, which are
+declined (veto), which are improved on (and documented as differences)? This is Q0.3 applied to
+keywords; answer per item in the list above.
+
+### Q2.2 — Typo tolerance
+Core has none. Set `num_typos=0` for parity, or allow typos as a deliberate improvement?
+
+### Q2.3 — Prefix and wildcards
+Set `prefix=false` by default (fixes `land`). For `word*`: raise `max_candidates` (to what — 100,
+exhaustive?) and `max_filter_by_candidates` for `field:word*`. Leading/middle wildcards: veto, or
+serve via fragments/infix where the field has them? Wildcards over non-indexed fields: core finds
+them, the plugin cannot unless Q1.1 indexes everything — veto bare wildcards, index everything, or
+accept.
+
+### Q2.4 — Stop words
+Strip `$noadd` words from `q` before sending (core skips them). A search that is only stop words:
+return everything (core) or nothing? Phrase with a stop word: core's distance-only check cannot be
+reproduced exactly — treat the phrase as its non-stop words, or veto phrases containing stop words?
+
+### Q2.5 — Phrases when stemming is on
+Options: (a) stem the phrase tokens client-side with the same stemmer as the index (drift risk);
+(b) index an unstemmed copy of text fields and search phrases against it (memory); (c) veto quoted
+phrases when `$stemming` is on; (d) turn stemming off in the index and stem at query time only
+(changes keyword matching). This is the largest single divergence on the test system.
+
+### Q2.6 — Negated phrase `-"…"`
+Implement (does Typesense accept `-"a b"`? verify) or veto. Today it returns everything, the worst
+outcome.
+
+### Q2.7 — OR-groups `a;b`
+Keep the veto. Core's bare `a;b` only works after a field search has created the combined keyword
+(Core 9) — a core bug. Field-scoped OR (`title:a;b`) could be served as two ORed filters: do it?
+
+### Q2.8 — Punctuation and commas
+`foo-bar` is a phrase in core when the search has no plain-split path, otherwise two words;
+`a,b` with no whitespace is a phrase. The plugin receives core's split keywords, so the difference is
+only in how it treats a punctuated single token. Replicate (quote it) or simplify?
+
+### Q2.9 — Type-name and contributor-name words
+Index them (Q1.7) or veto searches containing a type name / username when `$index_contributed_by`?
+
+### Q2.10 — Related keywords
+Core ORs related keywords into the union. Options: Typesense synonym sets (one-way or multi-way —
+which matches core?), maintained by the existing `after_save_related_keywords` hook; or veto any
+search containing a keyword that has related entries. The test system has one pair.
+
+### Q2.11 — Bare years and numbers
+A year typed as a word matches date values in core. Add date representations (`_q`) to `query_by`
+so `2024` matches dates? Bare numbers with `$config_search_for_number` off: core boosts the exact
+ref to the top — implement with `_eval(ref:=N)` (verified) or keep vetoing?
+
+### Q2.12 — Unknown words and suggestions
+Core returns a suggestion string (integer `fetchrows` only) and never consults the plugin when a word
+is absent from the keyword table. Accept that dependency (the plugin's results depend on core's
+keyword table being complete) or route such searches to the plugin anyway via a core change?
+
+### Q2.13 — Which keyword quirks to raise upstream rather than copy
+Candidates: the bare-OR side effect, the comma rule, stop-word-only searches returning everything.
+(Feeds chunk 11.)
+
+## Done when
+
+Every keyword form in catalogue group A and the review's themes C and D has a decided behaviour,
+the harness has a case for each, and the live A/B shows identical counts for the "copy core" set and
+the accepted differences listed for the rest.
