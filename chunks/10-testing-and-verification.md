@@ -89,6 +89,13 @@ before a release. Agree?
 Keep the batteries that document core's own bugs (15/16) and run them against new RS versions to see
 when a bug is fixed upstream?
 
+### Q10.11 — Reuse the existing harness code in the rebuild?
+The harness (SQLite standing in for MySQL, a private local Typesense, the real core and plugin run
+twice per case, the fixture library, 30 batteries and the factorial combinations) is test
+infrastructure, not plugin code: it asserts on `do_search()` results and does not depend on the
+plugin's internals. Recommendation: reuse it reviewed (principle 6), bringing it in as task H1 and
+rewriting only the batteries that assumed old behaviour. Alternative: rebuild it too.
+
 ## Done when
 
 The harness is in the repo and documented; the accepted-divergence list exists; a full local run and

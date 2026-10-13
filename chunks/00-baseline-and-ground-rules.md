@@ -93,6 +93,19 @@ multi-language index; anything the API cannot express. Add or remove items.
 The staged inactive-field fix (commit? it needs a reindex), the harness branch and the catalogue
 branch (merge into `typesense`?), before any new work starts.
 
+### Q0.13 — Keep the pipeline design for the rebuild?
+Q0.1 is decided: the code is written again. The *design* is a separate choice: one mode + all
+restrictions + a shared keyword step, a query plan compiled to parameters, execute, hydrate. It
+absorbed every addition (collections, `J`, grants, group filters, `!last`, field forms) without
+changes to the orchestrator. Recommendation: keep the design, rewrite the code. Alternative: a
+different decomposition (per-search-form handlers, or a single query builder).
+
+### Q0.14 — Approve the module layout
+[tasks/README.md](../tasks/README.md) proposes the files: `client`, `schema`, `dates`, `text`,
+`fields`, `documents`, `rebuild`, `sync` at `include/`, and `search/` split into context, parse,
+plan, keywords, nodes, sort, execute, hydrate, validate with `restrictions/` and `modes/` folders.
+Agree, or change the split before tasks are cut to it.
+
 ## Done when
 
 A charter page exists in this repo with the answers; the branches/staged work have a decided fate;

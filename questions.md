@@ -1,6 +1,6 @@
 # All questions
 
-Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer in [decisions.md](decisions.md).
+Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer in [decisions.md](decisions.md). The tasks in [tasks/](tasks/README.md) cite these IDs.
 
 ## Chunk 0 — Baseline, scope and ground rules
 
@@ -16,6 +16,8 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q0.10** In what order are the chunks tackled, and what is the first milestone? ([00-baseline-and-ground-rules.md](chunks/00-baseline-and-ground-rules.md))
 - **Q0.11** Confirm what is out of scope ([00-baseline-and-ground-rules.md](chunks/00-baseline-and-ground-rules.md))
 - **Q0.12** What to do with the three unmerged pieces now ([00-baseline-and-ground-rules.md](chunks/00-baseline-and-ground-rules.md))
+- **Q0.13** Keep the pipeline design for the rebuild? ([00-baseline-and-ground-rules.md](chunks/00-baseline-and-ground-rules.md))
+- **Q0.14** Approve the module layout ([00-baseline-and-ground-rules.md](chunks/00-baseline-and-ground-rules.md))
 
 ## Chunk 1 — Index schema and document model
 
@@ -150,6 +152,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q10.8** The live user matrix ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 - **Q10.9** Cadence ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 - **Q10.10** Core bug batteries ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
+- **Q10.11** Reuse the existing harness code in the rebuild? ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 
 ## Chunk 11 — Core changes and upstream
 
