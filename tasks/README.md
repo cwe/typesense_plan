@@ -20,6 +20,7 @@ per mechanism, each owning its rows, with its own fixture and battery — see
 | G | [Operations](G-operations.md) | Setup page, logging, badge, docs, deployment |
 | H | [Verification](H-verification.md) | Harness, batteries, live runner, catalogue, accepted divergences |
 | I | [Core changes](I-core-changes.md) | The fork's patch, hooks, helper, bug dispositions, upstream tracking |
+| X | [Security and data protection](X-security.md) | Keys, transport, web exposure and CLI guards, the security battery, erasure and retention, the pre-pilot review, the processing description (X because J and K are catalogue groups) |
 
 (E and F — the earlier "modes" and "field forms" areas — are absorbed into S; the letters are not
 reused so that older references stay unambiguous.)
@@ -33,6 +34,7 @@ plugins/typesense_search/
   include/
     client.php                    A2  requests, multi_search, imports, breaker (over lib/ if Q9.10 says so)
     state.php                     A6  generation, ready, bulk_pending, snapshots, counters
+    tenancy.php                   A8  the prefix: validation, every server-side name, identity, clash check
     schema.php                    A3  versioned schema, aliases, generations
     dates.php                     A4  date parsing to representations, keys and epochs
     text.php                      A5  normalisation, cleaning, stemming, fragments
@@ -50,13 +52,13 @@ plugins/typesense_search/
              contributions.php hasdata.php pending.php unsupported.php
              properties.php empty.php related.php images.php flags.php geo.php colour.php unused.php
     collections.php               SF2  the access gate (helper wrapper or copy)
-  scripts/reindex.php  scripts/sync.php  scripts/explain.php (G7)
+  scripts/reindex.php  scripts/sync.php  scripts/explain.php (G7)   each CLI-guarded; .htaccess deny (X3)
   lib/                            A7  the vendored client and its stack (phpcs excludes it)
   pages/setup.php
   harness/                        H  (not tests/: core's runner scans that)
     ab/<ID>_<slug>.php            one battery per task or package, labels = catalogue rows
     live/                         the API runner and the catalogue
-  docs/
+  docs/                           incl. data-protection.md (X7)
 ```
 
 ## Task format
@@ -79,14 +81,14 @@ and **Battery** lines in the same way.
 
 | Milestone | Outcome | Tasks |
 |---|---|---|
-| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; dependencies vendored; the core hook patch settled; harness in the repo | A1–A7, I1, H1 |
-| M1 An index from scratch | Builders produce complete documents; a generation rebuild on the fixture and on the test system gives counts equal to MySQL | B1–B9, G8 (the checklist), H2 |
-| M2 The first served search | Plain words, node tokens and resolved options, with every restriction, the served sorts, windows, shapes and read-time validation; every other `!` and every declined sort falls back | D1–D12, C1, C8, G7, SA1, SA11, SA12, SC1, SC2, SF8, SG5, SH1 (first pool), H3 |
-| M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, H5 |
+| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; dependencies vendored; the core hook patch settled; harness in the repo | A1–A8, X1–X3, I1, H1 |
+| M1 An index from scratch | Builders produce complete documents; a generation rebuild on the fixture and on the test system gives counts equal to MySQL | B1–B9, G8 (the checklist), G6 (the proof), H2 |
+| M2 The first served search | Plain words, node tokens and resolved options, with every restriction, the served sorts, windows, shapes and read-time validation; every other `!` and every declined sort falls back | D1–D12, C1, C8, G7, X4, SA1, SA11, SA12, SC1, SC2, SF8, SG5, SH1 (first pool), H3, H4 (first live run), H7 |
+| M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, X5, H5 |
 | M4 Field, date, number, index-flag forms | Catalogue groups B, C (rest), D, E, K and the form strings identical or declined | SB1–SB6, SC3, SD1–SD5, SE1, SK1–SK3, SJ1, H8 |
-| M5 Specials and collections | Catalogue group F for the data already indexed; the collection matrix | SF1–SF7, SF17, I2 |
+| M5 Specials and collections | Catalogue group F for the data already indexed; the collection matrix | SF1–SF7, SF17, I2, X6 (the pre-pilot review) |
 | M6 Keyword semantics | Catalogue group A beyond plain words; the relevance decision implemented | SA2–SA10, D9 (relevance) |
-| M7 Further sorts, new specials, operations, core hooks | Sort keys; the specials that need index fields; setup page, docs, deployment; the core hooks PR | SG1–SG4, SF9–SF16, G1–G6, G8 (the check), C9, I3–I6 |
+| M7 Further sorts, new specials, operations, core hooks | Sort keys; the specials that need index fields; setup page, docs, deployment; the core hooks PR | SG1–SG4, SF9–SF16, G1–G5, G6 (the page), G8 (the check), H6, C9, I3–I6, X7 |
 
 Inside a milestone the tasks are listed in order; a task's *depends on* line is the rule, the
 listing is the suggestion. SH1 (the combinations gate) and SJ1 (the pages' strings) run again at
@@ -122,10 +124,13 @@ marked ★ shape several packages at once and are worth answering first.
 - **Sync (M3):** Q8.1 re-confirm the sync decisions · Q8.4 the interim for hook-less writes · Q8.5
   Phase 0 order · Q8.6 outage behaviour · Q8.7 freshness target
 - **Operations basics:** Q9.1 config options · Q9.2 secrets · Q9.10 the official client or a custom
-  one · Q9.11 where plugin state lives
+  one · Q9.11 where plugin state lives · Q9.12 the prefix policy
 - **Core:** Q11.1 policy by category · Q11.2 the hook-return patch
 - **Testing:** Q10.1 where tests live · Q10.3 acceptance criteria · Q10.4 reference dataset ·
   Q10.12 battery naming · Q10.13 fixture additions · Q10.15 the combinations gate
+- **Security:** Q12.1 keys · Q12.2 network and transport · Q12.3 the metadata copy · Q12.4 the
+  stale window and the gate uses · Q12.6 web exposure of plugin files · Q12.11 a server-wide key
+  or tenant keys only
 
-Forty questions. The packages' own *open questions* (Q1.12–Q1.13, Q2.15–Q2.18, Q3.13–Q3.18,
+Forty-seven questions. The packages' own *open questions* (Q1.12–Q1.13, Q2.15–Q2.18, Q3.13–Q3.18,
 Q4.11, Q5.11, Q7.9, Q10.14) are answered when their package starts.

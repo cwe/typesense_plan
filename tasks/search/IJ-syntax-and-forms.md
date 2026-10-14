@@ -32,5 +32,7 @@ from form input rather than from hand-typed text.
   keystroke of the advanced form.
 - **Fixture:** the base fixture; the cases call `search_form_to_search_query()` with arrays
   shaped like the posted form.
+- **Battery:** `harness/ab/SJ1_form_strings.php` — J1–J4, J11, I12 and the search bar's rebuilt
+  text (harness 25), each case built from form input; live: the J rows.
 - **Blocking questions:** Q3.2, Q4.10
 - **Open questions:** Q10.14 (the forms the API cannot send are covered locally)

@@ -304,6 +304,14 @@ Shapes: A6, B8, B9, C4, C7, G1.
 - **Answer:**
 - **Reason:**
 
+#### Q9.12 — The prefix policy for tenants
+Mandatory and validated with the installation's identity written into each generation and a clash
+check (rec.), or derived from `$baseurl` with an override. Q9.8 is decided: several installations on
+one server is a requirement.
+Shapes: A8, A1, B8, G6.
+- **Answer:**
+- **Reason:**
+
 ### Core
 
 #### Q11.1 — The policy, by category
@@ -366,6 +374,52 @@ Shapes: SH1, principle 3.
 - **Answer:**
 - **Reason:**
 
+### Security
+
+#### Q12.1 — Keys: which, where, shown how
+Two keys (a search-only key scoped to `documents:search` on `<prefix>_*`; an admin key for the CLI)
+or one; in `config.php` as core keeps its secrets (rec.) or in the plugin config in the database;
+the setup page shows set / not set only; a rotation procedure. Supersedes Q9.2.
+Shapes: A2, X1, G1, G8.
+- **Answer:**
+- **Reason:**
+
+#### Q12.2 — Network placement and transport
+Typesense on localhost or a private network; TLS mandatory when not local; certificate verification
+always on; the endpoints listed for a firewall rule.
+Shapes: A2, X2, G8.
+- **Answer:**
+- **Reason:**
+
+#### Q12.3 — Is a full metadata copy in Typesense acceptable?
+Accept and protect the server (rec.), exclude confidential resources or hidden fields (granted users
+then lose Typesense), or add encryption at rest.
+Shapes: B2, B4, X7.
+- **Answer:**
+- **Reason:**
+
+#### Q12.4 — The stale-row window and the gate uses, as a security requirement
+C8 option B in M2; the gate uses bypass the index or are always validated; Typesense-only never for
+real users; the acceptable listing window before the hooks land.
+Shapes: C8, D1, SF4, X4.
+- **Answer:**
+- **Reason:**
+
+#### Q12.6 — Web exposure of plugin files
+`.htaccess` deny rules and CLI guards for `scripts/`, `lib/`, `harness/`, the harness excluded
+from deployments — or the harness kept outside the plugin (Q10.1).
+Shapes: X3, A7, H1.
+- **Answer:**
+- **Reason:**
+
+#### Q12.11 — A server-wide key for diagnostics, or tenant keys only?
+Tenant keys only (the server check degrades to health and the tenant's own collections), one
+read-only server-wide diagnostics key entered per tenant, or server checks done outside RS. Verify
+first whether a prefix-scoped key also confines alias and synonym-set calls.
+Shapes: X1, G6, G8.
+- **Answer:**
+- **Reason:**
+
 ## Part 3 — Answered when the package starts
 
 One line each; the full text is in the chunk file. (Q0.1 is decided; Q8.2 is Q6.1 asked twice; Q8.3
@@ -414,9 +468,13 @@ is a test to run, not a question.)
   **Q8.13** which register rows must be immediate in M3 (C5, C6, C9)
 - **Q9.3** rebuild and resync from the UI (G1) · **Q9.4** performance work now or after sync (B8) ·
   **Q9.5** logging (G2) · **Q9.6** health, warnings and the badge (G1, G3) · **Q9.7** deployment and
-  versioning (G5) · **Q9.8** several instances on one server (G6) · **Q9.9** test hosts (H4)
+  versioning (G5) · **Q9.8** several installations on one server — *decided 2026-10-14: required* ·
+  **Q9.9** test hosts (H4) · **Q9.13** shared-server limits and schedules (G6, B8)
 - **Q10.2** CI (H1) · **Q10.5** credentials (H4) · **Q10.6** freshness tests local (H5) · **Q10.7**
   performance tests (H6) · **Q10.8** live user matrix (H4) · **Q10.9** cadence (H) · **Q10.10**
   core-bug batteries (H7) · **Q10.14** API-unreachable rows (D1, D11, SK2, SK3)
 - **Q11.3** each core bug (I4) · **Q11.4** tracking upstream (I5) · **Q11.5** a cleaner provider
   contract (I1) · **Q11.6** upstream intent (I*)
+- **Q12.5** erasure and retention (X5) · **Q12.7** logging and redaction (X1, G2, G7) · **Q12.8**
+  keys per instance (X1, G6) · **Q12.9** supply chain (A7, X6) · **Q12.10** the standing security
+  cases (X4)

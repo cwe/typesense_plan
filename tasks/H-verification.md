@@ -20,7 +20,7 @@ existing code the rebuild is likely to keep (Q10.11).
     emulated.
   - A fact a case reports as "same" must be checked for the option really being applied (a runner
     once merged options with `array_merge` and six cases were wrongly recorded as matched).
-- **Blocking questions:** Q10.1, Q10.2, Q10.3, Q10.11
+- **Blocking questions:** Q10.1, Q10.2, Q10.3, Q10.11, Q10.12, Q10.13
 - **Proves it:** the smoke battery runs green on a clean checkout with one command.
 
 ### H2 — Index batteries
@@ -55,7 +55,7 @@ existing code the rebuild is likely to keep (Q10.11).
     them from other sessions' files.
   - The user matrix: standard, `J` with `j`/`-j`, `J` with `j*`, `R`/`h`, `e2`, `ert`, a search
     filter, a custom grant — each as a pair (Q10.8).
-- **Blocking questions:** Q10.4, Q10.5, Q10.8, Q10.9
+- **Blocking questions:** Q10.4, Q10.5, Q10.8, Q10.9, Q9.9
 - **Proves it:** a light live run after each milestone; the catalogue regenerated before a release.
 
 ### H5 — Freshness, outage and rebuild batteries

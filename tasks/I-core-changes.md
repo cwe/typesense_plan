@@ -11,7 +11,7 @@ depends on the policy in Q0.4 / Q11.1.
   core returns it; `false` lets core continue to `search_special()` and the standard query; the hook
   fires before both, with `$sql_filter`, `$sql_join` and `$select` already built (the keyword
   criteria are baked into them).
-- **Blocking questions:** Q11.1, Q11.2
+- **Blocking questions:** Q11.1, Q11.2, Q0.4
 - **Proves it:** a stock RS checkout plus this patch runs the plugin; `CORE_PATCHES.md` lists it with
   its reason.
 
@@ -56,7 +56,7 @@ depends on the policy in Q0.4 / Q11.1.
   `startdate:`/`enddate:` dead code; `$ignore_filters` effectively dead; `view.php` next/previous
   fetching all rows; the page offset with collections above results; the `J` join's missing
   featured-type condition.
-- **Blocking questions:** Q11.3, Q7.3, Q7.5, Q4.8, Q4.10
+- **Blocking questions:** Q11.3, Q7.3, Q7.5, Q4.8, Q4.10, Q2.13
 - **Proves it:** every item has a row; the chosen PRs or issues are filed and referenced.
 
 ### I5 — Tracking upstream

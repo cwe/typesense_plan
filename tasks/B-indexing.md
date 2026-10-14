@@ -172,7 +172,8 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
 - **Builds:** `include/rebuild.php`, `scripts/reindex.php`, the offline job handler
   (`job_handlers/typesense_search_reindex.php`) that runs the identical build: take the build lock;
   record `building_generation`; create the three `_g<N+1>` collections from B2's schema with
-  metadata `{generation, schema_version, started}`, `async_reference`, `cascade_delete`; stream
+  metadata `{generation, schema_version, plugin_version, instance (A8), started}`, `async_reference`,
+  `cascade_delete` — and the clash check before creating anything; stream
   resources, memberships, grants (and synonyms, if SA10 chooses them) through B4–B7; **catch-up**
   of queue rows stamped during the build (a seam that calls C2's `apply` — a no-op until C2
   exists); pause the worker, final catch-up, verify, mark complete, swap all three aliases, set
@@ -196,7 +197,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   a failed verification keeps the old generation; the lock; the builder-path equality case (the
   document for a ref from the rebuild equals `build_resource_documents([ref])`); live: the test
   system rebuilt within the agreed budget with its timing report.
-- **Blocking questions:** Q8.1, Q8.10, Q9.3, Q9.4, Q1.11
+- **Blocking questions:** Q8.1, Q8.10, Q9.3, Q9.4, Q1.11, Q0.7
 
 ### B9 — Schema version and migration
 - **Covers:** register section 5 (versions).

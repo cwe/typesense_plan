@@ -81,8 +81,9 @@ the token must be handled), SC3 is M4.
   bare-colon operator is the same tokenised word match as SB1.
 - **Must honour:** the old plugin returned **everything** for every row here (148 / 100,862;
   harness B23–B29, S8) — the worst class of divergence, and the reason principle 7 says
-  everything-or-nothing is never accepted; `_ss` must be tokenised and stemmed like text fields
-  for the word match (today `_ss` is a `string[]` with `stem` off — check the schema), and the
+  everything-or-nothing is never accepted; `_ss` is already a `string[]` stemmed iff `$stemming`,
+  so the word match works against it as it does against `_s` (verify the tokeniser treats array
+  elements as separate values), and the
   BOM-stripped name in the index must still match core's keyword (core indexes the cleaned word
   too: `cleanse_string`).
 - **Fixture:** a dropdown option with a space (`United Kingdom`), a dynamic keyword with two

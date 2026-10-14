@@ -161,6 +161,8 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q9.9** Test hosts ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 - **Q9.10** The official Typesense PHP client, or a custom client? ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 - **Q9.11** Where plugin state lives ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
+- **Q9.12** The prefix policy for tenants ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
+- **Q9.13** Sharing a server's limits and schedules between tenants ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 
 ## Chunk 10 — Testing and verification
 
@@ -188,3 +190,17 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q11.4** Tracking upstream ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
 - **Q11.5** A cleaner provider contract ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
 - **Q11.6** Is this plugin meant to go upstream? ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
+
+## Chunk 12 — Security and data protection
+
+- **Q12.1** Keys: which, where, shown how ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.2** Network placement and transport ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.3** Is a full metadata copy in Typesense acceptable? ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.4** The stale-row window and the gate uses, as a security requirement ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.5** Erasure and retention ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.6** Web exposure of plugin files ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.7** Logging and redaction ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.8** Keys per instance ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.9** Supply chain ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.10** Anonymous, external and shared access as standing tests ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))
+- **Q12.11** A server-wide key for diagnostics, or tenant keys only? ([12-security-and-data-protection.md](chunks/12-security-and-data-protection.md))

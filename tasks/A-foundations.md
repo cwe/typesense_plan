@@ -12,7 +12,8 @@ Milestone M0. Everything else builds on these five modules.
     `$typesense_search_enabled` override for A/B groups (P13).
   - Whether a per-group config override is applied before the search hook runs is untested (Q8.3):
     this task includes that test.
-  - Default collection prefix must not be a test value (the old default was `test3_`).
+  - The collection prefix is mandatory and validated — no default at all (A8); the old default
+    was `test3_`.
   - Comments terse, in the plugin's existing style (P36).
 - **Blocking questions:** Q0.13, Q0.14, Q9.1, Q9.2
 - **Proves it:** plugin activates on a clean install; setup page renders; a per-group override
@@ -35,7 +36,7 @@ Milestone M0. Everything else builds on these five modules.
     leave the server's own batch size alone.
   - Never create collections outside the rebuild path.
   - An outage must end in a fallback to MySQL, never an empty result (P7 rollback = fall back).
-- **Blocking questions:** Q8.6, Q9.1, Q9.10
+- **Blocking questions:** Q8.6, Q9.1, Q9.10, Q1.9, Q12.1, Q12.2
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
 
@@ -135,7 +136,29 @@ Milestone M0. Everything else builds on these five modules.
   - A package core already ships (`psr/http-message`, Guzzle through `google/apiclient`) must not
     be loaded twice in different versions — check the deployed core's `vendor/` and prefer the
     `php-http/curl-client` adapter, which pulls nothing core has.
-- **Blocking questions:** Q9.10
+- **Blocking questions:** Q9.10, Q12.9
 - **Proves it:** a clean checkout with the plugin enabled loads the client with no Composer step on
   the host; the A2 battery passes through it; `composer validate` and `composer audit` are clean in
   `lib/`.
+
+### A8 — Tenancy
+- **Builds:** `include/tenancy.php` — the prefix as the single tenant boundary: validation
+  (mandatory, letters, digits, underscore, a length cap), `name(kind, generation)` producing every
+  server-side name (`<prefix>_resources_g<N>`, the aliases, the synonym set), the installation
+  identity written into each generation's metadata (`$baseurl`, database name, plugin version)
+  and the clash check that refuses to build over another installation's collections; the state (A6)
+  and the queue (C1) already partition by prefix and database.
+- **Size:** S · **Depends on:** A1, A3
+- **Must honour:**
+  - Nothing may address a collection, alias or synonym set except through `name()`; the harness
+    uses its own prefix on the shared local server for the same reason.
+  - The old default prefix (`test3_`) would have made two installations share an index; there is
+    no default now.
+  - Server-side limits are shared: the filter-operations guard, memory, CPU, import concurrency
+    (Q9.13); a tenant never assumes it is alone.
+  - Keys are per tenant and scoped to `<prefix>_*` (X1, Q12.8); whether alias and synonym-set
+    operations are also scoped is verified in X1's battery (Q12.11).
+- **Blocking questions:** Q9.12, Q9.13, Q12.8
+- **Proves it:** `harness/ab/A8_tenancy.php` — two prefixes on the local server: each rebuilt,
+  searched, resynced and deleted without touching the other; a prefix clash refused; an invalid
+  prefix refused; every generated name matches the pattern.

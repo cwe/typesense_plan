@@ -9,7 +9,7 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Size:** M · **Depends on:** A1, A6, B8, C4
 - **Must honour:** the rebuild schedule is the administrator's scheduled-task entry; the plugin
   reports it (P15); group config overrides are the A/B mechanism and must not be hidden by the page.
-- **Blocking questions:** Q9.1, Q9.3, Q9.6
+- **Blocking questions:** Q9.1, Q9.3, Q9.6, Q8.12, Q12.1
 - **Proves it:** manual check on the test system; each health figure matches a direct query.
 
 ### G2 — Logging
@@ -43,11 +43,18 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Blocking questions:** Q9.7
 - **Proves it:** one deployment to the test system follows it without improvisation.
 
-### G6 — Several instances on one Typesense server
-- **Builds:** confirmation that the prefix isolates instances end to end (aliases, generations, queue).
-- **Size:** S · **Depends on:** B8
-- **Blocking questions:** Q9.8
-- **Proves it:** two prefixes on the local Typesense rebuilt and searched independently.
+### G6 — Several installations on one Typesense server
+- **Builds:** the operations page section for a shared server: one prefix and one key pair per
+  installation (A8, X1), memory sizing per tenant (about 800 MB a generation on the test index,
+  two during a rebuild), staggered rebuild windows, the import-concurrency default for a busy
+  server, the filter-operations limit shared by all, what each tenant's setup page can and cannot
+  show (Q12.11); and the live proof on the test server.
+- **Size:** S · **Depends on:** A8, B8, X1, G8
+- **Must honour:** Q9.8 is decided — a requirement, not an option; the checklist is written for an
+  operator who runs several installations and may not administer any of them.
+- **Blocking questions:** Q9.13, Q12.11
+- **Proves it:** two installations rebuilt against the test server from the page alone, each
+  searching its own index while the other rebuilds; neither tenant's key can read the other.
 
 ### G7 — Search explain tool
 - **Builds:** `scripts/explain.php --user <ref> --search '<string>' [--restypes] [--order_by]
@@ -71,7 +78,7 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Builds:** the server-side checklist in the operations page (G4): the version pinned to 30.x and
   the versions verified; `--filter-by-max-ops` above the plugin's guard (Q3.9); memory from the
   schema register's budget (about 800 MB a generation on the test index, two during a rebuild,
-  Q1.11); `--api-key` plus a scoped search-only key (Q9.2); `--data-dir` and backups by rebuild
+  Q1.11) multiplied by the number of installations on the server (G6); `--api-key` plus a scoped search-only key (Q9.2); `--data-dir` and backups by rebuild
   (Q8.11); the two cron entries (worker every minute, nightly rebuild); permissions for the CLI
   scripts; log rotation. And a setup-page check (G1) that reads `/debug` and `/health`, compares the
   server's version and `filter_by_max_ops` with the plugin's assumptions and warns on a mismatch.
@@ -80,6 +87,6 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Must honour:** the guard (P34) counts operations as the server does, so a raised server limit
   must raise the guard, not be hard-coded; the test host runs RS and Typesense on one 16 GB
   machine; a server upgrade is a schema-compatibility question (B9) — record the verified versions.
-- **Blocking questions:** Q3.9, Q9.2, Q8.1, Q0.5
+- **Blocking questions:** Q3.9, Q12.1, Q12.2, Q8.1, Q0.5
 - **Proves it:** the test host configured from the checklist alone; the setup page warns when
   `--filter-by-max-ops` is lowered below the guard.

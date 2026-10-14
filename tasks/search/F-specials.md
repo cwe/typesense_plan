@@ -60,7 +60,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Battery:** `harness/ab/SF2_collection.php` — the rows above, the 13 collection cases, F30–F32
   (R/h users, access_override), T1/T2 (upload-share gate), the parity plan's Phase 2 matrix
   (users × collections × queries × `fetchrows`) live.
-- **Blocking questions:** Q5.1, Q5.2, Q5.3, Q5.4, Q5.8, Q4.6
+- **Blocking questions:** Q5.1, Q5.2, Q5.3, Q5.4, Q5.8, Q4.6, Q5.9, Q5.10, Q6.8
 
 ### SF3 — `!list` and `!listall`
 - **Rows:** F38 F39 F40 F41 H28 · cross: J1 (SJ1), F41 (D2's parse table)

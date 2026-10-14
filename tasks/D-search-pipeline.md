@@ -109,7 +109,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
   - `$ignore_filters` does **not** disable restrictions (core uses it only in keyword parsing).
   - `$smartsearch` keeps the saved archive states instead of the defaults (G40): the old plugin always
     fell back for it; serving it is the archive rule with the flag honoured (Q5.11).
-- **Blocking questions:** Q4.4, Q4.5, Q6.3, Q6.6, Q5.11
+- **Blocking questions:** Q4.4, Q4.5, Q6.3, Q6.6, Q5.11, Q6.9
 - **Proves it:** restriction battery plus a config matrix (`$search_all_workflow_states`,
   `$collections_omit_archived`, `$uploader_view_override`, `$special_search_honors_restypes`).
 

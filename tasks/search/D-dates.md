@@ -105,4 +105,4 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
   words). This is a slice of Q1.1 that can be decided on its own.
 - **Fixture:** a date field with `keywords_index = 0` (as field 96 is for text).
 - **Battery:** `harness/ab/SD5_non_indexed_dates.php` — D22, D23, harness O1, O2.
-- **Blocking questions:** Q3.6
+- **Blocking questions:** Q3.6, Q3.16

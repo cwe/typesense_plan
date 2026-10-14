@@ -15,7 +15,7 @@ says how this repo is used to stop fragmented development.
 2. [state-of-play.md](state-of-play.md) — where the old code, docs, tests and test systems are, and
    what has been measured.
 3. [tasks/](tasks/README.md) — **the plan**: the code areas, ~100 tasks, the module layout, the
-   milestones, and the 40 questions that gate the first three milestones.
+   milestones, and the 47 questions that gate the first three milestones.
 4. [tasks/search/](tasks/search/README.md) — the search side cut to the **core search catalogue**:
    54 packages by catalogue group, each with its rows, fixture and battery, and
    [coverage.md](tasks/search/coverage.md), the row-by-row map of all 300 catalogue rows.
@@ -61,3 +61,4 @@ line updated here. See [principles.md](principles.md).
 | 9 | [Reindexer, configuration and operations](chunks/09-reindexer-configuration-and-operations.md) | Rebuild, performance, config options, setup page, secrets, deployment, monitoring |
 | 10 | [Testing and verification](chunks/10-testing-and-verification.md) | The local A/B harness, the live API runner, the catalogue, acceptance criteria, test data |
 | 11 | [Core changes and upstream](chunks/11-core-changes-and-upstream.md) | The fork's core patch, hooks and helpers needed in core, core bugs to raise or copy |
+| 12 | [Security and data protection](chunks/12-security-and-data-protection.md) | Keys, transport, web exposure, the stale window and the gate uses, erasure and retention, the pre-pilot review |

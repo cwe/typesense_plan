@@ -44,9 +44,9 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 
 | Suffix | Applies to | Type | Value rule | Needed by | Freshness | Version | Status |
 |---|---|---|---|---|---|---|---|
-| `_s` | single-line text (types 0, 13) that is indexed and not numeric | string, stem per Q2.14 | A5 `clean()` + cap (Q1.13) | SB1, D4 | R | 1 |  |
+| `_s` | single-line text (types 0, 13) that is indexed and not numeric | string, stem per Q2.14 (the old schema also sets `facet`, unused — drop, Q1.2) | A5 `clean()` + cap (Q1.13) | SB1, D4 | R | 1 |  |
 | `_text` | multi-line, large, TinyMCE (types 1, 5, 8), indexed | string, stem per Q2.14 | A5 (markup per Q1.4) | SB1, D4 | R | 1 |  |
-| `_ss` | fixed lists (types 2, 3, 7, 9, 12): the option names | string[] — text-tokenised if Q3.12 serves word matches | A5 `clean()` (BOM stripped, P33); translations per Q1.4 | SC3; D4 (option words as keywords, indexed fields only) | R (E20 node rename: gap until C9) | 1 |  |
+| `_ss` | fixed lists (types 2, 3, 7, 9, 12): the option names | string[], facet, stemmed iff `$stemming` (already so in the old schema) | A5 `clean()` (BOM stripped, P33); translations per Q1.4 | SC3; D4 (option words as keywords, indexed fields only) | R (E20 node rename: gap until C9) | 1 |  |
 | `_q` | dates (types 4, 6, 10, 14): year, year-month, full date; numeric single-line (`field_constraint = 1`): the plain value | string[] / string, never stem | A4 representations; numbers verbatim | SD1, SE1, SA9 (Q2.11) | R | 1 |  |
 | `_f` | numeric single-line, `is_numeric` values only | float | the number | SE1, SG4 | R | 1 |  |
 | `_ts` | full dates only | int64 epoch | A4 `timestamp()` | (none yet: candidate for removal, Q1.2) | R | 1 |  |
@@ -68,16 +68,16 @@ permission is indexed but excluded from `query_by` and field filters at query ti
 | Collection | Field | Type | Source | Rule | Needed by | Freshness | Version | Status |
 |---|---|---|---|---|---|---|---|---|
 | memberships | `id` | `collection:resource` | `collection_resource` | de-duplicates duplicate rows | SF2, D8 | M | 1 |  |
-| memberships | `resource` | reference → `resources.ref` | | `async_reference`; `cascade_delete` | SF2, D8 | M, R (delete) | 1 |  |
-| memberships | `collection_ref` | int32 | `collection_resource.collection` | | SF2, D8 | M | 1 |  |
+| memberships | `resource_id` | string, reference → `resources.id` | | as the old schema names it; `async_reference`, `cascade_delete` are new | SF2, D8 | M, R (delete) | 1 |  |
+| memberships | `collection_ref` | int64 | `collection_resource.collection` | | SF2, D8 | M | 1 |  |
 | memberships | `sortorder` | int32 | `collection_resource.sortorder` | NULL → INT32_MIN (P18) | SF2 order | M (E32 reorder: gap until C9) | 1 |  |
-| memberships | `date_added` | int64 | `collection_resource.date_added` | NULL → 0 (P18) | SF2 order | M | 1 |  |
+| memberships | `date_added` | int64, sort | `collection_resource.date_added` | NULL → 0 (P18) | SF2 order | M | 1 |  |
 | memberships | `collection_type` | int32 | `collection.type` | selection, upload, share-upload not indexed (P27); request, research, smart per Q5.7 | D8 (`j*`), SF2 | M (E36 type change: gap until C9) | 1 |  |
 | grants | `id` | `resource:user:usergroup` | `resource_custom_access` | junk `(NULL, NULL)` rows skipped | D6 | G | 1 |  |
-| grants | `resource` | reference → `resources.ref` | | `cascade_delete` | D6 | G | 1 |  |
-| grants | `user`, `usergroup` | int32 | | `−1` when unused (anonymous = 0 cannot match) | D6, D7 | G (E43–E47 writers without hooks: gap until C9) | 1 |  |
+| grants | `resource_id` | string, reference → `resources.id` | | as the old schema names it; `cascade_delete` is new | D6 | G | 1 |  |
+| grants | `user`, `usergroup` | int32, facet | | `−1` when unused (anonymous = 0 cannot match) | D6, D7 | G (E43–E47 writers without hooks: gap until C9) | 1 |  |
 | grants | `access` | int32 | | | D6 | G | 1 |  |
-| grants | `expires` | int64 | `user_expires` | 0 = never; checked at query time | D6 | G | 1 |  |
+| grants | `expires` | int64, range index | `user_expires` | 0 = never; checked at query time | D6 | G | 1 |  |
 
 ## 4. The field-type matrix (B1 and B4 batteries)
 

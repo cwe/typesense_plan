@@ -184,7 +184,7 @@ its event to the register before it closes (B-indexing, contract rule 3).
 - **Battery:** `harness/ab/C8_validation.php` — change access, workflow state, a grant, a filter
   node, a type, and delete, each searched before any sync runs → the fallback, never the resource;
   a repair row queued each time.
-- **Blocking questions:** Q6.1, Q6.2, Q6.10
+- **Blocking questions:** Q6.1, Q6.2, Q6.10, Q12.4
 
 ### C9 — Handlers for the core hooks (after I3)
 - **Covers:** the register's gap rows: node writers, type change, `put_resource_data`, the grant

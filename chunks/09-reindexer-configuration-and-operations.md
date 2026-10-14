@@ -46,6 +46,7 @@ page, which are `config.php` only?
 ### Q9.2 — Secrets
 The API key is plugin config (stored in the database when set from the setup page). Acceptable?
 Separate search-only and admin keys (the worker and rebuild need write access; search does not)?
+Superseded by Q12.1 — answer there.
 
 ### Q9.3 — Rebuild and resync from the UI
 CLI only, or the admin "Rebuild now" offline job from the sync plan plus "Resync now" for a
@@ -70,6 +71,7 @@ and when it bumps; a migration note per schema version.
 
 ### Q9.8 — Several RS instances on one Typesense server
 Prefix per instance is already supported. A requirement, or not?
+**Decided 2026-10-14: a requirement** (decisions.md). The design is A8; the operational proof G6.
 
 ### Q9.9 — Test hosts
 The current host overheats under heavy MySQL load. Is a second or bigger test host planned, and is
@@ -99,6 +101,23 @@ The rebuild, the worker and every search share state (live and building generati
 `set_sysvar()` under a `typesense_search_<prefix>_` key (recommended: no new table, visible to core's
 own tooling), or a plugin table with typed columns? Either way it is MySQL, read on every search with
 a short per-request cache, and *not ready* by default on a fresh install (A6).
+
+### Q9.12 — The prefix policy for tenants
+Every collection, alias, generation and synonym set on a shared server is named `<prefix>_…`, so the
+prefix is the tenant boundary. Mandatory with no default, validated (letters, digits, underscore;
+a length cap so generation and alias names stay valid), and recorded with the installation's
+identity (`$baseurl`, the database name) in each generation's metadata so a prefix clash with
+another installation is detected at the setup page and refused? Or derived automatically from the
+installation (a hash of `$baseurl`) with an override? Recommendation: mandatory and validated, with
+the identity check.
+
+### Q9.13 — Sharing a server's limits and schedules between tenants
+`--filter-by-max-ops`, memory and CPU are per server, not per tenant: N tenants need about N × 800 MB
+on the test index, and two generations each during a rebuild; the nightly rebuilds must be
+staggered or they double the peak; import concurrency defaults must assume other tenants are busy
+(the cores − 2 rule is server-wide); a 503 from one tenant's load slows the others. Who sets the
+rebuild windows, and does each tenant's setup page show the server's total load (needs a server-wide
+key, Q12.11) or only its own figures?
 
 ## Done when
 
