@@ -93,6 +93,13 @@ root `composer.json` (cleaner, a core divergence unless the plugin goes upstream
 B7's parallel imports become an optional later optimisation: the single-stream rebuild is about a
 minute on the test system, and principle 11 says not to add the layer until the budget needs it.
 
+### Q9.11 — Where plugin state lives
+The rebuild, the worker and every search share state (live and building generation, `ready`,
+`bulk_pending`, snapshots, counters, the breaker). Core's `sysvars` table through `get_sysvar()` /
+`set_sysvar()` under a `typesense_search_<prefix>_` key (recommended: no new table, visible to core's
+own tooling), or a plugin table with typed columns? Either way it is MySQL, read on every search with
+a short per-request cache, and *not ready* by default on a fresh install (A6).
+
 ## Done when
 
 An operations page exists (install, configure, rebuild, monitor, recover); the setup page shows

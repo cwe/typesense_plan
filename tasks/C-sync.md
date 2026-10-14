@@ -84,7 +84,7 @@ its event to the register before it closes (B-indexing, contract rule 3).
   priority 9; 503 → pause bulk work and back off 10–60 s with jitter, no attempt counted; idle poll
   5 s; `bulk_pending` set when any priority-3 row exists; `last_worker_run` and counters; the cron
   entry documented (and the `hook("cron")` fallback if Q8.1 says no system cron).
-- **Size:** M · **Depends on:** C1, C2, A2 · **Milestone:** M3
+- **Size:** M · **Depends on:** C1, C2, A2, A6 · **Milestone:** M3
 - **Must honour:** `hook("cron")` runs under a 30-minute limit and only with the plugin global
   (P13); several workers may run with disjoint claims through `claimed_by`; speed-ups (overlapped
   building and uploading, chunk size) are applied after measuring, never before (P16).
@@ -155,7 +155,7 @@ its event to the register before it closes (B-indexing, contract rule 3).
   kind reachable from the setup page now and from C9's hooks later; `after_save_related_keywords`
   → the synonym set (if SA10 chooses synonyms); the `bulk_pending` flag and the serving rule D1
   reads (MySQL serves while it is set, P10); the reserved bulk share.
-- **Size:** M · **Depends on:** C4, B4, B9 · **Milestone:** M3
+- **Size:** M · **Depends on:** C4, B4, B9, A6 · **Milestone:** M3
 - **Must honour:** a node rename touches every resource using the node (thousands) — core itself
   only remaps `node_keyword`; a numeric-flag change moves a field between `_s` and `_f`+`_q` and
   changes its `query_by` mapping; `$stemming` is a rebuild, never a resync; the field hooks have

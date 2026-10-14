@@ -49,6 +49,8 @@ existing code the rebuild is likely to keep (Q10.11).
   - The test host overheats under back-to-back heavy MySQL searches: no AND chains above ~40 nodes,
     no big `IN` lists, spacing between heavy cases, ask before minutes-long runs.
   - Core date-field searches take 6–8 s each there; the full catalogue is ~1 hour at 5 s pauses.
+  - An accent and case case per field type runs live (`café` / `cafe`), because the local harness
+    cannot check collation (Q2.18).
   - Credentials are pasted per session, never stored (Q10.5); the permission system blocks reading
     them from other sessions' files.
   - The user matrix: standard, `J` with `j`/`-j`, `J` with `j*`, `R`/`h`, `e2`, `ert`, a search
@@ -66,8 +68,9 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Proves it:** all green locally; the freshness subset live.
 
 ### H6 — Performance checks
-- **Builds:** latency samples core vs plugin for a fixed case list on the test host (lightly), and the
-  rebuild's timing report.
+- **Builds:** latency samples core vs plugin for a fixed case list on the test host (lightly), the
+  rebuild's timing report, and an edit-burst soak: a hundred API edits in a minute, the queue
+  drained within the freshness target with no parked row, the worker's rate recorded.
 - **Size:** S · **Depends on:** H4, B8
 - **Blocking questions:** Q10.7
 - **Proves it:** figures recorded in the plugin docs per release.
@@ -78,3 +81,19 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Size:** S · **Depends on:** H1
 - **Blocking questions:** Q10.10
 - **Proves it:** they run as "expected to fail" and flip when core changes.
+
+### H8 — The second dataset and the live user matrix
+- **Builds:** a seeded test system (the test-system seeder) holding what the YSP database lacks — a
+  category tree in use, HTML and translated values, a complete-indexed field, a non-indexed date
+  and a non-indexed numeric field, related keywords, search filters, custom grants with expiry,
+  featured, request, research and smart collections, users with `J` and `j` / `-j` / `j*`, `R` and
+  `h` users, `e2`, `ert`; the paired API users (a Typesense-only group and a plugin-off group) for
+  each permission combination, created by script (Q10.8); the catalogue's example values
+  regenerated for it (`catalogue_values.php`); a second live catalogue run.
+- **Size:** M · **Depends on:** H4, B8 (an index of it)
+- **Must honour:** principle 11 — parity is measured on two differently shaped datasets, not one;
+  the seeder produces non-customer data; the new users' credentials never enter the repo (Q10.5);
+  the host's thermal limit applies to its live runs too.
+- **Blocking questions:** Q10.4, Q10.8, Q10.5
+- **Proves it:** the catalogue run on the second system agrees with core for every `must` row the
+  plugin serves on YSP, with the same accepted-divergence list.

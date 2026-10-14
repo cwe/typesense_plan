@@ -297,6 +297,13 @@ Shapes: A2, B7, C4.
 - **Answer:**
 - **Reason:**
 
+#### Q9.11 — Where plugin state lives
+Core's `sysvars` table under a prefixed key (rec.: no new table, visible to core's tooling) or a
+plugin table with typed columns; MySQL either way, not ready by default on a fresh install.
+Shapes: A6, B8, B9, C4, C7, G1.
+- **Answer:**
+- **Reason:**
+
 ### Core
 
 #### Q11.1 — The policy, by category

@@ -180,7 +180,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   generation; on failure no swap, the new collections deleted, an admin notified; the one-off
   migration from un-aliased names; progress, ETA, a summary with counts per collection, exit codes
   0/1/2; `--verify-only`.
-- **Size:** M · **Depends on:** B4, B5, B6, B7, A3 · **Milestone:** M1
+- **Size:** M · **Depends on:** B4, B5, B6, B7, A3, A6 · **Milestone:** M1
 - **Must honour:** a reference binds to the real collection at creation, so memberships and grants
   are created against the generation's resources collection and all three aliases move together
   (moving one breaks joins); the lock refuses a second build and the admin job fails with a message
@@ -207,7 +207,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   rule that only additive changes use it; the triggers that force a rebuild (`$stemming`, a
   field-config change moving a field between representations — detected by C7's snapshot diff —
   and a version bump).
-- **Size:** S · **Depends on:** B8 · **Milestone:** M1
+- **Size:** S · **Depends on:** B8, A6 · **Milestone:** M1
 - **Must honour:** a PATCH needed a 600 s timeout on the test index; the version mismatch must not
   make searches fail — serve the old generation until the rebuild, unless the mismatch is one the
   query code cannot work with (then `ready = false`).

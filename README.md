@@ -15,7 +15,7 @@ says how this repo is used to stop fragmented development.
 2. [state-of-play.md](state-of-play.md) — where the old code, docs, tests and test systems are, and
    what has been measured.
 3. [tasks/](tasks/README.md) — **the plan**: the code areas, ~100 tasks, the module layout, the
-   milestones, and the 39 questions that gate the first three milestones.
+   milestones, and the 40 questions that gate the first three milestones.
 4. [tasks/search/](tasks/search/README.md) — the search side cut to the **core search catalogue**:
    54 packages by catalogue group, each with its rows, fixture and battery, and
    [coverage.md](tasks/search/coverage.md), the row-by-row map of all 300 catalogue rows.

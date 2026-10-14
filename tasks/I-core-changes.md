@@ -65,3 +65,18 @@ depends on the policy in Q0.4 / Q11.1.
 - **Size:** S · **Depends on:** I1
 - **Blocking questions:** Q11.4, Q11.6
 - **Proves it:** one release followed by the procedure.
+
+### I6 — Provider contract proposal
+- **Builds:** an upstream proposal (issue, then PR) for a search-provider hook that receives the
+  permission filter separately from the keyword criteria and the parsed search as structure
+  (keywords, node buckets, field terms, the special command and its argument, the parameters),
+  keeping the fork's `external_search` patch as the fallback; D1's entry written to take either
+  shape.
+- **Size:** S (the proposal) · **Depends on:** I1, D2, C8 · only when Q11.5 says yes
+- **Must honour:** no change to core's results for installations without a provider; a provider
+  must be able to decline before `search_special()` runs, as the patch allows; plain positional
+  arguments (the named-argument trap of Appendix B); the proposal cites the plugin's measured need
+  (C8 rebuilds the permission filter only because the hook mixes it with the keyword criteria).
+- **Blocking questions:** Q11.5, Q11.1, Q11.6
+- **Proves it:** with the hook accepted, C8's rebuild-the-filter step is removed and the plugin runs
+  unchanged on stock ResourceSpace and on the fork.

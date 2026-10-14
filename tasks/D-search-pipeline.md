@@ -54,7 +54,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
   `split_join_tokens`, candidate caps, offset/limit/pages, recent selection, result limit,
   suppression flags, open-access select, `supported`/`fallback_reason`; `compile()`; an
   operations counter.
-- **Size:** M · **Depends on:** D2
+- **Size:** M · **Depends on:** D2, D12
 - **Must honour:**
   - `filter_by` is limited to 100 operations (operands + connectors; array values free; 50 clauses);
     a reference-join clause counts as one operand and its inner expression is costed separately
@@ -203,3 +203,28 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
 - **Blocking questions:** Q6.1, Q5.2, Q7.6
 - **Proves it:** a shape battery (every `fetchrows` shape vs core), the node-bucket hydrate case,
   then C8's stale-index battery once validation is in.
+
+### D12 — Escaping and the injection battery
+- **Rows:** none of its own — every value in every row passes through it.
+- **Builds:** `include/search/escape.php` — `filter_value(string)` (backtick-quoted, with the rule
+  for a value that itself contains a backtick), `filter_int_list(array)`, `q_value(string)` (what
+  may stay in `q`: `:`, `-`, `"` and `*` carry meaning there), `sort_eval_int(int)`, and the rule
+  that hydrate's ref lists are `ps_query` placeholders, never interpolated; used by D3, D4, D9, D11
+  and every search package.
+- **Size:** S · **Depends on:** D2 (D3 depends on this)
+- **Must honour:**
+  - Everything in the hook's `$search` is user input end to end: field values, quoted phrases,
+    `!list` refs, `!collection` ids, `@@` tokens, `numrange` bounds, date-range bounds; integers are
+    cast, names come from the lookup, never from the string.
+  - `&&`, `||`, `:=`, `:!=`, `[`, `]`, `(`, `)` inside a backtick-quoted value are literal in
+    Typesense — proven on the local server for every operator the plan uses, not assumed; a value
+    with a backtick cannot be quoted: reject (veto) or strip, decided once.
+  - `_eval(ref:=N)` takes an int only; `filter_by` field names such as `populated_field_ids:=F`
+    take ints only.
+  - A compiled query the server rejects (HTTP 400) becomes a veto, never an empty result.
+- **Blocking questions:** — (Q6.3 if a reject rule is preferred to stripping)
+- **Proves it:** `harness/ab/D12_escaping.php` — a fuzz list (backticks, quotes, colons, `&&`, `||`,
+  brackets, `*`, `-`, newlines, NUL, a 4,000-byte value, SQL fragments) through every form that
+  takes a value, asserting the compiled parameters are what the escaper says, that Typesense returns
+  the expected documents or a 400 the plugin turns into a veto, and that no value can widen a
+  `filter_by` — the live user cannot see a document the restriction excludes.

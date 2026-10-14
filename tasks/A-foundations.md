@@ -23,7 +23,7 @@ Milestone M0. Everything else builds on these five modules.
   vendored in `lib/`, or a curl client (Q9.10): `search()` (GET or POST `multi_search` by size),
   `multi_search()`, `import()` with per-line results, `collection_exists()`, alias calls; a ready
   flag and a circuit breaker; exceptions mapped to the breaker so nothing leaks into a search.
-- **Size:** M · **Depends on:** A1
+- **Size:** M · **Depends on:** A1, A7 (when Q9.10 chooses the library)
 - **Must honour:**
   - A GET query string is capped at 4,000 bytes; `per_page` above 250 returns 422; `multi_search`
     takes at most 50 searches; `page` can go deep but cost grows faster than linear.
@@ -73,6 +73,9 @@ Milestone M0. Everything else builds on these five modules.
     date but core compares it as a string, so it must still bound a range (Q3.4 decides how).
   - Date sort key: `0:` NULL, `1:` empty, `2:<value>` reproduces core's string sort of the cache
     column; matching the date field needs a word boundary (field 120 is not field 12).
+  - Epochs (`_ts`, `creation_date`, `modified_date`) and the day-limit cut-off use the time zone of
+    the MySQL values: RS stores server-local time, so PHP's default zone and MySQL's session zone
+    must agree — a battery case at a DST change and at midnight.
 - **Blocking questions:** Q3.4 (whether a fixed-width comparison key is also needed)
 - **Proves it:** a unit table of every form above, the padded and EDTF ends, invalid dates, and the
   sort key.
@@ -91,3 +94,48 @@ Milestone M0. Everything else builds on these five modules.
 - **Blocking questions:** Q1.4, Q1.3
 - **Proves it:** unit cases for BOM/NBSP/word-joiner, `<p>hello`, `~en:A~fr:B`, the 500-character
   cap, and fragment sets against RS's own function on sample words.
+
+### A6 — Plugin state store
+- **Builds:** `include/state.php` — `state_get(name, default)`, `state_set(name, value)`,
+  `state_update(name, fn)` (a locked read-modify-write for counters); the named entries every other
+  task reads: `schema_version` of the live generation, `live_generation`, `building_generation`,
+  `ready`, `bulk_pending`, `last_rebuild` (time, result, duration, counts), `last_worker_run`,
+  `breaker_open_until`, `field_snapshot`, `config_snapshot`, and the counters (validation drops,
+  parked rows, breaker trips); keyed by collection prefix so several instances on one server stay
+  apart (G6).
+- **Size:** S · **Depends on:** A1
+- **Must honour:**
+  - Written by CLI processes (the rebuild, the worker) and by web requests alike, so it lives in
+    MySQL, never in a file or APCu; core's `sysvars` table with `get_sysvar()` / `set_sysvar()` is
+    the obvious home under a `typesense_search_<prefix>_` key, a plugin table the alternative
+    (Q9.11); structured values as JSON.
+  - `ready` and the breaker are read on every search: a per-request cache with a short TTL is
+    fine, but the flag must survive a PHP-FPM restart and must default to *not ready* on a fresh
+    install.
+  - Plugin configuration (`set_plugin_config`) is for options, not state; the two never mix.
+- **Blocking questions:** Q9.11
+- **Proves it:** a unit battery (set, get, JSON round trip, a counter incremented from two processes,
+  prefix isolation); B8, B9, C4, C7 and G1 read and write state only through it.
+
+### A7 — Vendored dependencies
+- **Builds:** `plugins/typesense_search/lib/` holding the official `typesense-php` client and its
+  HTTPlug stack, installed by Composer from a committed `lib/composer.json` and `composer.lock`,
+  its `vendor/autoload.php` required once from `hooks/all.php`; `lib/README.md` with the pinned
+  versions, the licence notices, the server versions verified against, and the upgrade procedure
+  (`composer update` in `lib/`, the A2 battery, a plugin version bump).
+- **Size:** S · **Depends on:** A1 · only when Q9.10 chooses the library
+- **Must honour:**
+  - Core's own `vendor/` is not tracked and is installed at deploy time; the plugin's `lib/` is
+    committed complete so a deployment needs no Composer step on the host (as `simplesaml`, `totp`
+    and `adobe_link` do); `phpcs.xml.dist` already excludes `plugins/*/lib`.
+  - Pass the PSR-18 client to the Typesense client explicitly so HTTPlug discovery does not run on
+    every web request.
+  - Pin a stable release (6.1.0-RC2 is a release candidate); PHP 8.2 is core's floor, the
+    library's is 7.4.
+  - A package core already ships (`psr/http-message`, Guzzle through `google/apiclient`) must not
+    be loaded twice in different versions — check the deployed core's `vendor/` and prefer the
+    `php-http/curl-client` adapter, which pulls nothing core has.
+- **Blocking questions:** Q9.10
+- **Proves it:** a clean checkout with the plugin enabled loads the client with no Composer step on
+  the host; the A2 battery passes through it; `composer validate` and `composer audit` are clean in
+  `lib/`.

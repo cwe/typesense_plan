@@ -27,7 +27,7 @@ alphabet; the `S` prefix keeps them apart.)
 | I, J Syntax and forms | [IJ-syntax-and-forms.md](IJ-syntax-and-forms.md) | group I is D2's parse battery · SJ1 strings as the pages assemble them | M4 |
 | K Indexing flags | [K-indexing-flags.md](K-indexing-flags.md) | SK1 non-indexed fields · SK2 inactive and hidden fields · SK3 complete indexing and the 500-character cap | M4 |
 
-54 packages. With D1–D11 the search side is 65 tasks.
+54 packages. With D1–D12 the search side is 66 tasks.
 
 ## Package format
 

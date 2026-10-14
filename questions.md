@@ -160,6 +160,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q9.8** Several RS instances on one Typesense server ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 - **Q9.9** Test hosts ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 - **Q9.10** The official Typesense PHP client, or a custom client? ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
+- **Q9.11** Where plugin state lives ([09-reindexer-configuration-and-operations.md](chunks/09-reindexer-configuration-and-operations.md))
 
 ## Chunk 10 — Testing and verification
 
