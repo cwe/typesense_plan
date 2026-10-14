@@ -105,6 +105,48 @@ exhaustive?
 Core matches short names exactly (case?); unknown names become two words (replicated). Confirm
 case handling and whether a field name that collides with a special keyword (`date`) needs care.
 
+### Q3.12 — Serve unresolved option text through the option names (`_ss`)
+A value core does not resolve to an option becomes a keyword search within the field (C4
+`usagerights:social` 148; C12 `artistname:moore` 2,713; C5 `soc*`; C7 a BOM-prefixed name), and
+nothing on a fixed-list field that is not flagged for indexing (C9: 0). The bare-colon word match on
+a `field_<ref>_ss` array of option names (tokenised and stemmed like text) reproduces this, and a
+missing `_ss` on a non-indexed field matches nothing, as core. Confirm this replaces the veto of
+Q3.1 for SC3, and that `_ss` is stored for every indexed fixed-list field (Q1.1).
+
+### Q3.13 — `basicyear` / `basicmonth` / `basicday`: integer components or `_q` tokens?
+The dropdowns address `$date_field` only, with `LIKE "____-05-__%"` forms that `_q`'s year /
+year-month / full-date tokens cannot express. Options: three integer fields on the resource for
+`$date_field` (`date_year`, `date_month`, `date_day`), filtered with `:=` and ANDed; or month-only
+and day-only tokens in `_q` for every date field. Recommendation: the integers — exact, cheap, and
+the legacy `nnnn|05` form maps to the same fields. Also: `basicday` is handled by core whether or
+not `$searchbyday` is set — replicate that.
+
+### Q3.14 — Two values and `;` on one date field
+`date:2024, date:2025` is two joins ANDed — only resources holding both years (D26: 0); `date:2024;2025`
+is `LIKE "2024;2025%"`: nothing (D27). Replicate both (two ANDed `_q` filters; an impossible filter
+or a veto for the `;` form)? The SA7 veto of `;` must not treat a date field as an OR group.
+
+### Q3.15 — `$ignore_filters`
+It reaches the hook and core uses it only to skip the date, `numrange` and fixed-list conversion of
+field terms (G41). Read it the same way in the parse (so `date:2024` with the flag is plain words),
+or veto when it is set? Which callers set it?
+
+### Q3.16 — Non-indexed date and numeric fields as a slice of Q1.1
+Date and number terms join nodes in core, so the index flag never matters for them (D22, D23, K11).
+Index `_q` / `_f` / `_k` for every date and numeric field regardless of `keywords_index`, whatever
+Q1.1 decides for text? Recommendation: yes (SD5).
+
+### Q3.17 — The exact rules of the field-name match
+Core compares the short name case-insensitively (I11) and whole (a slash is allowed, B9); a
+trailing or leading colon gives an empty or unknown name (I6, I7); `date` is a real field short name
+on the test system. Confirm the lookup: exact, case-insensitive, no trimming of other characters,
+`basic*` reserved (Q3.13), and an unknown name → the colon becomes a space.
+
+### Q3.18 — Is a backtick-quoted multi-word bare-colon value a phrase or an AND?
+SB2 and SB4 need `"title:henry moore"` and `exhibitiontitle:fabric-ation` as phrases confined to the
+field (core's rule). Verify live whether `field_8_s:\`henry moore\`` requires adjacency; if it is an
+AND of words, choose between an accepted difference and a veto for multi-word field phrases.
+
 ## Done when
 
 Catalogue groups B, C, D and E each have a decided behaviour per row, a harness case, and identical

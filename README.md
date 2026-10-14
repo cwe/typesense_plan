@@ -14,20 +14,26 @@ says how this repo is used to stop fragmented development.
 1. [principles.md](principles.md) — the ten rules.
 2. [state-of-play.md](state-of-play.md) — where the old code, docs, tests and test systems are, and
    what has been measured.
-3. [tasks/](tasks/README.md) — **the plan**: nine code areas, ~60 tasks, the module layout, the
-   milestones, and the 33 questions that gate the first three milestones.
-4. [chunks/](chunks/) — the background by subject: verified facts with pointers and the full
-   question bank (122 questions, `Q<chunk>.<n>`). Tasks cite these IDs; answer the questions here.
-5. [prior-decisions.md](prior-decisions.md) — 40 decisions taken before the restart, each to confirm
+3. [tasks/](tasks/README.md) — **the plan**: the code areas, ~100 tasks, the module layout, the
+   milestones, and the 38 questions that gate the first three milestones.
+4. [tasks/search/](tasks/search/README.md) — the search side cut to the **core search catalogue**:
+   54 packages by catalogue group, each with its rows, fixture and battery, and
+   [coverage.md](tasks/search/coverage.md), the row-by-row map of all 300 catalogue rows.
+5. [chunks/](chunks/) — the background by subject: verified facts with pointers and the full
+   question bank (`Q<chunk>.<n>`). Tasks cite these IDs; answer the questions here.
+6. [prior-decisions.md](prior-decisions.md) — 40 decisions taken before the restart, each to confirm
    or revisit.
-6. [decisions.md](decisions.md) — the append-only log of answers.
-7. [questions.md](questions.md) — generated index of every question.
+7. [decisions.md](decisions.md) — the append-only log of answers.
+8. [questions.md](questions.md) — generated index of every question.
+9. [worksheet.md](worksheet.md) — the gating questions in answering order, with options and
+   recommendations, and a line to write each answer on.
 
 ## How a task moves
 
 Unblocked (questions answered, dependencies done) → one branch → built with its battery → battery
-green and the accepted-divergence list unchanged or deliberately updated → merged → its status line
-updated here. See [principles.md](principles.md).
+green and the accepted-divergence list unchanged or deliberately updated → the combinations gate
+still green → merged → its rows ticked in [coverage.md](tasks/search/coverage.md) and its status
+line updated here. See [principles.md](principles.md).
 
 ## Conventions
 

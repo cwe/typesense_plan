@@ -96,6 +96,29 @@ infrastructure, not plugin code: it asserts on `do_search()` results and does no
 plugin's internals. Recommendation: reuse it reviewed (principle 6), bringing it in as task H1 and
 rewriting only the batteries that assumed old behaviour. Alternative: rebuild it too.
 
+### Q10.12 — Battery naming tied to the catalogue
+One harness file per package (`harness/ab/<ID>_<slug>.php`), case labels carrying the catalogue row
+IDs (`A7`, `A7.2`, `x1`), so `summarise.php` can fill the catalogue table's *OK* column and
+`catalogue_run.php <IDs>` sends a package's rows live. The existing batteries are re-cut to this
+scheme as their packages are built (their own labels overlap the catalogue's IDs today: harness
+`A3` is a stop word, catalogue `A3` is a comma). Agree?
+
+### Q10.13 — Fixture additions per package
+Keep the base fixture small and register each package's additions in the fixture library, loaded
+only by the batteries that need them (so a package's cases never depend on another package's data);
+or grow one shared fixture? The additions are listed in [tasks/search/README.md](../tasks/search/README.md).
+Recommendation: per-package additions.
+
+### Q10.14 — Rows the API cannot send
+G37–G42 (request modes), I12, K9–K12 and the editable-only forms are n/a in the live catalogue, but
+the local harness calls `do_search()` directly and can cover them. Confirm they are in scope for the
+local batteries and marked *local harness* in the coverage map.
+
+### Q10.15 — The combinations gate per package or per milestone
+SH1 (the factorial battery, ~2.5 minutes at full scale) catches interactions between terms that
+agree on their own. Run it, with the enlarged term pool, before every package merge, or once per
+milestone with `HARNESS_COMBO_SCALE` for a quick check per package?
+
 ## Done when
 
 The harness is in the repo and documented; the accepted-divergence list exists; a full local run and

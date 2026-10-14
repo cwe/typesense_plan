@@ -113,6 +113,32 @@ resource). Confirm all three.
 ~800 MB today for ~115k resources with fragments; two generations exist briefly during a rebuild.
 What is acceptable on the target server, and does that rule anything out (Q1.1, Q1.6)?
 
+### Q1.12 — Complete-indexed fields
+Core stores a complete-indexed value as one keyword, never split, so only a single-token value is
+reachable by word (K9). Represent it as a non-tokenised string (one token per value) so `field:value`
+phrase forms and wildcards still reach multi-word values, or treat the field as ordinary text and
+accept the difference? No such field exists on the test system; the fixture needs one (SK3).
+
+### Q1.13 — The 500-character cap
+Core turns only the first `$node_keyword_index_chars` characters of a value into keywords, but a
+wildcard reads the whole value (K10). Index two representations (the capped text for word matching,
+the whole value for wildcards), cap everything, or index everything and accept that a word past the
+cap matches in the plugin but not in core (harness A27: 1 / 2)?
+
+### Q1.14 — The registry as the extension contract
+Every index field as an entry in one registry (name or pattern, type, flags, the field types and
+index flags it applies to, the value function, source, version, owning package), walked by a generic
+builder, with a six-step protocol for a package that needs a field (entry, register row, version
+bump, battery cases, builder-path equality, rebuild on the fixture) — see the contract at the top of
+[tasks/B-indexing.md](../tasks/B-indexing.md). Confirm, or prefer explicit per-field code in the
+builder (simpler to read, every later package then edits the builder).
+
+### Q1.15 — The `0` sentinel in `nodes[]` and `populated_field_ids[]`
+The old indexer prepended `0` so the two arrays always exist (`0` is never a real id). Keep it, or
+drop it and make the arrays optional — a filter on a missing array matches nothing with
+`validate_field_names=0`, which is the wanted answer, and the documents are cleaner. Recommendation:
+drop it, with a battery case for a resource that has no nodes at all.
+
 ## Done when
 
 A schema document lists every field, its type, source, flags and the reason it exists; the schema

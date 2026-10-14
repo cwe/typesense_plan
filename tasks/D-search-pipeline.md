@@ -1,9 +1,12 @@
 # D — Search pipeline
 
-Milestone M2 builds D1–D11 to the point where a plain keyword search with every restriction is served;
-the field, date, node and keyword-semantics forms are area F and plug into D4.
+Milestone M2 builds D1–D11 to the point where a plain keyword search with every restriction is served.
+The search forms themselves are the packages in [search/](search/README.md), cut to the catalogue; the
+catalogue rows that belong to the pipeline (groups G, I and the request modes) are listed on the task
+that owns them, and [search/coverage.md](search/coverage.md) has the full map.
 
 ### D1 — Hook entry
+- **Rows:** G37 G38 G42 (the request modes; local harness only)
 - **Builds:** `hooks/all.php` `HookTypesense_searchAllExternal_search(...)`, `include/search/run.php`.
 - **Size:** S · **Depends on:** A1, A2
 - **Must honour:**
@@ -24,6 +27,7 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   flag only on the grid search; the breaker open → fallback.
 
 ### D2 — Context and parse
+- **Rows:** I1 I4 I5 G41 · the special-argument forms F41 F68 F69 J3 J4 and the colon forms I6 I7 (SB1) are cases here too
 - **Builds:** `include/search/context.php`, `parse.php`.
 - **Size:** M · **Depends on:** D1
 - **Must honour:**
@@ -38,7 +42,10 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   - The search bar rebuilds node searches into text (`"field:Two Words"`, `subject:Birds`); the
     advanced form puts `!properties` before `!list`.
   - A single punctuated token (`foo-bar`) is a phrase in core when there is no plain-split path.
-- **Blocking questions:** Q4.3, Q3.2, Q2.8
+  - `$ignore_filters` reaches the hook but core uses it only in keyword parsing: it skips the date,
+    `numrange` and fixed-list conversion of field terms (G41), so with it set a `date:2024` token is
+    plain words — the parse must read the flag the same way (Q3.15).
+- **Blocking questions:** Q4.3, Q3.2, Q2.8, Q3.15
 - **Proves it:** a parse table covering catalogue groups I and J and every special's argument forms.
 
 ### D3 — Query plan and compiler
@@ -64,6 +71,8 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   boundary, GET/POST choice, parameter defaults asserted on every compiled query.
 
 ### D4 — Shared keyword and node step (minimal)
+- **Rows:** none of its own — SA1 (plain words), SC1 (node tokens) and SC2 (resolved options) own the
+  M2 rows and are built on this step; the field-token split hands off to SB1.
 - **Builds:** `include/search/keywords.php` (plain words, wildcard, the field-token split that hands
   off to area F), `nodes.php`, `query_by` from visible indexed fields with the title gated on
   `metadata_field_view_access`.
@@ -83,6 +92,7 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   buckets, exclusion, 600/1,000-id buckets, the 40/41-node boundary) against core.
 
 ### D5 — Standard restrictions
+- **Rows:** G1–G10 G34 G35 G36 G40 H9 H10 (F20 F21 H38 belong to SF2: types and states are ignored for collections)
 - **Builds:** `include/search/restrictions/standard.php`.
 - **Size:** M · **Depends on:** D3
 - **Must honour:** every rule of core's `search_filter()`:
@@ -97,13 +107,15 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   - `resource_created_by_filter` (`−1` = current user); the day limit on `creation_date` with core's
     cut-off `strtotime('today −n days')`; `ref:>0`; `$heightmin` → veto unless replicated.
   - `$ignore_filters` does **not** disable restrictions (core uses it only in keyword parsing).
-- **Blocking questions:** Q4.4, Q4.5, Q6.3, Q6.6
+  - `$smartsearch` keeps the saved archive states instead of the defaults (G40): the old plugin always
+    fell back for it; serving it is the archive rule with the flag honoured (Q5.11).
+- **Blocking questions:** Q4.4, Q4.5, Q6.3, Q6.6, Q5.11
 - **Proves it:** restriction battery plus a config matrix (`$search_all_workflow_states`,
   `$collections_omit_archived`, `$uploader_view_override`, `$special_search_honors_restypes`).
 
 ### D6 — Access restriction
 - **Builds:** `include/search/restrictions/access.php`.
-- **Size:** S · **Depends on:** D3, B4
+- **Size:** S · **Depends on:** D3, B6
 - **Must honour:**
   - For non-`v` users without `access_override`: `access:!=2 || $grants((user:=U && (expires:=0 ||
     expires:>now)) || usergroup:=G)` and `access:!=3 || $grants(usergroup:=G)` (P1).
@@ -123,13 +135,13 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
     and with `created_by:=U` when `$open_access_for_contributor`.
   - Applied under `access_override` too (core applies it regardless).
   - `get_resource_access()` runs `!resource<ref>` for users with a filter, so this restriction decides
-    per-resource access for them (see C7, Q6.2).
+    per-resource access for them (see C8, Q6.2).
 - **Blocking questions:** Q6.3
 - **Proves it:** group-filter battery (ALL, NONE, ANY, override with an expired grant).
 
 ### D8 — Featured collections (`J`)
 - **Builds:** `include/search/restrictions/featured.php`.
-- **Size:** S · **Depends on:** D3, B3
+- **Size:** S · **Depends on:** D3, B5
 - **Must honour:**
   - `compute_featured_collections_access_control()` may return `false` (no `j` permissions) → no
     results, never a TypeError.
@@ -142,6 +154,8 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
 - **Proves it:** the 11 `J` cases and 5 parse cases.
 
 ### D9 — Sort mapping
+- **Rows:** G11 G14 G18 G22 G24 G25 G28 G29 G30 (served, or falling back to relevance as core does) · the
+  declined sorts are packages SG1–SG5
 - **Builds:** `include/search/sort.php`.
 - **Size:** S · **Depends on:** D3, A3
 - **Must honour:**
@@ -157,6 +171,7 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
 - **Proves it:** sort battery on a ties fixture; live date and modified order equal to core both ways.
 
 ### D10 — Execute and result windows
+- **Rows:** G31 G32 G33 J7
 - **Builds:** `include/search/execute.php` — one window or a walk, the recent-N cutoff, the count-only
   form.
 - **Size:** M · **Depends on:** D3, A2
@@ -172,8 +187,9 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   boundary with ties.
 
 ### D11 — Hydrate
+- **Rows:** G42 (the result shapes; local harness only)
 - **Builds:** `include/search/hydrate.php` — rows from MySQL in Typesense order, shapes, validation
-  hook (C7).
+  hook (C8).
 - **Size:** M · **Depends on:** D10
 - **Must honour:**
   - `ORDER BY FIELD(r.ref, …)` in batches of ~1,000 (two placeholders per ref; MySQL's 65,535 cap at
@@ -186,4 +202,4 @@ the field, date, node and keyword-semantics forms are area F and plug into D4.
   - `!collection` rows need `c.date_added`, `c.comment`, `commentset` (Q5.2).
 - **Blocking questions:** Q6.1, Q5.2, Q7.6
 - **Proves it:** a shape battery (every `fetchrows` shape vs core), the node-bucket hydrate case,
-  then C7's stale-index battery once validation is in.
+  then C8's stale-index battery once validation is in.

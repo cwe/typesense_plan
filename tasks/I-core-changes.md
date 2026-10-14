@@ -31,13 +31,15 @@ depends on the policy in Q0.4 / Q11.1.
   delete; `after_update_resource_type`; `after_resource_custom_access_change`;
   `after_put_resource_data`; collection bulk hooks after the writes in `update_collection_order`,
   `delete_collection`, `remove_all_resources_from_collection`, `add_saved_search_items`,
-  `copy_collection`, the type changers; arguments on the field-config hooks.
+  `copy_collection`, the type changers; arguments on the field-config hooks; plus the two the
+  register adds for later packages: `after_related_resources_changed` (SF11) and
+  `after_resource_lock_change` (SF13).
 - **Size:** M · **Depends on:** I1
 - **Must honour:** the node layer has zero hooks today; the collection add/remove hooks fire before
   the write; custom-access writers via requests and collection email have no hook and no log;
   `resource.modified` moves only through `resource_log()`.
 - **Blocking questions:** Q8.4, Q11.1
-- **Proves it:** C6's handlers make the hook-less freshness cases pass.
+- **Proves it:** C9's handlers make the event register's gap rows pass without a rebuild.
 
 ### I4 — Core bug dispositions
 - **Builds:** a table in this repo and in `CORE_PATCHES.md`: for each item — raise upstream, copy

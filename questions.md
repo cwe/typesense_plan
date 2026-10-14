@@ -32,6 +32,10 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q1.9** Typesense version and features ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
 - **Q1.10** Document identity ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
 - **Q1.11** Size budget ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
+- **Q1.12** Complete-indexed fields ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
+- **Q1.13** The 500-character cap ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
+- **Q1.14** The registry as the extension contract ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
+- **Q1.15** The `0` sentinel in `nodes[]` and `populated_field_ids[]` ([01-index-schema-and-document-model.md](chunks/01-index-schema-and-document-model.md))
 
 ## Chunk 2 — Free-text keyword semantics
 
@@ -48,6 +52,11 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q2.11** Bare years and numbers ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.12** Unknown words and suggestions ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.13** Which keyword quirks to raise upstream rather than copy ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.14** Pre-stem with ResourceSpace's own stemmer on both sides? ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.15** The full-text box: permanent veto? ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.16** Short wildcards ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.17** A wildcard inside a word ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.18** Accent folding ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 
 ## Chunk 3 — Field, date, numeric and node searches
 
@@ -62,6 +71,13 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q3.9** Node limits and toggles ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
 - **Q3.10** Wildcard candidate caps on field searches ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
 - **Q3.11** Field name lookup ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.12** Serve unresolved option text through the option names (`_ss`) ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.13** `basicyear` / `basicmonth` / `basicday`: integer components or `_q` tokens? ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.14** Two values and `;` on one date field ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.15** `$ignore_filters` ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.16** Non-indexed date and numeric fields as a slice of Q1.1 ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.17** The exact rules of the field-name match ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
+- **Q3.18** Is a backtick-quoted multi-word bare-colon value a phrase or an AND? ([03-field-date-numeric-and-node-searches.md](chunks/03-field-date-numeric-and-node-searches.md))
 
 ## Chunk 4 — Special searches
 
@@ -75,6 +91,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q4.8** `!empty<field>` ([04-special-searches.md](chunks/04-special-searches.md))
 - **Q4.9** Unknown or misspelt specials ([04-special-searches.md](chunks/04-special-searches.md))
 - **Q4.10** The form's `!properties` + `!list` collision ([04-special-searches.md](chunks/04-special-searches.md))
+- **Q4.11** `!properties`: the key set and the unknown-key rule ([04-special-searches.md](chunks/04-special-searches.md))
 
 ## Chunk 5 — Collections
 
@@ -88,6 +105,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q5.8** `J` with `j*` and no `-j` ([05-collections.md](chunks/05-collections.md))
 - **Q5.9** Reordering from the search page ([05-collections.md](chunks/05-collections.md))
 - **Q5.10** Large collections and `fetchrows = -1` ([05-collections.md](chunks/05-collections.md))
+- **Q5.11** `$smartsearch` ([05-collections.md](chunks/05-collections.md))
 
 ## Chunk 6 — Access, permissions and read-time validation
 
@@ -112,6 +130,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q7.6** Row shape ([07-sorting-relevance-and-result-windows.md](chunks/07-sorting-relevance-and-result-windows.md))
 - **Q7.7** Deep paging cost ([07-sorting-relevance-and-result-windows.md](chunks/07-sorting-relevance-and-result-windows.md))
 - **Q7.8** Sort direction quirks ([07-sorting-relevance-and-result-windows.md](chunks/07-sorting-relevance-and-result-windows.md))
+- **Q7.9** Ordering by a metadata field that is not a join column ([07-sorting-relevance-and-result-windows.md](chunks/07-sorting-relevance-and-result-windows.md))
 
 ## Chunk 8 — Index sync and freshness
 
@@ -127,6 +146,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q8.10** Rebuild window and capacity ([08-index-sync-and-freshness.md](chunks/08-index-sync-and-freshness.md))
 - **Q8.11** Topology ([08-index-sync-and-freshness.md](chunks/08-index-sync-and-freshness.md))
 - **Q8.12** Observability ([08-index-sync-and-freshness.md](chunks/08-index-sync-and-freshness.md))
+- **Q8.13** Which register rows must be immediate in M3? ([08-index-sync-and-freshness.md](chunks/08-index-sync-and-freshness.md))
 
 ## Chunk 9 — Reindexer, configuration and operations
 
@@ -153,6 +173,10 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q10.9** Cadence ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 - **Q10.10** Core bug batteries ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 - **Q10.11** Reuse the existing harness code in the rebuild? ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
+- **Q10.12** Battery naming tied to the catalogue ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
+- **Q10.13** Fixture additions per package ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
+- **Q10.14** Rows the API cannot send ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
+- **Q10.15** The combinations gate per package or per milestone ([10-testing-and-verification.md](chunks/10-testing-and-verification.md))
 
 ## Chunk 11 — Core changes and upstream
 
@@ -162,4 +186,3 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q11.4** Tracking upstream ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
 - **Q11.5** A cleaner provider contract ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
 - **Q11.6** Is this plugin meant to go upstream? ([11-core-changes-and-upstream.md](chunks/11-core-changes-and-upstream.md))
-

@@ -98,6 +98,14 @@ Single Typesense node, no replication, backups by rebuild. In scope?
 Setup page: queue depth, oldest row age, last rebuild time/result/duration, failures, validation
 drops. Alerts (email on failed rebuild)? What is wanted?
 
+### Q8.13 — Which register rows must be immediate in M3?
+[tasks/C-event-register.md](../tasks/C-event-register.md) marks every write with a hook (immediate
+after C5–C7) or an interim ("nightly rebuild", with read-time validation hiding stale access and
+state changes). The gap rows are the hook-less writers: the API's `add_resource_nodes`, csv fixed-list
+columns, metadata templates, request approvals and declines, collection reorders and bulk changes,
+node renames. Is nightly acceptable for all of them until I3/C9 land, or is one of them common
+enough on the target system to pull the core hooks forward (Q8.4)?
+
 ## Done when
 
 Phase 0 outcome from the sync plan: edits, uploads, state/access changes, deletes, grant edits and

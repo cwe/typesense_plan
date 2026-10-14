@@ -6,7 +6,7 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Builds:** `pages/setup.php` — the admin-facing options (Q9.1), health (ready flag, last rebuild
   time/result/duration, queue depth and oldest row, count drift vs MySQL, validation drops),
   warnings, "Rebuild now" and "Resync now" (the offline job, P11), the Typesense-only warning text.
-- **Size:** M · **Depends on:** A1, B5, C3
+- **Size:** M · **Depends on:** A1, B8, C4
 - **Must honour:** the rebuild schedule is the administrator's scheduled-task entry; the plugin
   reports it (P15); group config overrides are the A/B mechanism and must not be hidden by the page.
 - **Blocking questions:** Q9.1, Q9.3, Q9.6
@@ -15,7 +15,7 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 ### G2 — Logging
 - **Builds:** plugin `debug()` lines for every veto reason; a dedicated sync/rebuild log with
   retention.
-- **Size:** S · **Depends on:** C3, B5
+- **Size:** S · **Depends on:** C4, B8
 - **Must honour:** the harness reads the veto reason from the debug output — keep it one line per
   search.
 - **Blocking questions:** Q9.5
@@ -39,12 +39,12 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 ### G5 — Deployment procedure and versioning
 - **Builds:** the written procedure (deploy code, then rebuild; a schema change is a generation
   rebuild; the plugin yaml version bump rule; a migration note per schema version).
-- **Size:** S · **Depends on:** B6
+- **Size:** S · **Depends on:** B9
 - **Blocking questions:** Q9.7
 - **Proves it:** one deployment to the test system follows it without improvisation.
 
 ### G6 — Several instances on one Typesense server
 - **Builds:** confirmation that the prefix isolates instances end to end (aliases, generations, queue).
-- **Size:** S · **Depends on:** B5
+- **Size:** S · **Depends on:** B8
 - **Blocking questions:** Q9.8
 - **Proves it:** two prefixes on the local Typesense rebuilt and searched independently.

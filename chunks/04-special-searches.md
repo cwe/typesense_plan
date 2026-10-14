@@ -93,6 +93,12 @@ plugin return nothing / a declined-search message for `!unknown` (a deliberate d
 ### Q4.10 — The form's `!properties` + `!list` collision
 Core ignores the resource-IDs box when a property is filled in. Replicate, or raise with core?
 
+### Q4.11 — `!properties`: the key set and the unknown-key rule
+The keys in `search_special()` are `cu fext fmax fmin hmax hmin i orientation pi s wmax wmin`
+(F50–F59 cover most). Serve them all in one package, with `fext` wildcards as a prefix, sizes in MB
+and orientation from stored dimensions? An unknown key adds no filter in core, so `!propertiesbogus:1`
+is everything (F62): replicate, or veto?
+
 ## Done when
 
 Catalogue group F has a decided behaviour per row and a harness case; each served special has a mode

@@ -103,6 +103,38 @@ keyword table being complete) or route such searches to the plugin anyway via a 
 Candidates: the bare-OR side effect, the comma rule, stop-word-only searches returning everything.
 (Feeds chunk 11.)
 
+### Q2.14 — Pre-stem with ResourceSpace's own stemmer on both sides?
+Core stems with `GetStem()` (`lib/stemming/<language>.php`: an irregular-plural table, then Porter)
+at index time and query time; Typesense's Snowball stemmer agrees on 34 of 40 word-form pairs. If
+the plugin stemmed every text value with `GetStem()` before indexing and every query word before
+sending, with Typesense's own stemming off, the stems would be identical by construction, quoted
+words would be sent unstemmed as core does, and phrases under stemming (Q2.5) would need no special
+rule. Costs: a rebuild when the stemmer or `$stemming` changes (already true), stems visible in
+Typesense (never shown — rows are hydrated from MySQL), and a check that Typesense's tokeniser
+leaves the pre-stemmed tokens alone. Recommendation: yes, for SA12 and SA3.
+
+### Q2.15 — The full-text box: permanent veto?
+`"@FULL_TEXT:…"` is MySQL boolean mode over node names of every field, indexed or not; words without
+an operator are ORed (A27 956 vs A28 9). Typesense cannot OR words in `q`, so the forms cannot be
+served faithfully. Confirm the permanent veto (SA8) and whether the advanced search page should say
+that the full-text box is always answered by MySQL.
+
+### Q2.16 — Short wildcards
+A wildcard on a word under MySQL's full-text minimum length (`so*`, A14) is a `LIKE` on the keyword
+table — indexed fields only — while a longer one (`sculpt*`, A11) reads node names of every field.
+Replicate the split (prefix over indexed fields for short words, the all-fields rule for long
+ones), or one rule for both and record the difference?
+
+### Q2.17 — A wildcard inside a word
+`sc*pture` reaches MySQL as `+sc*pture` and only the trailing part is honoured, so it behaves as
+`sc*` (A13: 69,679). Replicate (treat it as `sc*`), veto (core then gives the same quirk), or serve
+it properly where fragments allow (partial-indexed fields only)? Recommendation: veto.
+
+### Q2.18 — Accent folding
+MySQL's default collations fold accents and so does Typesense, but the local harness cannot check
+it (SQLite). Accept Typesense's folding as parity on the strength of one live case per field type
+(`café` / `cafe`), or add a MySQL-backed case to the live runner?
+
 ## Done when
 
 Every keyword form in catalogue group A and the review's themes C and D has a decided behaviour,

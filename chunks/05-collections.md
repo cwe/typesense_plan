@@ -92,6 +92,11 @@ Bulk internal callers (collection bar, downloads, batch edit, the selection) fet
 `$typesense_search_max_rows` they fall back to core; below it the plugin walks windows. Confirm this
 split is acceptable for collections specifically (a 30,000-member collection takes seconds either way).
 
+### Q5.11 — `$smartsearch`
+When set, `search_filter()` keeps the archive states the smart collection saved instead of the
+defaults (G40). The old plugin fell back for every smart search; the rule is one condition in D5.
+Serve it, or keep the fallback until Q4.6 settles what the plugin does with smart collections?
+
 ## Done when
 
 The parity plan's Phase 2 matrix runs in the harness and live; collection views are served with core's

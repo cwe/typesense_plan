@@ -24,9 +24,10 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Proves it:** the smoke battery runs green on a clean checkout with one command.
 
 ### H2 — Index batteries
-- **Builds:** batteries for B1–B6: field mapping table, golden documents, builder-path equality,
-  membership and grant rules, rebuild counts, swap-under-load, schema upgrade.
-- **Size:** S · **Depends on:** H1, B1–B6
+- **Builds:** the batteries named in B1–B9 (field-type matrix, representation cases, golden documents,
+  membership and grant rules, import errors, rebuild counts, swap under load, schema upgrade), each
+  file per task as [B-indexing.md](B-indexing.md) lists them, labels from the schema register.
+- **Size:** S · **Depends on:** H1, B1–B9
 - **Proves it:** the batteries named in area B.
 
 ### H3 — Search batteries
@@ -56,17 +57,18 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Proves it:** a light live run after each milestone; the catalogue regenerated before a release.
 
 ### H5 — Freshness, outage and rebuild batteries
-- **Builds:** cases from the sync plan's Phase 3: each event followed by the same search as both
+- **Builds:** the freshness cases of [C-event-register.md](C-event-register.md) (one per row, in the
+  C5–C7 battery files) and the sync plan's Phase 3 cases: each event followed by the same search as both
   users; a bulk window; hook-less writes with raw SQL then a rebuild; stop/start Typesense with
   edits in between; edits during a build; the builder-path equality test.
-- **Size:** M · **Depends on:** H1, C1–C5, C7
+- **Size:** M · **Depends on:** H1, C1–C8
 - **Blocking questions:** Q10.6
 - **Proves it:** all green locally; the freshness subset live.
 
 ### H6 — Performance checks
 - **Builds:** latency samples core vs plugin for a fixed case list on the test host (lightly), and the
   rebuild's timing report.
-- **Size:** S · **Depends on:** H4, B5
+- **Size:** S · **Depends on:** H4, B8
 - **Blocking questions:** Q10.7
 - **Proves it:** figures recorded in the plugin docs per release.
 

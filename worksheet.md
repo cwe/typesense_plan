@@ -1,0 +1,406 @@
+# Questions to work through
+
+The questions that gate the plan, in the order worth answering them, each with its options, the
+recommendation where there is one, and what it shapes. Fill in the **Answer** and **Reason** lines;
+each answer then becomes a row in [decisions.md](decisions.md) (date, ID, decision, reason) and the
+chunk file's question is marked decided. The full question texts are in [chunks/](chunks/) and the
+index in [questions.md](questions.md).
+
+Rec. = the recommendation already written in the plan. "Shapes" names the tasks and packages whose
+*must honour* or *serve* lines change with the answer.
+
+## Part 1 — The six that shape the most packages
+
+### Q0.2 — What is the goal, and how is success measured?
+(a) as many RS searches as possible served from Typesense with results identical to core; (b)
+faster search where it is safe, core everywhere else; (c) better search than core, accepting
+differences. The measure follows: % of catalogue rows identical, the live A/B pass rate, latency vs
+core, or a mix. The original brief was (a).
+Shapes: every `?` row in coverage.md; the accepted-divergence list.
+- **Answer:**
+- **Reason:**
+
+### Q0.3 — When exact parity is impossible: decline or approximate?
+Decline (veto → core answers, slower) or serve an approximation (faster, different). Are there
+approximations that are always acceptable (relevance order?) and some that never are (anything
+affecting what a user may see)? Principle 7 already rules out "everything" and "nothing".
+Shapes: SA3, SA5, SA7, SA8, SD3, SG*, D9.
+- **Answer:**
+- **Reason:**
+
+### Q1.1 — Index only flagged fields, or every field's values?
+(a) flagged text fields only, plus date and numeric representations for every field (SD5, Q3.16);
+(b) every active field's values, with non-indexed fields kept out of `query_by` and word filters and
+used only for wildcards (full parity for K2/K3; more memory, Q1.11); (c) flagged only, nothing else.
+Rec.: (a) — parity by construction for words, options and field terms; bare wildcards over
+non-indexed fields become an accepted difference or a veto (Q2.3).
+Shapes: B1, B2, B4, SA5, SB3, SK1, SD5, SE1.
+- **Answer:**
+- **Reason:**
+
+### Q2.14 — Pre-stem with ResourceSpace's own stemmer on both sides?
+Core stems with `GetStem()` (irregular plurals, then Porter). Typesense's Snowball agrees on 34 of
+40 word forms, and the mismatch is why every quoted phrase returned 0 under `$stemming`. Options:
+pre-stem values and query words with `GetStem()` and turn Typesense stemming off (identical stems by
+construction; quoted words sent unstemmed as core does; phrases need no special rule — needs a
+check that the tokeniser leaves pre-stemmed tokens alone); keep Typesense's stemmer and list the
+differing forms, solving phrases under Q2.5; or trial both on the fixture first.
+Rec.: pre-stem.
+Shapes: A3, A5, B2, SA3, SA12, Q2.5.
+- **Answer:**
+- **Reason:**
+
+### Q3.1 / Q3.12 — Option text core does not resolve
+The old plugin returned everything for `usagerights:social`, `artistname:moore`, `soc*` and a
+BOM-prefixed name. Q3.1 says decline; Q3.12 proposes serving them as a word match on the field's
+option names (`_ss`, tokenised and stemmed like text): parity for indexed fixed-list fields, and a
+non-indexed fixed-list field has no `_ss` and matches nothing, as core. Variant: serve the word
+match, veto wildcards and BOM names until proven.
+Rec.: serve via `_ss`.
+Shapes: SC3, B2.
+- **Answer:**
+- **Reason:**
+
+### Q3.4 — Date-range semantics
+(a) replicate core's string comparison with a fixed-width sortable key (padded ends `2024-02-31`
+and EDTF `2024-12-99` give core's answer; year-only stored values never match a range starting
+inside their year, as in core); (b) interval overlap on `_range_start`/`_range_end` (more correct,
++106 on the test system), documented; (c) overlap with non-real ends clamped.
+Rec.: (a) if Q0.2 is parity — the advanced form produces these ends routinely.
+Shapes: A4, SD3, SD4, H35, J5, J6.
+- **Answer:**
+- **Reason:**
+
+## Part 2 — The rest of the gating questions (M0–M3)
+
+### Policy
+
+#### Q0.4 — Are changes to ResourceSpace core acceptable, and of what kind?
+Categories: the existing hook-return patch; new hooks; a shared collection access helper; bug
+fixes; behaviour fixes to quirks. For each: fork-only, upstream PR, or neither (Q11.1 asks it per
+category).
+Shapes: I1–I5, SF2, C9, D10 (next/previous).
+- **Answer:**
+- **Reason:**
+
+#### Q0.5 — Target environments
+RS version(s); PHP floor; Typesense pinned to 30.x; single node; which servers beyond the test host.
+Shapes: A1, A2, G5.
+- **Answer:**
+- **Reason:**
+
+#### Q0.6 — What is Typesense-only mode for?
+A testing aid (a declined search returns nothing instead of falling back) or a supported production
+mode? As a production mode it fails closed for every access-gate use of search (Q6.2, Q6.5).
+Shapes: D1, C8, G1.
+- **Answer:**
+- **Reason:**
+
+#### Q0.8 — Working practices
+Branching (keep `typesense`, or a branch per package merged into it); who commits and pushes (Chris
+so far); review before merge; plugin version bumps; how a change reaches the test host.
+Shapes: principles 3 and 10, G5.
+- **Answer:**
+- **Reason:**
+
+#### Q0.13 — Keep the pipeline design for the rebuild?
+The design (one mode + all restrictions + a shared keyword step, a query plan compiled to
+parameters, execute, hydrate) absorbed every addition without orchestrator changes. Rec.: keep the
+design, rewrite the code. Alternative: per-form handlers or a single query builder.
+Shapes: D1–D11, every S package.
+- **Answer:**
+- **Reason:**
+
+#### Q0.14 — Approve the module layout
+The file split in [tasks/README.md](tasks/README.md). Agree, or change the split before tasks are
+cut to it.
+Shapes: every task's *builds* line.
+- **Answer:**
+- **Reason:**
+
+#### Q10.11 — Reuse the existing harness code?
+The harness (SQLite for MySQL, a private Typesense, real core and plugin run twice per case, the
+fixture library, the batteries, the factorial combinations) is test infrastructure, not plugin code.
+Rec.: reuse it reviewed (principle 6), as task H1, re-cutting only the batteries that assumed old
+behaviour.
+Shapes: H1, every battery.
+- **Answer:**
+- **Reason:**
+
+### Schema (M1)
+
+#### Q1.2 — Which representations per field type?
+Drop `_q` for text fields (unused); add sortable keys for the sorts chosen in Q7.2; keep `_ts` when
+`_range_start` covers every case; add `_k` (string-comparison key) if Q3.4 chooses (a); `_ss` for
+fixed-list fields (Q3.12); integer date components for `$date_field` (Q3.13).
+Shapes: A3, B2, SD2, SD3, SG1–SG4.
+- **Answer:**
+- **Reason:**
+
+#### Q1.6 — Which extra fields go in now?
+`hit_count`/`user_rating` (relevance, popularity, rating sorts); `has_image`; file size, extension,
+width, height; `lock_user`, `integrity_fail`, file presence; a geopoint; `colour_key`; related refs;
+`rty.order_by`; a sortable title. One batch (one rebuild) or per package (Q4.2)?
+Shapes: A3, B2, SF9–SF16, SG1–SG3.
+- **Answer:**
+- **Reason:**
+
+#### Q1.8 — Schema evolution
+Generation collections + aliases (P7); what triggers a full rebuild (field config, `$stemming`,
+schema version); how the version is recorded; whether `PATCH` stays for additive changes.
+Shapes: B8, B9, G5.
+- **Answer:**
+- **Reason:**
+
+#### Q1.10 — Document identity
+Resources `id = ref`; memberships `collection:resource`; grants: confirm the scheme.
+Shapes: B3–B6.
+- **Answer:**
+- **Reason:**
+
+#### Q1.11 — Size budget
+~800 MB today for ~115k resources with fragments; two generations briefly during a rebuild. What is
+acceptable on the target, and does it rule anything out (Q1.1, Q1.6, Q1.3)?
+Shapes: B8, SK1, SB6.
+- **Answer:**
+- **Reason:**
+
+#### Q7.1 — The relevance model
+(A) accept Typesense's text match for keyword searches and newest-first for keyword-less ones,
+documented; (B) index `hit_count` and `user_rating` and sort keyword-less searches by `hit_count,
+date_field_sort, ref` (387 of core's top 400; fresh only after a rebuild) — keyword searches still
+differ; (C) veto keyword-less relevance meanwhile. And: is a different relevance order acceptable to
+the users at all?
+Shapes: D9, A3, SG2, SC1 (node-only order), SF2 (Q5.3).
+- **Answer:**
+- **Reason:**
+
+### Search core (M2)
+
+#### Q4.3 — Argument parsing: replicate core exactly, or parse strictly and veto?
+Core's parsing is inconsistent (space vs comma, every digit in the string, case-sensitive commands,
+unknown special → everything). (a) replicate, bugs included; (b) parse each special's documented
+form and veto the rest (core then answers — the user sees core's behaviour either way); (c) parse
+sensibly and accept differences. Rec.: (b).
+Shapes: D2, SF1, SF3, SF4, SF8.
+- **Answer:**
+- **Reason:**
+
+#### Q6.1 — Validation strictness
+(A) drop stale rows, keep the total, queue a repair; (B) fall back to MySQL for the whole search when
+any row is dropped, queue a repair, count it. Rec.: (B) — a dropped row means the total and paging
+are wrong too. Mechanism: re-run `search_filter()` plus the `rca`/`rca2` joins in the hydrate query.
+Shapes: C8, D11.
+- **Answer:**
+- **Reason:**
+
+#### Q6.2 — Gate uses that must not depend on the index
+`get_resource_access()`'s `!resource<ref>`, the share gate, request copies, submit-pending: detect and
+veto (single-resource, refs-only or count-only searches), rely on validation and accept the window,
+or a core change so those call sites bypass external providers.
+Shapes: SF4, SF5, C8, D1.
+- **Answer:**
+- **Reason:**
+
+#### Q6.3 — The small fixes, as a batch
+`ignore_filters` no longer disables restrictions; grant expiry honoured in the group filter's
+override; group filter applied under `access_override`; `J` with no `j` → nothing; hook parameters
+nullable where core passes null. Approve?
+Shapes: D1, D5, D7, D8.
+- **Answer:**
+- **Reason:**
+
+#### Q7.3 — The row limit and next/previous
+Keep 25,000? For `view.php`'s next/previous (`fetchrows = -1`): serve fully (20–37 s on the whole
+index), force navigation to core (order differs from the grid), or change core's navigation to a
+windowed query (Q0.4). Rec.: the core change.
+Shapes: D10, I4.
+- **Answer:**
+- **Reason:**
+
+#### Q2.2 — Typo tolerance
+Core has none. `num_typos=0` for parity, or allow typos as a deliberate improvement?
+Shapes: D3, SA1.
+- **Answer:**
+- **Reason:**
+
+#### Q2.3 — Prefix and wildcards
+`prefix=false` by default (fixes `land`). For `word*`: raise `max_candidates` (to what?) and
+`max_filter_by_candidates` for `field:word*`. Leading and middle wildcards: veto, or serve from
+fragments where a field has them. Wildcards over non-indexed fields: core finds them — veto bare
+wildcards, index everything (Q1.1), or accept.
+Shapes: D3, SA1, SA5, SB3, SK1.
+- **Answer:**
+- **Reason:**
+
+### Sync (M3)
+
+#### Q8.1 — Re-confirm the thirteen sync decisions (P7–P17, P24)
+Nightly rebuild behind aliases (often enough? a window available?); a queue table drained by a
+per-minute cron worker (system cron available, or only RS's `hook("cron")`?); MySQL serves while
+bulk rows are pending; the plugin global with per-group enable; no deferred bulk work.
+Shapes: B8, C1–C7, A1.
+- **Answer:**
+- **Reason:**
+
+#### Q8.4 — Core hooks (Phase 2) and the interim
+Confirm the hook list (node layer, resource type, custom access, `put_resource_data`, collection
+bulk writes, field-config arguments) and that hook-less writes wait for the nightly rebuild until
+then.
+Shapes: I3, C5, C6, C9.
+- **Answer:**
+- **Reason:**
+
+#### Q8.5 — Phase 0 scope and order
+Builder → queue + flush + worker → hooks → guards → validation in Phase 0 → generation rebuild.
+Anything to pull forward (the generation rebuild first, since it fixes freshness nightly on its own)?
+Shapes: the order of B8 and C2–C7.
+- **Answer:**
+- **Reason:**
+
+#### Q8.6 — Outage behaviour
+Circuit breaker + fall back to MySQL (never empty results); the queue keeps accumulating; the worker
+retries with backoff. Confirm, and how Typesense-only mode behaves in an outage (Q0.6).
+Shapes: A2, C4, D1.
+- **Answer:**
+- **Reason:**
+
+#### Q8.7 — Freshness target
+Own edits on the next page load; others' within seconds; bulk changes intraday with MySQL serving
+meanwhile; hook-less writes nightly. Any flow needing synchronous visibility?
+Shapes: C3, C4, C7.
+- **Answer:**
+- **Reason:**
+
+### Operations basics
+
+#### Q9.1 — Configuration
+The option list and defaults (prefix, timeouts, max rows, max filter ops, import concurrency and
+chunks, worker count, validation, Typesense-only, rebuild schedule display); which are admin-facing.
+Shapes: A1, A2, G1.
+- **Answer:**
+- **Reason:**
+
+#### Q9.2 — Secrets
+The API key as plugin config in the database (set from the setup page) — acceptable? Separate
+search-only and admin keys?
+Shapes: A1, A2, G1.
+- **Answer:**
+- **Reason:**
+
+### Core
+
+#### Q11.1 — The policy, by category
+Fork-only, upstream PR, or neither — for the hook-return patch, new hooks, the collection gate
+helper, the next/previous and page-offset fixes, bug fixes, quirk fixes.
+Shapes: I1–I5.
+- **Answer:**
+- **Reason:**
+
+#### Q11.2 — The existing hook-return patch
+A prerequisite that must go upstream for the plugin to work on stock RS? Was it commented out
+upstream for a reason worth knowing before proposing it?
+Shapes: I1.
+- **Answer:**
+- **Reason:**
+
+### Testing
+
+#### Q10.1 — Where the tests live
+`harness/` in the plugin on `typesense` (not `tests/`), merging the two unpushed branches; or a
+separate test repository. Rec.: in the plugin.
+Shapes: H1.
+- **Answer:**
+- **Reason:**
+
+#### Q10.3 — Acceptance criteria
+"Pass" = identical totals and order for every catalogue row core answers sensibly, with an
+accepted-divergence list the runners consult. Who maintains the list; does an unlisted difference
+fail the run?
+Shapes: H1, H3, SH1, coverage.md.
+- **Answer:**
+- **Reason:**
+
+#### Q10.4 — Test data
+The YSP database (real, large, limited field types) or a seeded system (chosen data: a tree, dynamic
+keywords, a date-range field, numeric fields, HTML and translated values, related keywords, search
+filters, custom grants, `J`/`j*` users)? Extend the seeder for the missing kinds?
+Shapes: H4, every live battery.
+- **Answer:**
+- **Reason:**
+
+#### Q10.12 — Battery naming tied to the catalogue
+One harness file per package, case labels carrying catalogue row IDs, `summarise.php` filling the
+catalogue's OK column, `catalogue_run.php <IDs>` for a package's live rows. Agree?
+Shapes: H1, H3, every package's *battery* line.
+- **Answer:**
+- **Reason:**
+
+#### Q10.13 — Fixture additions per package
+Per-package additions registered in the fixture library and loaded only by the batteries that need
+them (rec.), or one shared fixture that grows.
+Shapes: H1, every package's *fixture* line.
+- **Answer:**
+- **Reason:**
+
+#### Q10.15 — The combinations gate per package or per milestone
+SH1 (~2.5 minutes at full scale) before every package merge, or once per milestone with a scaled-down
+run per package.
+Shapes: SH1, principle 3.
+- **Answer:**
+- **Reason:**
+
+## Part 3 — Answered when the package starts
+
+One line each; the full text is in the chunk file. (Q0.1 is decided; Q8.2 is Q6.1 asked twice; Q8.3
+is a test to run, not a question.)
+
+- **Q0.7** scale and usage to assume (C, B8) · **Q0.9** where documents live, which survive (G4) ·
+  **Q0.10** order and first milestone — the milestones in tasks/README.md are the proposal · **Q0.11**
+  confirm what is out of scope · **Q0.12** the three unmerged pieces (H1)
+- **Q1.3** fragments free-text searchable? (SB6, K5) · **Q1.4** value cleaning: HTML, translations,
+  the 500-character cap, invisible characters (A5, SK3) · **Q1.5** stemming/tokenisation, accents
+  (A3, SA12) · **Q1.7** type names and usernames as words (SA9) · **Q1.9** Typesense version
+  (A2) · **Q1.12** complete-indexed fields (SK3) · **Q1.13** the 500-character cap (SK3) · **Q1.14**
+  the registry as the extension contract (B2) · **Q1.15** the `0` sentinel in the node arrays (B3)
+- **Q2.1** which keyword quirks to copy, decline, improve (SA*) · **Q2.4** stop words (SA2, SA3,
+  SB5) · **Q2.5** phrases under stemming (SA3; moot if Q2.14 pre-stems) · **Q2.6** negated phrase
+  (SA4) · **Q2.7** OR groups (SA7) · **Q2.8** punctuation and commas (SA6, SB4) · **Q2.9** type-name
+  words (SA9) · **Q2.10** related keywords (SA10) · **Q2.11** bare years and numbers (SA9) ·
+  **Q2.12** unknown words (SA11) · **Q2.13** quirks to raise upstream · **Q2.15** full-text box veto
+  (SA8) · **Q2.16** short wildcards (SA5) · **Q2.17** wildcard inside a word (SA5) · **Q2.18**
+  accent folding (SA1)
+- **Q3.2** quoted field terms (SB2) · **Q3.3** `basic*` (SD2) · **Q3.5** date-range fields (SD4) ·
+  **Q3.6** non-indexed fields (SK1, SD5) · **Q3.7** numeric edge cases (SE1) · **Q3.8** field
+  negation (SB5) · **Q3.9** node limits (SC1) · **Q3.10** field wildcard caps (SB3) · **Q3.11** /
+  **Q3.17** field-name rules (SB1) · **Q3.13** date components (SD2) · **Q3.14** two values and `;`
+  on a date (SD1) · **Q3.15** `$ignore_filters` (D2) · **Q3.16** dates/numbers regardless of flag
+  (SD5) · **Q3.18** phrase or AND in a quoted field value (SB2, SB4)
+- **Q4.1** which specials, in what order (SF9–SF16) · **Q4.2** fields in one batch (SF9–SF16) ·
+  **Q4.4** `restypes` on specials (SF5, SF6, D5) · **Q4.5** workflow states per special (SF7) ·
+  **Q4.6** smart collections (SF2) · **Q4.7** `!unused` (SF16) · **Q4.8** `!empty` (SF10) · **Q4.9**
+  unknown specials (SF8) · **Q4.10** `!properties` + `!list` (SF9, SJ1) · **Q4.11** property keys
+  (SF9)
+- **Q5.1** collection gate helper or copy (SF2, I2) · **Q5.2** collection columns at hydrate (D11) ·
+  **Q5.3** relevance inside a collection (SF2) · **Q5.4** upload-share sessions (SF2) · **Q5.5**
+  searching *for* collections in scope? · **Q5.6** collection freshness mechanism (C6, B5) · **Q5.7**
+  which collections are indexed (B5) · **Q5.8** `J` with `j*` (D8) · **Q5.9** reordering from the
+  search page (SF2) · **Q5.10** large collections and `fetchrows = -1` (D10) · **Q5.11**
+  `$smartsearch` (D5)
+- **Q6.4** editable-only (D1) · **Q6.5** Typesense-only and access (D1) · **Q6.6** `$heightmin`
+  (D5) · **Q6.7** NOT over hidden/inactive fields (SA4, SK2) · **Q6.8** share keys and external
+  access (SF2, D6) · **Q6.9** access config matrix (D5) · **Q6.10** validation in Phase 0 (C8)
+- **Q7.2** further sorts (SG1–SG4) · **Q7.4** exact ref first (SA9, SF4) · **Q7.5** page offset with
+  collections (D10) · **Q7.6** row shape (D11) · **Q7.7** deep paging (D10) · **Q7.8** sort
+  direction quirks (D9) · **Q7.9** `field<n>` on non-join columns (SG4)
+- **Q8.8** grants and memberships interim (C6) · **Q8.9** hit-count freshness (SG2) · **Q8.10**
+  rebuild window and capacity (B8) · **Q8.11** topology (A2) · **Q8.12** observability (G1) ·
+  **Q8.13** which register rows must be immediate in M3 (C5, C6, C9)
+- **Q9.3** rebuild and resync from the UI (G1) · **Q9.4** performance work now or after sync (B8) ·
+  **Q9.5** logging (G2) · **Q9.6** health, warnings and the badge (G1, G3) · **Q9.7** deployment and
+  versioning (G5) · **Q9.8** several instances on one server (G6) · **Q9.9** test hosts (H4)
+- **Q10.2** CI (H1) · **Q10.5** credentials (H4) · **Q10.6** freshness tests local (H5) · **Q10.7**
+  performance tests (H6) · **Q10.8** live user matrix (H4) · **Q10.9** cadence (H) · **Q10.10**
+  core-bug batteries (H7) · **Q10.14** API-unreachable rows (D1, D11, SK2, SK3)
+- **Q11.3** each core bug (I4) · **Q11.4** tracking upstream (I5) · **Q11.5** a cleaner provider
+  contract (I1) · **Q11.6** upstream intent (I*)

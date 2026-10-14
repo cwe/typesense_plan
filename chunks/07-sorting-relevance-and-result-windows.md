@@ -85,6 +85,13 @@ Acceptable as is, or should the plugin veto a window that starts beyond some off
 `!last`'s upper-case-DESC test is replicated. Are other case-sensitivity quirks (API lower-case
 `desc`) to be replicated or raised with core?
 
+### Q7.9 — Ordering by a metadata field that is not a join column
+`order_by=field<n>` works in core only for the fields in the resource-table joins (`$sort_fields`):
+field 12 orders (G25), a numeric field would order with `+0` (G26), the title field by number orders
+as text (G27), and any other field makes core write an invalid column and return **nothing** (G43,
+Core 8). Serve only the join-column fields (parity, including nothing for the rest), or serve any
+field from a per-field sort key (an improvement that returns rows where core returns none)?
+
 ## Done when
 
 Catalogue group G has a decided behaviour per row; each served sort matches core's order on the
