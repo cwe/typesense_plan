@@ -2,7 +2,10 @@
 
 The search side of the plugin is cut to the **core search catalogue**: every form of search core's
 `do_search()` accepts, one row each (`docs/core-search-catalogue.md` on the
-`typesense_search_catalogue` branch of `cwe/resourcespace`, groups A–K, 300 rows measured live).
+`typesense_search_catalogue` branch of `cwe/resourcespace`, groups A–K, 300 rows measured live). A
+copy with a **Required** column for deciding which cases the rewrite must serve is
+[../../catalogue.md](../../catalogue.md); its marks feed the planned disposition of every row in
+[coverage.md](coverage.md).
 Each package below owns a set of rows, has its own fixture additions and its own harness battery,
 and can be built and proved on its own once the pipeline (D1–D11) exists. The row-by-row map, with
 what the plan intends for each row, is [coverage.md](coverage.md).

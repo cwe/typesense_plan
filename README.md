@@ -27,6 +27,8 @@ says how this repo is used to stop fragmented development.
 8. [questions.md](questions.md) — generated index of every question.
 9. [worksheet.md](worksheet.md) — the gating questions in answering order, with options and
    recommendations, and a line to write each answer on.
+10. [catalogue.md](catalogue.md) — the core search catalogue (all 303 cases, what core does, the
+   measured core totals) with a **Required** column to mark which cases the rewrite must serve.
 
 ## How a task moves
 
