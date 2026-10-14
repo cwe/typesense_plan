@@ -119,10 +119,11 @@ marked ★ shape several packages at once and are worth answering first.
   Q3.1/Q3.12 unresolved option text ★ (fixes the everything-class before M4)
 - **Sync (M3):** Q8.1 re-confirm the sync decisions · Q8.4 the interim for hook-less writes · Q8.5
   Phase 0 order · Q8.6 outage behaviour · Q8.7 freshness target
-- **Operations basics:** Q9.1 config options · Q9.2 secrets
+- **Operations basics:** Q9.1 config options · Q9.2 secrets · Q9.10 the official client or a custom
+  one
 - **Core:** Q11.1 policy by category · Q11.2 the hook-return patch
 - **Testing:** Q10.1 where tests live · Q10.3 acceptance criteria · Q10.4 reference dataset ·
   Q10.12 battery naming · Q10.13 fixture additions · Q10.15 the combinations gate
 
-Thirty-eight questions. The packages' own *open questions* (Q1.12–Q1.13, Q2.15–Q2.18, Q3.13–Q3.18,
+Thirty-nine questions. The packages' own *open questions* (Q1.12–Q1.13, Q2.15–Q2.18, Q3.13–Q3.18,
 Q4.11, Q5.11, Q7.9, Q10.14) are answered when their package starts.

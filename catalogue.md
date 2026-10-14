@@ -18,7 +18,14 @@ Put one of these in the **Required** column:
 A note after the value is welcome (`must — the search bar sends this`). Rows the pages assemble (group J, the
 rebuilt search-bar text, the simple-search dropdowns) reach users without typing. Node tokens, resolved options,
 parameters and windows are parity by construction and cost nothing. Whether a core bug is copied, fixed or
-declined is Q11.3, separate from this mark. When the marks are in, the planned disposition of every row in
+declined is Q11.3, separate from this mark.
+
+The test for a row whose core behaviour looks incidental (a string comparison, a MySQL quirk, a side effect of
+the keyword table): **would the rule make sense on a database with different data?** If it only matters for a
+shape this test database happens to have, mark it `nice` or `no` rather than `must` — the plugin declines it and
+core answers, which matches core at no cost (principle 11 in [principles.md](principles.md)). The Core total is
+evidence that the rule was understood, not the target: the rewrite is measured on the designed fixture and on a
+second, differently shaped dataset, with live totals as a smoke test. When the marks are in, the planned disposition of every row in
 `coverage.md` is updated from them, packages with no remaining rows are parked, and the worksheet is pruned.
 
 Every search string is exactly what the API receives (`do_search`, or `search_get_previews` for a day limit);

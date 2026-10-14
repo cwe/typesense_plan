@@ -19,9 +19,10 @@ Milestone M0. Everything else builds on these five modules.
   changes behaviour in a request made by a user of that group (the Q8.3 test).
 
 ### A2 — Typesense client
-- **Builds:** `include/client.php` — `request()`, `search()` (GET or POST `multi_search` by size),
+- **Builds:** `include/client.php` — either a thin adapter over the official `typesense-php` client
+  vendored in `lib/`, or a curl client (Q9.10): `search()` (GET or POST `multi_search` by size),
   `multi_search()`, `import()` with per-line results, `collection_exists()`, alias calls; a ready
-  flag and a circuit breaker.
+  flag and a circuit breaker; exceptions mapped to the breaker so nothing leaks into a search.
 - **Size:** M · **Depends on:** A1
 - **Must honour:**
   - A GET query string is capped at 4,000 bytes; `per_page` above 250 returns 422; `multi_search`
@@ -34,7 +35,7 @@ Milestone M0. Everything else builds on these five modules.
     leave the server's own batch size alone.
   - Never create collections outside the rebuild path.
   - An outage must end in a fallback to MySQL, never an empty result (P7 rollback = fall back).
-- **Blocking questions:** Q8.6, Q9.1
+- **Blocking questions:** Q8.6, Q9.1, Q9.10
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
 

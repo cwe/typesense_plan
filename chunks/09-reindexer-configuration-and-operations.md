@@ -75,6 +75,24 @@ Prefix per instance is already supported. A requirement, or not?
 The current host overheats under heavy MySQL load. Is a second or bigger test host planned, and is
 the YSP database the reference dataset going forward?
 
+### Q9.10 — The official Typesense PHP client, or a custom client?
+`typesense/typesense-php` (latest 6.1.0-RC2, April 2026; PHP ≥ 7.4) covers every endpoint the plan
+uses — collections, documents (search, import with per-line results, export, delete by query),
+`multi_search`, aliases, synonym sets, keys, health — with typed exceptions per HTTP status,
+per-node retries and health checks. It needs an HTTPlug stack (`php-http/discovery`,
+`client-common`, `httplug`, a PSR-18 client such as `php-http/curl-client`, `nyholm/psr7`, and
+`monolog`). What it does not give: a GET-or-POST choice by query size (its document search is a
+GET, so the 4,000-byte rule still has to route large searches through `multi_search` ourselves),
+separate search and write timeouts (two client instances), concurrent imports (`curl_multi` is ours
+or dropped), and the circuit breaker (ours either way). Core's `vendor/` is not tracked and plugins
+vendor their libraries under `plugins/<name>/lib` (phpcs excludes it) with their own autoloader.
+Options: (a) the official client vendored in `plugins/typesense_search/lib`, behind the A2 adapter
+(size routing, chunking, breaker, timeouts, exception mapping) — recommended; (b) the custom curl
+client (today's, ~300 lines, the A2 list as written); (c) the official client through the fork's
+root `composer.json` (cleaner, a core divergence unless the plugin goes upstream, Q11.6). With (a),
+B7's parallel imports become an optional later optimisation: the single-stream rebuild is about a
+minute on the test system, and principle 11 says not to add the layer until the budget needs it.
+
 ## Done when
 
 An operations page exists (install, configure, rebuild, monitor, recover); the setup page shows

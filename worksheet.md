@@ -288,6 +288,15 @@ Shapes: A1, A2, G1.
 - **Answer:**
 - **Reason:**
 
+#### Q9.10 — The official Typesense PHP client, or a custom client?
+(a) the official `typesense-php` client vendored in the plugin's `lib/` behind a thin adapter that
+keeps the size routing, chunking, breaker and timeouts (rec.); (b) the custom curl client as A2 is
+written; (c) the official client via the fork's root `composer.json`. The library covers every
+endpoint with typed exceptions but has no GET/POST choice, no concurrency and no breaker.
+Shapes: A2, B7, C4.
+- **Answer:**
+- **Reason:**
+
 ### Core
 
 #### Q11.1 — The policy, by category

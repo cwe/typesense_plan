@@ -165,7 +165,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
 - **Battery:** `harness/ab/B7_import_verify.php` — a chunk with one bad line reports that line; a
   422 and a simulated 503 are handled; concurrency halves; the count check passes on a complete
   generation and fails on a short one; the timing report has every collection.
-- **Blocking questions:** Q8.6, Q9.4
+- **Blocking questions:** Q8.6, Q9.4, Q9.10 (concurrency only if the budget needs it)
 
 ### B8 — Generation rebuild and the reindex command
 - **Covers:** the rebuild steps of the sync plan §6.8 and the admin job of §6.9.

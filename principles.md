@@ -27,3 +27,23 @@ reasonable, made in different sessions with no shared record of why.
 9. **No deployment without a reindex note.** A task that changes the index says whether it needs a
    rebuild, and the deployment follows the operations page.
 10. **Claude stages, Chris commits and pushes** — unless Q0.8 decides otherwise.
+11. **Match the rule, not the number.** Parity means the same rule as core, proved on the designed
+    harness fixture with expected sets derived by hand; a live total on the test database is a smoke
+    test, never a target. Before any divergence gets code it is binned: core's *documented*
+    behaviour is reproduced; core's *incidental* behaviour (a string comparison, a MySQL quirk, a
+    side effect of the keyword table) is declined to core, or served with its sensible meaning and
+    recorded as a difference; a *core bug* is never reproduced. The test for "incidental" is whether
+    the rule would make sense on a database with different data. Declining costs nothing — the
+    hook hands the search to core and the user sees core's answer — so a form earns a mechanism
+    only by being common and valuable, and gets at most one; a form that needs a second layer to
+    match is declined. Where core's own functions can be called (the stemmer, the stop-word list,
+    the separators, `search_filter()`, the form assembly), call them rather than imitate them. A
+    second, differently shaped dataset is part of acceptance so that tuning to one database shows.
+12. **Generated code reads like ResourceSpace.** New code follows the repository's own standard
+    (`phpcs.xml.dist`: PSR-12 with the "ResourceSpace Standard" variations and its forbidden-function
+    list; `phpstan.neon.dist` at level 1; `composer dev:phpstan`) and the conventions of the core
+    file nearest in purpose: snake_case functions with the plugin prefix, docblocks of core's shape
+    (a one-line summary, a blank line, `@param type $name description`, `@return`), `//` comments in
+    new code, the `ps_query` / `ps_value` / `ps_array` helpers rather than raw SQL, core's helpers
+    and config globals rather than re-implementations. Comments stay terse (principle 8). Where the
+    plugin must differ (a class-based pipeline, say), the file says why in one line.
