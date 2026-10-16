@@ -11,97 +11,97 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 
 | Row | Search | Core | Old | Owner | Plan | Note | Required | Done |
 |---|---|---|---|---|---|---|---|---|
-| A1 | One keyword: `sculpture` | 49,468 | 49,468 | SA1 | = |  |  |  |
-| A2 | Two keywords: `sculpture landscape` | 34,408 | 34,409 | SA1 | = |  |  |  |
-| A3 | Comma separated: `sculpture, landscape` | 34,408 | 34,409 | SA1 | = |  |  |  |
-| A4 | Upper case: `SCULPTURE Park` | 19,680 | 19,688 | SA1 | = |  |  |  |
-| A5 | Plural (stemming): `sculptures` | 49,468 | 49,468 | SA12 | = | stemmer drift Q2.14 |  |  |
-| A6 | Quoted single word: `"sculpture"` | 49,069 | 0 | SA3 | ? | Q2.5 |  |  |
-| A7 | Quoted phrase: `"sculpture park"` | 6,883 | 0 | SA3 | ? | Q2.5 |  |  |
-| A8 | Phrase with a stop word: `"black and white"` | 3,179 | 3,179 | SA3 | ? | Q2.4 stop-word gap |  |  |
-| A9 | NOT a keyword: `-landscape` | 32,045 | 32,078 | SA4 | = | the 33 extra are inactive-field keywords (SK2, Q6.7) |  |  |
-| A10 | NOT a phrase: `-"sculpture park"` | 93,979 | 100,862 | SA4 | ? | Q2.6 |  |  |
-| A11 | Trailing wildcard: `sculpt*` | 51,007 | 49,610 | SA5 | ? | Q2.3; full parity needs non-indexed values (Q1.1) |  |  |
-| A12 | Leading wildcard: `*scape` | 68,601 | 381 | SA5 | ? | Q2.3 leading wildcard |  |  |
-| A13 | Wildcard inside a word: `sc*pture` | 69,679 | 0 | SA5 | ? | Q2.17 behaves as sc* in core |  |  |
-| A14 | Short wildcard (under 3 letters): `so*` | 15,618 | 6,676 | SA5 | ? | Q2.16 keyword-table branch |  |  |
-| A15 | OR of two wildcards: `land*;sun*` | 71,530 | 0 | SA7 | ↩ | wildcard OR |  |  |
-| A16 | OR of two plain words: `sculpture;landscape` | 83,840 | 0 | SA7 | ↩ | Core 9 (suggestion first, OR later) |  |  |
-| A17 | Stop word alone: `the` | 100,862 | 32,537 | SA2 | ? | Q2.4 stop word only |  |  |
-| A18 | Stop word plus a word: `the sculpture` | 49,468 | 17,228 | SA2 | = | after stripping $noadd |  |  |
-| A19 | Hyphenated word: `black-and-white` | 3,179 | 3,194 | SA6 | ? | Q2.8 |  |  |
-| A20 | Apostrophe: `atkinson's` | 2 | 3 | SA6 | ? | Q2.8 |  |  |
-| A21 | Related keyword: `antony` | 1,491 | 205 | SA10 | ? | Q2.10 |  |  |
-| A22 | The related word itself: `anthony` | 1,491 | 1,300 | SA10 | ? | Q2.10 |  |  |
-| A23 | Resource type name: `document` | 490 | 375 | SA9 | ? | Q2.9 / Q1.7 |  |  |
-| A24 | Contributor name: `admin` | 13 | 16 | SA9 | ? | Q2.9 / Q1.7; option off on the test system |  |  |
-| A25 | A resource number: `416` | 100 | 0 | SA9 | ? | Q7.4 exact ref first; Q2.11 |  |  |
-| A26 | A year as a word: `2024` | 10,289 | 0 | SA9 | ? | Q2.11 year as a word |  |  |
-| A27 | Full-text box: `"@FULL_TEXT:distant island"` | 956 | 0 | SA8 | ↩ | full-text box |  |  |
-| A28 | Full-text with operators: `"@FULL_TEXT:+distant +island"` | 9 | 0 | SA8 | ↩ |  |  |  |
-| A29 | Full-text phrase: `"@FULL_TEXT:[QUOTES]distant island[QUOTES]"` | 8 | 0 | SA8 | ↩ |  |  |  |
-| A30 | Misspelt word: `sculptre` | 1 | 1 | SA11 | · | core answers before the hook |  |  |
-| A31 | Known plus unknown word: `sculpture zzzzqqq` | 0 | 0 | SA11 | · | core answers before the hook |  |  |
-| A32 | Only an asterisk: `*` | 100,862 | 100,862 | SA1 | = | empty search |  |  |
-| A33 | Empty search: (empty) order_by=resourceid | 100,862 | 100,862 | SA1 | = | order by D9 |  |  |
-| A34 | Full-text exclusion: `"@FULL_TEXT:+distant -island"` | 880 | 880 | SA8 | ↩ |  |  |  |
+| A1 | One keyword: `sculpture` | 49,468 | 49,468 | SA1 | = |  | must |  |
+| A2 | Two keywords: `sculpture landscape` | 34,408 | 34,409 | SA1 | = |  | must |  |
+| A3 | Comma separated: `sculpture, landscape` | 34,408 | 34,409 | SA1 | = |  | must |  |
+| A4 | Upper case: `SCULPTURE Park` | 19,680 | 19,688 | SA1 | = |  | must |  |
+| A5 | Plural (stemming): `sculptures` | 49,468 | 49,468 | SA12 | = | stemmer drift Q2.14 | must |  |
+| A6 | Quoted single word: `"sculpture"` | 49,069 | 0 | SA3 | ? | Q2.5 | must |  |
+| A7 | Quoted phrase: `"sculpture park"` | 6,883 | 0 | SA3 | ? | Q2.5 | must |  |
+| A8 | Phrase with a stop word: `"black and white"` | 3,179 | 3,179 | SA3 | ? | Q2.4 stop-word gap | must |  |
+| A9 | NOT a keyword: `-landscape` | 32,045 | 32,078 | SA4 | = | the 33 extra are inactive-field keywords (SK2, Q6.7) | must |  |
+| A10 | NOT a phrase: `-"sculpture park"` | 93,979 | 100,862 | SA4 | ? | Q2.6 | must |  |
+| A11 | Trailing wildcard: `sculpt*` | 51,007 | 49,610 | SA5 | ? | Q2.3; full parity needs non-indexed values (Q1.1) | must |  |
+| A12 | Leading wildcard: `*scape` | 68,601 | 381 | SA5 | ? | Q2.3 leading wildcard | must |  |
+| A13 | Wildcard inside a word: `sc*pture` | 69,679 | 0 | SA5 | ? | Q2.17 behaves as sc* in core | must |  |
+| A14 | Short wildcard (under 3 letters): `so*` | 15,618 | 6,676 | SA5 | ? | Q2.16 keyword-table branch | must |  |
+| A15 | OR of two wildcards: `land*;sun*` | 71,530 | 0 | SA7 | ? | marked must; an OR needs the union-of-searches mechanism (Q2.7) | must — a wildcard OR; needs the one-search-per-alternative mechanism (Q2.7) |  |
+| A16 | OR of two plain words: `sculpture;landscape` | 83,840 | 0 | SA7 | ? | check core on a fresh database first (Core 9: a suggestion until a field OR has created the keyword); an OR needs Q2.7's mechanism | check — core looks up the literal keyword "sculpture;landscape": a suggestion on a fresh database; it was an OR on the test system only because B5 had created that keyword. A real OR would be an improvement over core (Q2.7) |  |
+| A17 | Stop word alone: `the` | 100,862 | 32,537 | SA2 | ? | Q2.4; check core — everything (100,862) on the test system | check — core drops the stop word and returns everything; the plan does the same |  |
+| A18 | Stop word plus a word: `the sculpture` | 49,468 | 17,228 | SA2 | = | after stripping $noadd | must |  |
+| A19 | Hyphenated word: `black-and-white` | 3,179 | 3,194 | SA6 | ? | Q2.8 | must |  |
+| A20 | Apostrophe: `atkinson's` | 2 | 3 | SA6 | ? | Q2.8 | must |  |
+| A21 | Related keyword: `antony` | 1,491 | 205 | SA10 | ? | Q2.10 | must |  |
+| A22 | The related word itself: `anthony` | 1,491 | 1,300 | SA10 | ? | Q2.10 | must |  |
+| A23 | Resource type name: `document` | 490 | 375 | SA9 | ? | Q2.9 / Q1.7 | must |  |
+| A24 | Contributor name: `admin` | 13 | 16 | SA9 | ? | Q2.9 / Q1.7; option off on the test system | must |  |
+| A25 | A resource number: `416` | 100 | 0 | SA9 | ? | Q7.4 exact ref first; Q2.11 | must |  |
+| A26 | A year as a word: `2024` | 10,289 | 0 | SA9 | ? | Q2.11 year as a word | must |  |
+| A27 | Full-text box: `"@FULL_TEXT:distant island"` | 956 | 0 | SA8 | ? | marked must: serve the box (Q2.15); optional words need the union mechanism | must — boolean mode: words without an operator mean any word (956), not all (9); optional words need one search per alternative, merged (SA8); words found only in non-indexed fields need Q1.1 option b |  |
+| A28 | Full-text with operators: `"@FULL_TEXT:+distant +island"` | 9 | 0 | SA8 | ? | marked must: required words (Q2.15) | must — required words map directly (SA8) |  |
+| A29 | Full-text phrase: `"@FULL_TEXT:[QUOTES]distant island[QUOTES]"` | 8 | 0 | SA8 | ? | marked must: phrase (Q2.15, SA3) | must — a phrase (SA8, SA3) |  |
+| A30 | Misspelt word: `sculptre` | 1 | 1 | SA11 | · | check: on the test system the misspelling exists as a keyword, so it is an ordinary search; an unknown word is answered by core before the hook | check — an unknown word is answered by core before the plugin is asked; on the test system the misspelling exists as a keyword, so it was an ordinary search |  |
+| A31 | Known plus unknown word: `sculpture zzzzqqq` | 0 | 0 | SA11 | · | marked must: already so — core returns the suggestion before the hook | must — already so: core returns the "did you mean" suggestion before the plugin is consulted; results for the known word would need a core change (Q2.12) |  |
+| A32 | Only an asterisk: `*` | 100,862 | 100,862 | SA1 | = | empty search | must |  |
+| A33 | Empty search: (empty) order_by=resourceid | 100,862 | 100,862 | SA1 | = | order by D9 | must |  |
+| A34 | Full-text exclusion: `"@FULL_TEXT:+distant -island"` | 880 | 880 | SA8 | ? | marked must: required and excluded words (Q2.15) | must — required and excluded words map directly (SA8) |  |
 
 ## B — Field-specific terms (text fields)
 
 | Row | Search | Core | Old | Owner | Plan | Note | Required | Done |
 |---|---|---|---|---|---|---|---|---|
-| B1 | Word in a field: `title:sculpture` | 4,226 | 4,226 | SB1 | = |  |  |  |
-| B2 | Two words after a field: `title:henry moore` | 251 | 251 | SB2 | = | by construction |  |  |
-| B3 | Quoted phrase in a field: `"title:henry moore"` | 251 | 0 | SB2 | ? | Q3.2 / Q3.18 |  |  |
-| B4 | Quotes after the colon: `title:"henry moore"` | 251 | 1 | SB2 | = | same as B2 |  |  |
-| B5 | OR inside a field: `title:sculpture;landscape` | 5,120 | 0 | SA7 | ? | Q2.7 field OR as two filters |  |  |
-| B6 | Wildcard in a field: `title:sculpt*` | 4,522 | 4,522 | SB3 | ? | Q3.10 candidate cap |  |  |
-| B7 | Leading wildcard in a field: `title:*scape` | 921 | 0 | SB3 | ? | Q2.3 leading wildcard in a field |  |  |
-| B8 | Another text field: `credit:wilde` | 18,879 | 18,879 | SB1 | = |  |  |  |
-| B9 | Field name with a slash: `photographer/videographer:wilde` | 33,517 | 100,862 | SC3 | ? | Q3.12 one word of a dynamic keyword |  |  |
-| B10 | Punctuation in a field value: `exhibitiontitle:fabric-ation` | 1,453 | 1,453 | SB4 | ? | Q2.8 / Q3.18 phrase of the parts |  |  |
-| B11 | Dots in a field value: `dimensions:16.5x16.5cm` | 20 | 20 | SB4 | ? | Q2.8 / Q3.18 |  |  |
-| B12 | Text field not flagged for indexing: `camera:nikon` | 0 | 0 | SK1 | ? | Q3.6 nothing in core |  |  |
-| B13 | Multi-line field not flagged for indexing: `accessibilityalttext:island` | 0 | 0 | SK1 | ? | Q3.6 |  |  |
-| B14 | Partially indexed field, fragment: `originalfilename:ksho` | 665 | 665 | SB6 | = | _p |  |  |
-| B15 | Unknown field name: `foo:sculpture` | 25 | 25 | SB1 | = | unknown name → two words |  |  |
-| B16 | NOT before a field term: `-title:sculpture` | 49,241 | 0 | SB5 | ? | Q3.8 degenerate form |  |  |
-| B17 | NOT after the colon: `title:-sculpture` | 100,862 | 4,226 | SB5 | ? | Q3.8 excludes nothing in core |  |  |
-| B18 | Stop word in a field: `title:the` | 100,862 | 10,564 | SB5 | ? | Q2.4 everything in core |  |  |
-| B19 | Field hidden from advanced search, not indexed: `yearai:2025` | 0 | 0 | SK1 | ? | Q3.6 accepted by name, no keywords |  |  |
-| B20 | Two terms, one field: `title:sculpture, title:park` | 580 | 580 | SB1 | = |  |  |  |
-| B21 | Two fields: `title:sculpture, credit:wilde` | 316 | 316 | SB1 | = |  |  |  |
+| B1 | Word in a field: `title:sculpture` | 4,226 | 4,226 | SB1 | = |  | must |  |
+| B2 | Two words after a field: `title:henry moore` | 251 | 251 | SB2 | = | by construction | must |  |
+| B3 | Quoted phrase in a field: `"title:henry moore"` | 251 | 0 | SB2 | ? | Q3.2 / Q3.18 | must |  |
+| B4 | Quotes after the colon: `title:"henry moore"` | 251 | 1 | SB2 | = | same as B2 | must |  |
+| B5 | OR inside a field: `title:sculpture;landscape` | 5,120 | 0 | SA7 | ? | Q2.7 field OR as two filters | must |  |
+| B6 | Wildcard in a field: `title:sculpt*` | 4,522 | 4,522 | SB3 | ? | Q3.10 candidate cap | must |  |
+| B7 | Leading wildcard in a field: `title:*scape` | 921 | 0 | SB3 | ? | Q2.3 leading wildcard in a field | must |  |
+| B8 | Another text field: `credit:wilde` | 18,879 | 18,879 | SB1 | = |  | must |  |
+| B9 | Field name with a slash: `photographer/videographer:wilde` | 33,517 | 100,862 | SC3 | ? | Q3.12 one word of a dynamic keyword | must |  |
+| B10 | Punctuation in a field value: `exhibitiontitle:fabric-ation` | 1,453 | 1,453 | SB4 | ? | Q2.8 / Q3.18 phrase of the parts | must |  |
+| B11 | Dots in a field value: `dimensions:16.5x16.5cm` | 20 | 20 | SB4 | ? | Q2.8 / Q3.18 | must |  |
+| B12 | Text field not flagged for indexing: `camera:nikon` | 0 | 0 | SK1 | ? | Q3.6 nothing in core | must |  |
+| B13 | Multi-line field not flagged for indexing: `accessibilityalttext:island` | 0 | 0 | SK1 | ? | Q3.6 | must |  |
+| B14 | Partially indexed field, fragment: `originalfilename:ksho` | 665 | 665 | SB6 | = | _p | must |  |
+| B15 | Unknown field name: `foo:sculpture` | 25 | 25 | SB1 | = | unknown name → two words | must |  |
+| B16 | NOT before a field term: `-title:sculpture` | 49,241 | 0 | SB5 | ? | Q3.8 degenerate form | no |  |
+| B17 | NOT after the colon: `title:-sculpture` | 100,862 | 4,226 | SB5 | ? | Q3.8 excludes nothing in core | must |  |
+| B18 | Stop word in a field: `title:the` | 100,862 | 10,564 | SB5 | ? | Q2.4 everything in core | must |  |
+| B19 | Field hidden from advanced search, not indexed: `yearai:2025` | 0 | 0 | SK1 | ? | Q3.6 accepted by name, no keywords | must |  |
+| B20 | Two terms, one field: `title:sculpture, title:park` | 580 | 580 | SB1 | = |  | must |  |
+| B21 | Two fields: `title:sculpture, credit:wilde` | 316 | 316 | SB1 | = |  | must |  |
 
 ## C — Fixed-list fields and node tokens
 
 | Row | Search | Core | Old | Owner | Plan | Note | Required | Done |
 |---|---|---|---|---|---|---|---|---|
-| C1 | Option by name: `orientation:landscape` | 58,028 | 58,028 | SC2 | = | resolved before the hook |  |  |
-| C2 | Multi-word option, quoted: `"usagerights:Social media"` | 148 | 0 | SC2 | = | quoted token must be dropped from q |  |  |
-| C3 | Multi-word option, unquoted: `usagerights:social media` | 148 | 4,763 | SC3 | ? | Q3.12 |  |  |
-| C4 | One word of an option: `usagerights:social` | 148 | 100,862 | SC3 | ? | Q3.12 old plugin: everything |  |  |
-| C5 | Wildcard on an option: `usagerights:soc*` | 148 | 100,862 | SC3 | ? | Q3.12 wildcard on an option |  |  |
-| C6 | OR of options: `materials:bronze;wood` | 128 | 128 | SC2 | = |  |  |  |
-| C7 | AND of options: `materials:bronze, materials:wood` | 0 | 128 | SC3 | ? | Q3.12 BOM-prefixed name |  |  |
-| C8 | Dropdown option, quoted: `"source:Digital Camera"` | 2,224 | 0 | SC2 | = | non-indexed field resolves by name |  |  |
-| C9 | One word of a dropdown option: `source:digital` | 0 | 100,862 | SC3 | ? | Q3.12 nothing in core |  |  |
-| C10 | Checkbox option, one word: `yspactivity:learning` | 11,671 | 11,671 | SC2 | = |  |  |  |
-| C11 | Dynamic keyword option, quoted: `"artistname:Henry Moore"` | 2,713 | 0 | SC2 | = |  |  |  |
-| C12 | One word of a dynamic keyword: `artistname:moore` | 2,713 | 100,862 | SC3 | ? | Q3.12 |  |  |
-| C13 | Node token: `@@389` | 58,028 | 58,028 | SC1 | = |  |  |  |
-| C14 | OR of nodes: `@@389@@388` | 94,936 | 94,936 | SC1 | = |  |  |  |
-| C15 | AND of nodes: `@@425, @@389` | 49 | 49 | SC1 | = |  |  |  |
-| C16 | AND of nodes, space separated: `@@389 @@425` | 49 | 49 | SC1 | = |  |  |  |
-| C17 | NOT a node: `@@!432` | 100,461 | 100,461 | SC1 | = |  |  |  |
-| C18 | NOT inside an OR word: `@@!389@@388` | 94,936 | 94,936 | SC1 | = | NOT ignored inside an OR word |  |  |
-| C19 | Unknown node: `@@999999999` | 0 | 0 | SC1 | = | unknown node → nothing |  |  |
-| C20 | Simple-search-bar checkbox: `@@17913` | 264 | 264 | SC1 | = |  |  |  |
-| C21 | Dynamic keyword node: `@@2997` | 33,333 | 33,333 | SC1 | = |  |  |  |
-| C22 | GPT keyword node: `@@460` | 37,603 | 37,603 | SC1 | = |  |  |  |
-| C23 | Option name and a node of the same field: `orientation:landscape, @@388` | 0 | 0 | SC2 | = |  |  |  |
-| C24 | Option names as the search page converts them: `materials:bronze;wood` | 128 | 128 | SC2 | = | the page rewrites it to @@ tokens |  |  |
-| C25 | Documented OR shape with a multi-word value: `usagerights:social media;website` | 0 | 0 | SA7 | ↩ | bare OR → suggestion in core |  |  |
-| C26 | OR of an option name and a word: `usagerights:website;social` | 82 | 82 | SC2 | = | words discarded by core |  |  |
+| C1 | Option by name: `orientation:landscape` | 58,028 | 58,028 | SC2 | = | resolved before the hook | must |  |
+| C2 | Multi-word option, quoted: `"usagerights:Social media"` | 148 | 0 | SC2 | = | quoted token must be dropped from q | must |  |
+| C3 | Multi-word option, unquoted: `usagerights:social media` | 148 | 4,763 | SC3 | ? | Q3.12 | must |  |
+| C4 | One word of an option: `usagerights:social` | 148 | 100,862 | SC3 | ? | Q3.12 old plugin: everything | must |  |
+| C5 | Wildcard on an option: `usagerights:soc*` | 148 | 100,862 | SC3 | ? | Q3.12 wildcard on an option | must |  |
+| C6 | OR of options: `materials:bronze;wood` | 128 | 128 | SC2 | = |  | must |  |
+| C7 | AND of options: `materials:bronze, materials:wood` | 0 | 128 | SC3 | ? | Q3.12 BOM-prefixed name | must |  |
+| C8 | Dropdown option, quoted: `"source:Digital Camera"` | 2,224 | 0 | SC2 | = | non-indexed field resolves by name | must |  |
+| C9 | One word of a dropdown option: `source:digital` | 0 | 100,862 | SC3 | ? | Q3.12 nothing in core | must |  |
+| C10 | Checkbox option, one word: `yspactivity:learning` | 11,671 | 11,671 | SC2 | = |  | must |  |
+| C11 | Dynamic keyword option, quoted: `"artistname:Henry Moore"` | 2,713 | 0 | SC2 | = |  | must |  |
+| C12 | One word of a dynamic keyword: `artistname:moore` | 2,713 | 100,862 | SC3 | ? | Q3.12 | must |  |
+| C13 | Node token: `@@389` | 58,028 | 58,028 | SC1 | = |  | must |  |
+| C14 | OR of nodes: `@@389@@388` | 94,936 | 94,936 | SC1 | = |  | must |  |
+| C15 | AND of nodes: `@@425, @@389` | 49 | 49 | SC1 | = |  | must |  |
+| C16 | AND of nodes, space separated: `@@389 @@425` | 49 | 49 | SC1 | = |  | must |  |
+| C17 | NOT a node: `@@!432` | 100,461 | 100,461 | SC1 | = |  | must |  |
+| C18 | NOT inside an OR word: `@@!389@@388` | 94,936 | 94,936 | SC1 | = | NOT ignored inside an OR word | must |  |
+| C19 | Unknown node: `@@999999999` | 0 | 0 | SC1 | = | unknown node → nothing | must |  |
+| C20 | Simple-search-bar checkbox: `@@17913` | 264 | 264 | SC1 | = |  | must |  |
+| C21 | Dynamic keyword node: `@@2997` | 33,333 | 33,333 | SC1 | = |  | must |  |
+| C22 | GPT keyword node: `@@460` | 37,603 | 37,603 | SC1 | = |  | must |  |
+| C23 | Option name and a node of the same field: `orientation:landscape, @@388` | 0 | 0 | SC2 | = |  | must |  |
+| C24 | Option names as the search page converts them: `materials:bronze;wood` | 128 | 128 | SC2 | = | the page rewrites it to @@ tokens | must |  |
+| C25 | Documented OR shape with a multi-word value: `usagerights:social media;website` | 0 | 0 | SA7 | ↩ | bare OR → suggestion in core | must |  |
+| C26 | OR of an option name and a word: `usagerights:website;social` | 82 | 82 | SC2 | = | words discarded by core | must |  |
 
 ## D — Dates
 
@@ -370,8 +370,8 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | Plan | Rows |
 |---|---|
 | = | 145 |
-| ? | 120 |
-| ↩ | 22 |
+| ? | 126 |
+| ↩ | 16 |
 | ✗ | 8 |
 | · | 8 |
 

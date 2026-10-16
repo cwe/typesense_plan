@@ -113,11 +113,14 @@ rule. Costs: a rebuild when the stemmer or `$stemming` changes (already true), s
 Typesense (never shown — rows are hydrated from MySQL), and a check that Typesense's tokeniser
 leaves the pre-stemmed tokens alone. Recommendation: yes, for SA12 and SA3.
 
-### Q2.15 — The full-text box: permanent veto?
+### Q2.15 — The full-text box: which operators, and how far
 `"@FULL_TEXT:…"` is MySQL boolean mode over node names of every field, indexed or not; words without
-an operator are ORed (A27 956 vs A28 9). Typesense cannot OR words in `q`, so the forms cannot be
-served faithfully. Confirm the permanent veto (SA8) and whether the advanced search page should say
-that the full-text box is always answered by MySQL.
+an operator are ORed (A27 956 vs A28 9). **Decided 14 October: the rows are marked must** — the box
+has to work. Typesense cannot OR words in `q`, so optional words need one search per alternative
+merged client-side (SA8, shared with Q2.7). To decide: the operator subset (`+`, `-`, phrase, `*`,
+bare words; the weighting operators dropped or vetoed), whether the merged set may differ in order
+from MySQL's relevance, and whether non-indexed fields are in scope (Q1.1 option b) or the
+difference for words found only there is accepted.
 
 ### Q2.16 — Short wildcards
 A wildcard on a word under MySQL's full-text minimum length (`so*`, A14) is a `LIKE` on the keyword

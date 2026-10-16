@@ -156,21 +156,31 @@ per-row plan is in [coverage.md](coverage.md).
 
 ### SA8 — The full-text box
 - **Rows:** A27 A28 A29 A34 J12 K4 K8
-- **Builds:** recognition of `"@FULL_TEXT:…"` (`FULLTEXT_SEARCH_PREFIX`) and the veto.
-- **Size:** S · **Depends on:** D2 · **Milestone:** M6
+- **Builds:** recognition of `"@FULL_TEXT:…"` (`FULLTEXT_SEARCH_PREFIX`), a parser for MySQL's
+  boolean-mode operators, and the translation: `+word` required, `-word` excluded, `"phrase"`
+  (via `[QUOTES]`) a phrase, `word*` a prefix, a bare word *optional* — which needs an "any of"
+  mechanism: one search per alternative through `multi_search`, the ref sets merged, then windowed
+  (shared with SA7 if Q2.7 serves OR groups); the weighting operators (`>`, `<`, `~`, `(…)`) change
+  only MySQL's ranking, so they are dropped from the set or vetoed.
+- **Size:** M · **Depends on:** D2, D10, SA3, SA5, B2 (values of every field if Q1.1 chooses b) ·
+  **Milestone:** M6
 - **Core:** the advanced search's full-text box sends `"@FULL_TEXT:words"`: a MySQL boolean-mode
   MATCH over node names of every visible field, indexed or not, with `+`, `-` and `[QUOTES]`
   passed through; words without an operator are **OR**ed (`distant island` 956, `+distant
   +island` 9).
-- **Serve:** veto, permanently, unless Q2.15 chooses otherwise: Typesense cannot OR words in `q`,
-  and the box's semantics are MySQL's.
-- **Must honour:** the veto must fire whether the term is alone or appended to other terms (J12);
-  the plugin must recognise the prefix inside the quotes after core's normalisation.
-- **Battery:** `harness/ab/SA8_full_text.php` — each row declines with the reason "full-text
-  boolean search"; the harness emulates MATCH so core's side is an emulation (mark it so).
-- **Blocking questions:** —
-- **Open questions:** Q2.15 (confirm the permanent veto and the user-facing note on the advanced
-  search page)
+- **Serve:** the rows are marked *must* (14 October): serve the documented operators as above.
+  Scope: core's MATCH reads node names of **every** visible field, indexed or not (K4 23,412), so
+  identical sets need the non-indexed values in the index (Q1.1 option b); with option a the
+  difference is confined to words that exist only in non-indexed fields, and is recorded.
+- **Must honour:** boolean mode without operators is *any word*, not *all words* (A27 956 vs A28
+  9); MySQL's full text applies InnoDB's own stop-word list and a minimum token length of 3, not
+  `$noadd`; the term may be alone or appended to other terms (J12), and the prefix is inside the
+  quotes after core's normalisation; a merged ref set is bounded by the row limit (D10) and loses
+  MySQL's relevance order (Q7.1); anything the parser does not understand vetoes, never guesses.
+- **Battery:** `harness/ab/SA8_full_text.php` — A27, A28, A29, A34, J12, K4, K8 and one case per
+  operator; the harness emulates MATCH, so the live run on the test system is the proof for the
+  set (mark the local side as emulated).
+- **Blocking questions:** Q2.15, Q1.1, Q2.7
 
 ### SA9 — Words that are not metadata
 - **Rows:** A23 A24 A25 A26 H36 H37 · cross: F30/F31 (SF4)
