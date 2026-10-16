@@ -8,7 +8,7 @@ the token must be handled), SC3 is M4.
 
 ### SC1 — Node tokens
 - **Rows:** C13 C14 C15 C16 C17 C18 C19 C20 C21 C22 I10 H1 H4 H6 · cross: H17 (SD1), H18 (SC2), H28 (SF3), H29 (SF6), H13 (SA4)
-- **Builds:** `search/nodes.php` — `$node_bucket` → one `nodes:=[…]` clause per bucket,
+- **Builds:** in `search/criteria.php` — `$node_bucket` → one `nodes:=[…]` clause per bucket,
   `$node_bucket_not` → `nodes:!=[…]`; the filter-operations guard.
 - **Size:** S · **Depends on:** D3, B3 (`nodes[]` from all nodes) · **Milestone:** M2
 - **Core:** `@@` tokens are removed from the string and resolved by `resolve_given_nodes()`
@@ -35,7 +35,7 @@ the token must be handled), SC3 is M4.
 
 ### SC2 — Option names core resolves
 - **Rows:** C1 C2 C6 C8 C10 C11 C23 C24 C26 H2 H18 J8 J9 J10
-- **Builds:** in `keywords.php`: drop a `field:value` token (quoted or not) from `q` when core has
+- **Builds:** in `search/criteria.php`: drop a `field:value` token (quoted or not) from `q` when core has
   already resolved it into `$node_bucket`.
 - **Size:** S · **Depends on:** SC1, D2 · **Milestone:** M2
 - **Core:** an exact option name (case-insensitive; quoted when it has spaces; `a;b` for two

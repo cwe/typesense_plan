@@ -28,7 +28,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
 
 ### D2 — Context and parse
 - **Rows:** I1 I4 I5 G41 · the special-argument forms F41 F68 F69 J3 J4 and the colon forms I6 I7 (SB1) are cases here too
-- **Builds:** `include/search/context.php`, `parse.php`.
+- **Builds:** `include/search/parse.php` — the context (hook arguments and the user snapshot) and the parse.
 - **Size:** M · **Depends on:** D1
 - **Must honour:**
   - `$keywords` arrives post-processed by core: non-field colon tokens are split and appended
@@ -66,6 +66,11 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     defaults to a retry that joins or splits words; `max_candidates` (10) and
     `max_filter_by_candidates` (4) cap wildcard completions.
   - Three sort fields maximum; omit `query_by` entirely for a match-all query.
+  - **The composition rule (Q0.13):** the plan admits AND clauses plus five declared interaction
+    mechanisms — the recent-N cutoff, restriction suppression by a mode, the `J`-inside-`!collection`
+    rule, OR alternatives (a filter `||` group, or per-alternative searches merged in D10), and the
+    budgets (the operations counter and a sort-slot check) — and nothing else; a form needing a new
+    kind of interaction vetoes until its mechanism is designed with cases in SH1.
 - **Blocking questions:** Q2.2, Q2.3, Q3.9, Q3.10
 - **Proves it:** compiler battery against hand-written filters, the operations counter at the
   boundary, GET/POST choice, parameter defaults asserted on every compiled query.
@@ -73,8 +78,8 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
 ### D4 — Shared keyword and node step (minimal)
 - **Rows:** none of its own — SA1 (plain words), SC1 (node tokens) and SC2 (resolved options) own the
   M2 rows and are built on this step; the field-token split hands off to SB1.
-- **Builds:** `include/search/keywords.php` (plain words, wildcard, the field-token split that hands
-  off to area F), `nodes.php`, `query_by` from visible indexed fields with the title gated on
+- **Builds:** `include/search/criteria.php` — the shared step: plain words, wildcard, the field-token
+  split that hands off to the field packages, node buckets, `query_by` from visible indexed fields with the title gated on
   `metadata_field_view_access`.
 - **Size:** M · **Depends on:** D3, B1
 - **Must honour:**
@@ -149,7 +154,8 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     (`collection_type:>=0`, 104,753 resources live) (P23).
   - Inside `!collection<C>`: two memberships clauses must match the same document, so skip the join
     when C is permitted, otherwise fall back; applies under `access_override`; the user's upload
-    collection is exempt.
+    collection is exempt. Reuse candidate under principle 6: the old `featured_collections.php`
+    rule (P23), reviewed.
 - **Blocking questions:** Q5.8, Q6.3
 - **Proves it:** the 11 `J` cases and 5 parse cases.
 
@@ -167,6 +173,13 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
   - `!last` + relevance → `ref` with core's upper-case-DESC test (P29); a bare number with
     `$config_search_for_number` off → `_eval(ref:=N):desc` first (verified) if Q7.4 says so.
   - Modified ties broken by ref (80–97 % of rows share a `modified_date`).
+  - Typesense takes three sort fields and breaks a final tie by insertion order, and appends
+    `_text_match` as the last field when fewer than three are given (docs 30.0). Core's relevance,
+    popularity and rating orders have four or five keys, all in one direction, so they map to the four
+    packed `int64` keys B2 builds (`ur_hits`, `hits_ur`, `date_ref`, `rating_ur` — the table is in
+    SG2 and the schema register); a keyword search keeps `_text_match` first (the listed exception). A single-field sort matches MySQL's NULL placement with
+    `field(missing_values: first)` ascending and `(missing_values: last)` descending; a composite
+    encodes "no value" in each part instead.
 - **Blocking questions:** Q7.1, Q7.2, Q7.4, Q7.8
 - **Proves it:** sort battery on a ties fixture; live date and modified order equal to core both ways.
 
@@ -181,8 +194,12 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     `$typesense_search_max_rows` (25,000) veto (P22). Cost: 25k 1.5–4 s, 50k 10 s, whole index
     20–37 s; keyset on `ref` only for numeric sorts.
   - The search page passes `[offset − colcount, n]` when collections appear above results (Q7.5).
-  - Recent-N: the Nth-highest ref via one extra query, then `ref:>=cutoff`.
-- **Blocking questions:** Q7.3, Q7.5, Q7.7
+  - Recent-N: the Nth-highest ref via one extra query, then `ref:>=cutoff`. Reuse candidate under
+    principle 6: the old `typesense_search_recent_cutoff()`, reviewed — it was live-validated.
+  - OR alternatives, route B (Q2.7): one search per alternative from the same compiled plan in one
+    `multi_search`, refs and sort keys collected to the row cap, de-duplicated, ordered by the
+    requested sort (relevance approximate), then windowed; the total is the union's size.
+- **Blocking questions:** Q7.3, Q7.5, Q7.7, Q2.7
 - **Proves it:** the 40-check window battery (rewritten into the harness), including the 250-row
   boundary with ties.
 

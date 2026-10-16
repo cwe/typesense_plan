@@ -9,6 +9,10 @@ and inclusion are Q7.2; all milestone M7 unless promoted.
 The rule they share (D9): a sort the plugin cannot reproduce vetoes; it never silently sorts by
 relevance (harness O19 shows what Typesense-only mode does with a vetoed sort).
 
+**Catalogue marks (2026-10-16):** SG1, SG2 and SG4 are required (every sort but colour, random and
+country is *must*); SG3 is parked; SG5 stays a decline. The count-based sorts are exact as of the
+last rebuild for `hit_count` and immediate for `user_rating` (Q8.9).
+
 ### SG1 — Text-key sorts: title, status, resource type, extension, file path
 - **Rows:** G16 G17 G19 G20 G21 G24
 - **Builds:** sort keys `title_sort` (case-insensitive, from `$view_title_field`), `archive`
@@ -30,12 +34,19 @@ relevance (harness O19 shows what Typesense-only mode does with a vetoed sort).
 
 ### SG2 — Rating and popularity
 - **Rows:** G12 G13 · cross: G11 (D9, Q7.1)
-- **Builds:** `user_rating`, `rating`, `hit_count` on the resource; the two mappings.
+- **Builds:** `user_rating`, `rating`, `hit_count` on the resource and four packed `int64` sort keys
+  from B2 — `ur_hits` (user rating, hit count), `hits_ur` (hit count, user rating), `date_ref` (the
+  date field as days, ref), `rating_ur` (rating, user rating) — and the mappings: popularity =
+  `ur_hits, date_ref`; relevance with keywords = `_text_match, ur_hits, date_ref`; keyword-less
+  relevance = `hits_ur, date_ref`; rating = `rating_ur`, then `_text_match` (keywords) or the hit
+  count, then `ref`. Fixed bit widths (rating 3 bits, hit count 32, days 18, ref 31); "no value" is
+  the minimum, which reproduces MySQL's NULL placement in both directions. Only these three core
+  orders exceed three slots; users cannot compose others.
 - **Size:** S · **Depends on:** D9, B2, C7 (E27: the counts refresh only at a rebuild) · **Milestone:** M7
 - **Core:** popularity = `user_rating, total_hit_count, date, ref`; rating = `r.rating,
   user_rating, score, ref`; `$popularity_sort` is on by default so the option is visible; core
   updates hit counts by cron with no hook, so the index can only be as fresh as the last rebuild
-  (Q8.9).
+  (Q8.9). Four keys each, one direction: one composite key per sort (A3's rule), `ref` last.
 - **Serve:** the sort keys with the freshness caveat documented; the same fields answer Q7.1 (B)
   for keyword-less relevance (387 of core's top 400 reproduced).
 - **Battery:** `harness/ab/SG2_rating_popularity.php` — G12, G13 on a fixture with known counts;
@@ -75,6 +86,7 @@ relevance (harness O19 shows what Typesense-only mode does with a vetoed sort).
 - **Builds:** nothing: the veto and its doc line.
 - **Size:** S · **Depends on:** D9 · **Milestone:** M2
 - **Core:** `RAND()`.
-- **Serve:** never (Typesense has no random sort); the battery asserts the veto.
+- **Serve:** never — Typesense 30.0 does have `_rand([seed])`, but a random order can never equal
+  core's, and G23 is marked *no*; the battery asserts the veto.
 - **Battery:** in `D9`'s sort battery.
 - **Blocking questions:** —

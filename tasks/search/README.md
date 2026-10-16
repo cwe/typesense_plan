@@ -53,10 +53,11 @@ by this plan to fill the package out — answered as part of starting it).
 
 ## How a package is proved
 
-1. Its battery runs green locally: every owned row either matches core, declines with the agreed
-   reason, or is listed in the accepted-divergence list with a decision row that names its bin
-   (documented behaviour, incidental behaviour, core bug — principle 11). Expected sets are derived
-   by hand from the fixture, never copied from a live total.
+1. Its battery runs green locally under the acceptance rule (Q10.3): every owned row matches core
+   in set, total and order, or declines with its planned reason, or differs only in relevance-to-text
+   order and is listed with a decision row that names its bin (documented behaviour, incidental
+   behaviour, core bug — principle 11). Expected sets are derived by hand from the fixture, never
+   copied from a live total.
 2. [SH1](H-combinations.md) still agrees with its term pool enlarged by the package's terms.
 3. The owned rows are sent live (`catalogue_run.php`) and the catalogue table regenerated; the
    *Done* column in [coverage.md](coverage.md) is ticked.

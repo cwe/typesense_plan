@@ -55,6 +55,10 @@ upstream for a reason worth knowing before proposing it?
 Go through the list above and mark each. The ones that change what users see most: unknown special
 → everything; `!empty` by name; the bare-OR side effect; `!last` + nodes; the CSV export TypeError
 (which can also be fixed on the plugin side by making the parameter nullable).
+**Catalogue marks (2026-10-16):** two core-bug rows are *must* — F5 (`!last` with a node bucket
+returns one row, Core 1) and F47 (`!empty` of a non-global field, Core 6): *must* on a bug means
+replicate it or fix it, which this question decides. F31 (Core 3) is *check*; F46 and F49 (Core 5)
+are not required.
 
 ### Q11.4 — Tracking upstream
 How the fork follows RS releases (rebase `typesense` onto each release? merge?), who does it, and

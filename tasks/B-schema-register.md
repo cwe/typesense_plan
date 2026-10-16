@@ -28,7 +28,8 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `nodes` | int32[] | every `resource_node` row | facet | SC1, D7, SK1 | R (E9–E19 node writers: several gaps until C9) | 1 |  |
 | `populated_field_ids` | int32[] | fields with any node, from all nodes | | SF6, SF10 | R | 1 |  |
 | `date_year`, `date_month`, `date_day` | int32 | `$date_field` value components, absent when 0 | optional | SD2 | R; cfg | planned (Q3.13) |  |
-| `hit_count`, `user_rating` | int32 / float | `resource.hit_count`, `resource.user_rating` | sort | D9 Q7.1 (B), SG2 | rebuild (core's cron; E27) | planned (Q7.1, Q1.6) |  |
+| `hit_count`, `user_rating`, `rating` | int32 | `resource.hit_count` (the cron copy of `new_hit_count`), `resource.user_rating` (the star average), `resource.rating` (the legacy column from the rating field) | | SG2, D9; parts of the packed keys below | E27 (hit counts: rebuild only; ratings: the `modifyuserrating` hook and field edits) | planned (Q7.2 decided by the marks) |  |
+| `ur_hits`, `hits_ur`, `date_ref`, `rating_ur` | int64, sort | packed keys built by B2: (user rating, hit count), (hit count, user rating), (`$date_field` as days, ref), (rating, user rating); fixed bit widths, "no value" = the minimum so NULL sorts as in MySQL in both directions | sort | popularity = `ur_hits, date_ref`; relevance with keywords = `_text_match, ur_hits, date_ref`; keyword-less relevance = `hits_ur, date_ref`; rating = `rating_ur`, then `_text_match` or hit count, then ref (D9, SG2) | R; E27; cfg (`$date_field`) | planned (Q7.2) |  |
 | `has_image` | int32 | `resource.has_image` | | SF12, SF9 `pi`, SF15 | R (E13 preview creation) | planned (Q1.6) |  |
 | `file_extension`, `file_size`, `width`, `height`, `orientation` | string / int64 / int32 / int32 / string | `resource.file_extension`, `file_size`, `resource_dimensions` | sort on extension | SF9, SG1 | R (E14 file replace; E15 alternatives) | planned (Q1.6, Q4.11) |  |
 | `file_path` | string | `resource.file_path` | sort | SG1 | R | planned (Q7.2) |  |
@@ -36,7 +37,7 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `geo` | geopoint | `resource.geo_lat`, `geo_long` | | SF14 | R (set through `update_field`) | planned (Q4.1) |  |
 | `colour_key` | string | `resource.colour_key` | no stem | SF15 | R (E13) | planned (Q4.1) |  |
 | `related` | int32[] | `resource_related` both directions | | SF11 | E18 relate (gap until C9) | planned (Q4.1) |  |
-| `title_sort`, `resource_type_order` | string / int32 | title lower-cased key; `resource_type.order_by` | sort | SG1 | R; cfg (type order) | planned (Q7.2) |  |
+| `title_sort`, `resource_type_order` | string / int32 | title lower-cased key; `resource_type.order_by` | sort | SG1 (resource type order = `resource_type_order, resource_type, ref`: three plain slots) | R; cfg (type order) | planned (Q7.2, decided by the marks) |  |
 | `words` (type name, contributor username) | string[] | `resource_type.name`, `user.username` of `created_by` | in `query_by` | SA9 | R; cfg (type rename, E24) | planned (Q2.9, Q1.7) |  |
 | `in_collections` | int32 | count of indexed memberships | | SF16 (if a negated join is impossible) | M | planned (Q4.7) |  |
 

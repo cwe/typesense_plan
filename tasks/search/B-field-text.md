@@ -6,9 +6,9 @@ token split; everything in SC, SD and SE goes through the same lookup.
 
 ### SB1 — Field lookup and `field:word`
 - **Rows:** B1 B8 B15 B20 B21 H3 H25 I6 I7 I11 · cross: B9 (SC3: the value is a dynamic-keyword word), B19 B12 B13 (SK1)
-- **Builds:** `search/fields.php` — short name → ref, type, `keywords_index`, `partial_index`,
+- **Builds:** the field lookup in `search/criteria.php` — short name → ref, type, `keywords_index`, `partial_index`,
   `active`, `field_constraint`, viewability (cached, and the lookup *returns* every flag); in
-  `keywords.php` the text-field filter.
+  the same file the text-field filter.
 - **Size:** M · **Depends on:** D4, B1 · **Milestone:** M4
 - **Core:** the name is matched whole and case-insensitively (`Title:Sculpture` = B1; a name may
   contain a slash: `photographer/videographer`); an unknown name turns the colon into a space, so

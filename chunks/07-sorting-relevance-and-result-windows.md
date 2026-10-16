@@ -31,8 +31,12 @@ Mapping core's sort options to Typesense, the relevance model, which sorts fall 
   is misaligned.
 - Bare numbers with `$config_search_for_number` off: core puts the exact ref first; `_eval(ref:=N)`
   reproduces this (verified) but is not implemented (the search vetoes).
-- Typesense: string sort is case- and accent-insensitive; empty = missing; missing sorts last
-  ascending, first descending; no `missing_values`; `_eval` works; 3 sort fields max; no random sort.
+- Typesense (docs 30.0, read 16 October): three sort fields, final ties by insertion order,
+  `_text_match` appended when fewer than three are given; string sort needs `sort: true` and a
+  separate index; missing numeric values always last, missing strings highest, and
+  `field(missing_values: first|last)` overrides both (an earlier live note said the option did not
+  exist — verify on 30.2); `_eval(<filter>)` for conditional ordering; `_rand([seed])` exists but can
+  never match core's `RAND()`; string sort was case- and accent-insensitive in the live tests.
 - Core bug: ordering by a metadata field that is not a resource-table join column returns nothing
   (Core 8).
 
@@ -52,12 +56,28 @@ documented; (B) index `hit_count` and `user_rating` and sort keyword-less search
 still cannot reproduce core's per-keyword score; (C) veto keyword-less relevance to core meanwhile.
 Also the underlying question from the review (G): is a different relevance order acceptable to the
 users at all?
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** a keyword-less search ordered by
+relevance has no text string, so its order is exact — hit count, user rating, total hits, date field,
+ref, which is five keys where Typesense allows three: a composite sort key built at index time
+(option B, extended). Hit counts move by core's cron with no hook, so the order is exact as of the
+last rebuild. Still to say: is that staleness acceptable, or does keyword-less relevance decline?
 
 ### Q7.2 — Which further sorts to serve
 Each needs a sortable field: title (a case-insensitive key), status (`archive` is already sortable —
 trivial), resource type (`rty.order_by`), extension and file path, rating and popularity (with
 freshness caveats), custom `field<n>` (numeric and dot-notation rules), country. Random can never be
 served. Which, in what order?
+**Catalogue marks (2026-10-16):** every sort is *must* except colour (G15), random (G23) and country
+(G24): popularity, rating, title, file path, resource type, extension, status and the metadata-field
+sorts are required (SG1, SG2, SG4); SG3 is parked; SG5 stays a decline. Core's own facts for the two
+count-based sorts: `hit_count` is copied from `new_hit_count` by the maintenance cron (views and
+downloads bump `new_hit_count` at once), `user_rating` is the star-rating average written by
+`set_user_rating()` (`$user_rating` is off by default), and `r.rating` is a legacy column filled
+from a rating metadata field when `$orderbyrating` is on — on the test system both are NULL, so the
+rating sort there is ref order. Multi-key orders exceed Typesense's three sort slots and need a
+composite key built at index time. **Noted 2026-10-16:** four packed `int64` keys cover all
+three over-length orders — `ur_hits`, `hits_ur`, `date_ref`, `rating_ur` (SG2 has the table); "no
+value" encoded as the minimum reproduces MySQL's NULL placement in both directions.
 
 ### Q7.3 — The row limit and next/previous
 Keep 25,000? Lower? For next/previous: make the plugin serve `-1` fully (20–37 s on the whole index —
@@ -91,6 +111,9 @@ field 12 orders (G25), a numeric field would order with `+0` (G26), the title fi
 as text (G27), and any other field makes core write an invalid column and return **nothing** (G43,
 Core 8). Serve only the join-column fields (parity, including nothing for the rest), or serve any
 field from a per-field sort key (an improvement that returns rows where core returns none)?
+**Catalogue marks (2026-10-16):** G26 and G43 (a field that is not a join column) are *must* — core
+returns nothing, so declining satisfies it; G27 (the title field by number) is *must* and needs a
+per-field sort key.
 
 ## Done when
 

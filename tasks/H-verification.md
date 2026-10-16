@@ -10,7 +10,10 @@ existing code the rebuild is likely to keep (Q10.11).
   **accepted-divergence list** the runner reads, `run_all.sh`, `summarise.php`; optionally a CI job.
 - **Size:** M · **Depends on:** —
 - **Must honour:**
-  - Not `tests/` — core's test runner scans `plugins/*/tests` (P39).
+  - Not `tests/` — core's test runner scans `plugins/*/tests` (P39). Decided (Q10.1): the harness
+    lives in `plugins/typesense_search/harness/` on `typesense`; the two unpushed branches are
+    merged by Chris first; `.htaccess` and CLI guards from X3; left out of deployment artefacts
+    (G5); `results/` is not committed again — only the generated catalogue table in `docs/`.
   - Gotchas: define `RS_TEST_MODE` or `metadata_field_view_access()` returns true on the CLI; core
     `exit()`s on an invalid search-filter id; a fixture word must exist in the keyword table or core
     returns before the hook; the veto reason is read from the debug file.
@@ -20,6 +23,19 @@ existing code the rebuild is likely to keep (Q10.11).
     emulated.
   - A fact a case reports as "same" must be checked for the option really being applied (a runner
     once merged options with `array_merge` and six cases were wrongly recorded as matched).
+  - **The acceptance rule (Q10.3):** a served row passes when set, total and order equal core's
+    (order only under an explicit sort, or by the composite key for keyword-less relevance);
+    relevance-to-text order is the one listed kind of difference; a declined row passes only with
+    its planned reason; core-bug rows run as expected-to-differ (H7); security cases are never
+    listed; everything else unlisted fails. The list is one entry per row or case — the kind of
+    difference, the reason, the decision row — and a check in the planning repository confirms each
+    entry matches `coverage.md`.
+  - **Reuse, reviewed (Q10.11):** `boot.php`, `fixture_lib.php`, the A/B runner, `summarise.php`, the
+    live and catalogue runners come across; the three couplings to the old plugin are rewritten
+    (the fixture index is built by B8's rebuild, the veto reason comes from G2's log line, the config
+    names are the new ones); the batteries are re-cut per package as packages land; `trace/` is
+    retired; `results/` is cleared. Core's side of a wildcard or full-text case is an emulation
+    until H9.
 - **Blocking questions:** Q10.1, Q10.2, Q10.3, Q10.11, Q10.12, Q10.13
 - **Proves it:** the smoke battery runs green on a clean checkout with one command.
 
@@ -97,3 +113,18 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Blocking questions:** Q10.4, Q10.8, Q10.5
 - **Proves it:** the catalogue run on the second system agrees with core for every `must` row the
   plugin serves on YSP, with the same accepted-divergence list.
+
+### H9 — MySQL-backed harness mode
+- **Builds:** a second database driver in `harness/ab/boot.php` (`HARNESS_DB=mysql`): core's SQL runs
+  unchanged against a local MySQL (a container — the machine has no MySQL) loaded from `dbstruct/`
+  with the same fixture; the same batteries, runner and summariser; the CI job runs it if Q10.2 says
+  so.
+- **Size:** M · **Depends on:** H1
+- **Must honour:** the SQLite mode stays the default for speed (thirty batteries in about twelve
+  seconds); the MySQL mode is the proof for the forms the shim emulates — wildcards, the full-text
+  box, phrases, accents, collation; MySQL's full-text settings (`innodb_ft_min_token_size`, the
+  InnoDB stop-word list) must match the test host's, or the emulation is replaced by a different
+  divergence; a fixture word must exist in the keyword table in either mode.
+- **Blocking questions:** Q10.2
+- **Proves it:** the emulated batteries agree with the MySQL mode on the fixture; the live catalogue
+  rows for those forms agree with it too.

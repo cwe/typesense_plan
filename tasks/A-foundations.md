@@ -51,8 +51,18 @@ Milestone M0. Everything else builds on these five modules.
   - A reference may name an alias but binds to the real collection at creation; memberships and
     grants must be created referencing the generation's resources collection, and all three aliases
     swapped together (moving only the resources alias breaks joins).
-  - Three sort fields maximum; string sort is case- and accent-insensitive; an empty string is
-    "missing"; missing sorts last ascending and first descending; no `missing_values` option.
+  - Three sort fields maximum (docs 30.0: "Up to 3 sort fields can be specified … If all 3 fields tie,
+    the document insertion order is used"); a string field sorts only with `sort: true` and "requires
+    the construction of a separate index that can consume a lot of memory for long string fields";
+    missing values: numeric "always sorted to the end regardless of the sort order", string empty or
+    missing "the highest value" (end ascending, top descending), and `field(missing_values: first|last)`
+    overrides both — an earlier live note said the option did not exist: verify on 30.2 in A3's
+    battery. `_eval(<filter expression>)` and `_rand([seed])` are sort expressions in 30.0.
+  - **Composite sort keys** (Q7.2): a core sort with more than three keys is one fixed-width key built
+    by B2 at index time, valid because core applies one direction to every key of a sort; each part
+    encodes "no value" explicitly (`0:`/`1:`/`2:` as the date key does) because missing-value
+    placement differs from MySQL's; the last part is always `ref` so a tie never reaches insertion
+    order.
   - `created_by` optional (NULL for CLI-created resources); `created_date` was replaced by
     `creation_date` (day limit) and `date_field_sort` (text sort key) (P19, P20).
   - Dynamic field patterns `field_.*_<suffix>`; explicit fields where a per-field option is needed.

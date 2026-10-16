@@ -54,6 +54,11 @@ Earlier recommendation: `!related` first, then `!properties`, then the flag-base
 `!nopreview`, `!locked`, `!integrityfail`, `!noningested`), then `!geo`, `!colour`/`!colourkey`,
 `!unused`, `!empty`. Confirm the order, and confirm `!rgb`, `!duplicates`, `!nodownloads`, `!report`
 stay on core permanently.
+**Catalogue marks (2026-10-16) decide most of this:** required — `!properties` (SF9), `!empty` (SF10),
+`!related` / `!relatedpushed` (SF11), `!images` / `!nopreview` (SF12), `!locked` (SF13; `!integrityfail`
+and `!noningested` are *check*); *check* — `!unused` (SF16); not required — `!geo` (SF14), `!colour` /
+`!colourkey` (SF15), and `!rgb`, `!duplicates`, `!nodownloads`, `!report` stay on core (SF17), as
+planned. Still open: the order (Q4.2 batches the index fields).
 
 ### Q4.2 — Index fields for them: one batch or per special?
 Each new special needs fields (chunk 1, Q1.6) and a rebuild. One schema change and one rebuild for
@@ -65,6 +70,9 @@ commands, unknown special → everything). Options: (a) replicate it, bugs inclu
 (b) parse each special's documented form and veto anything else (core then answers — and returns
 everything for an unknown special, so the user sees core's behaviour either way); (c) parse
 sensibly and accept differences. Recommendation: (b).
+**Catalogue marks (2026-10-16):** F3 and F4 (`!lastabc`, `!last100 word`) are *must*; F31 (`!resource`
+taking every digit, Core 3) and F69 (the comma form) are *check*; F41 (`!list` with commas) is not
+required.
 
 ### Q4.4 — `restypes` on specials
 Follow `search_filter` (apply to all but `!collection`) so API callers match core, or follow the
@@ -73,6 +81,7 @@ search page's blanking (current config-gated behaviour)? The two cannot both be 
 ### Q4.5 — Workflow states per special
 Replicate core's per-special table exactly, including `!archivepending` returning nothing for `z1`
 users? Or decline the two pending searches for users who cannot see those states?
+**Catalogue marks (2026-10-16):** F32 and F33 are *must*.
 
 ### Q4.6 — Smart collections
 Move the refresh after the serve decision and add the 2-hour limit, or veto smart collections to
@@ -81,14 +90,19 @@ core altogether (simplest, and `$allow_smart_collections` is off by default)?
 ### Q4.7 — `!unused` (resources in no collection)
 Needs absence-of-match against the memberships collection. Verify Typesense can express it
 (a negated reference join) before deciding; otherwise it stays on core.
+**Catalogue marks (2026-10-16):** F37 is *check*.
 
 ### Q4.8 — `!empty<field>`
 Serve it correctly from `populated_field_ids` (diverging from core's bug), replicate the bug, or
 veto? (Links Q11.3.)
+**Catalogue marks (2026-10-16):** F45 and F47 are *must*, F48 is *check*; F46 and F49 (the name form,
+Core 5) are not required. F47 is a core bug (Core 6): *must* there means replicate or fix — Q11.3.
 
 ### Q4.9 — Unknown or misspelt specials
 Core returns everything. The plugin vetoes, so the user gets core's behaviour. Keep, or make the
 plugin return nothing / a declined-search message for `!unknown` (a deliberate difference)?
+**Catalogue marks (2026-10-16):** F67 is *must* — satisfied by declining, since core then returns
+everything, unless this question chooses a different answer; F68 (two specials) is *must*.
 
 ### Q4.10 — The form's `!properties` + `!list` collision
 Core ignores the resource-IDs box when a property is filled in. Replicate, or raise with core?
@@ -98,6 +112,8 @@ The keys in `search_special()` are `cu fext fmax fmin hmax hmin i orientation pi
 (F50–F59 cover most). Serve them all in one package, with `fext` wildcards as a prefix, sizes in MB
 and orientation from stored dimensions? An unknown key adds no filter in core, so `!propertiesbogus:1`
 is everything (F62): replicate, or veto?
+**Catalogue marks (2026-10-16):** `!properties` is *must*; F52 (`fext:jp*`), F59 (orientation) and
+F62 (an unknown key returns everything in core) are *check*.
 
 ## Done when
 

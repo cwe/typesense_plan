@@ -10,7 +10,7 @@ per-row plan is in [coverage.md](coverage.md).
 
 ### SA1 — Plain words
 - **Rows:** A1 A2 A3 A4 A32 A33 H24 · cross: I4 I5 (D2), A5 (SA12), A17/A18 (SA2)
-- **Builds:** `search/keywords.php` — the plain-word path: `q` from `$keywords`, lower-cased, every
+- **Builds:** in `search/criteria.php` — the plain-word path: `q` from `$keywords`, lower-cased, every
   word required; `query_by` from the visible indexed fields (D4); the explicit query parameters.
 - **Size:** S · **Depends on:** D1–D4, D9, D10, D11 · **Milestone:** M2
 - **Core:** one union per word, all must match; a comma is a separator; lower-cased; duplicates
@@ -67,7 +67,7 @@ per-row plan is in [coverage.md](coverage.md).
 - **Fixture:** the base fixture has `red car` / `car red` and `foo and bar`; add a value whose
   phrase spans two values of one multi-value field.
 - **Battery:** `harness/ab/SA3_phrases.php` — A6, A7, A8, I8, H14 and the stemming cases S9–S13
-  with `$stemming` on and off.
+  with `$stemming` on and off; core's side on the MySQL mode (H9).
 - **Blocking questions:** Q2.5, Q2.4
 - **Open questions:** Q2.14 (pre-stemming on both sides would make this package trivial)
 
@@ -110,7 +110,8 @@ per-row plan is in [coverage.md](coverage.md).
   `max_filter_by_candidates` (4) caps `field:word*` (SB3).
 - **Fixture:** the base fixture plus the 40-completion word set from harness 23 (Q1, Q5, Q6).
 - **Battery:** `harness/ab/SA5_wildcards.php` — A11–A14, H22, harness A21–A25, Q1, Q4–Q6, U5,
-  `$wildcard_always_applied` on and off.
+  `$wildcard_always_applied` on and off; core's side on the MySQL mode (H9), since SQLite emulates
+  `MATCH` and `RLIKE`.
 - **Blocking questions:** Q2.3, Q1.1
 - **Open questions:** Q2.16 (short wildcards), Q2.17 (wildcard inside a word)
 
@@ -144,10 +145,14 @@ per-row plan is in [coverage.md](coverage.md).
   created it as a side effect (Core 9) — first run a suggestion, later runs an OR; `land*;sun*`
   forces the RLIKE branch `(land.*?|sun.*?)`; the documented `country:united kingdom;spain` binds
   only the first word, so the rest becomes a bare OR and a suggestion (C25).
-- **Serve:** field-scoped OR (`title:a;b`) as two ORed field filters (`field_8_s:a || field_8_s:b`)
-  if Q2.7 says so — Typesense `filter_by` has a real OR, `q` does not (`drop_tokens` is not an OR:
-  `sunset;beach` AND-matched to 0); bare `a;b` and wildcard OR: veto (core's own behaviour is a
-  bug and a suggestion respectively).
+- **Serve (direction set 2026-10-16, Q2.7):** field-scoped OR (`title:a;b`) as one filter clause
+  (`field_8_s:a || field_8_s:b`) — `filter_by` has a real OR, `q` does not (`drop_tokens` is not an
+  OR: `sunset;beach` AND-matched to 0). An OR over all fields (`a;b`, `land*;sun*`): the same
+  filter-OR over the user's visible fields, one query with exact totals and server-side
+  de-duplication, if its operation count fits the raised server limit (G8) — prototype and measure
+  on the test system's field list; otherwise route B, merged per-alternative searches (D10).
+  Relevance order of an OR search is an accepted difference. Whether a bare `a;b` should work at
+  all waits on the A16 check.
 - **Must honour:** never send `;` inside `q` (P4); a veto for the bare form hands the search to
   core, which then shows its suggestion — the user sees the same thing either way.
 - **Fixture:** the base fixture (`ship;book`).
@@ -171,15 +176,17 @@ per-row plan is in [coverage.md](coverage.md).
 - **Serve:** the rows are marked *must* (14 October): serve the documented operators as above.
   Scope: core's MATCH reads node names of **every** visible field, indexed or not (K4 23,412), so
   identical sets need the non-indexed values in the index (Q1.1 option b); with option a the
-  difference is confined to words that exist only in non-indexed fields, and is recorded.
+  difference is confined to words that exist only in non-indexed fields, and is recorded. Optional
+  words use mechanism 4 as decided for Q2.7: the filter-OR over visible fields first, merged
+  searches as the fallback.
 - **Must honour:** boolean mode without operators is *any word*, not *all words* (A27 956 vs A28
   9); MySQL's full text applies InnoDB's own stop-word list and a minimum token length of 3, not
   `$noadd`; the term may be alone or appended to other terms (J12), and the prefix is inside the
   quotes after core's normalisation; a merged ref set is bounded by the row limit (D10) and loses
   MySQL's relevance order (Q7.1); anything the parser does not understand vetoes, never guesses.
 - **Battery:** `harness/ab/SA8_full_text.php` — A27, A28, A29, A34, J12, K4, K8 and one case per
-  operator; the harness emulates MATCH, so the live run on the test system is the proof for the
-  set (mark the local side as emulated).
+  operator; core's side on the MySQL mode (H9), because SQLite emulates `MATCH`; the live run on
+  the test system confirms the set.
 - **Blocking questions:** Q2.15, Q1.1, Q2.7
 
 ### SA9 — Words that are not metadata

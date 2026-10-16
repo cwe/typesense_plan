@@ -66,6 +66,8 @@ scope the phrase to the field (text) or resolve the option (fixed list)? Or veto
 ### Q3.3 — `basicyear:` / `basicmonth:` / `basicday:`
 Implement against the date field's representations (year, month, day parts are indexed in `_q`).
 Confirm, and confirm `$date_field` is the target when the dropdowns are used.
+**Catalogue marks (2026-10-16):** D10–D15 are *must* — the dropdowns and the legacy `nnnn|05` form
+are served; Q3.13 chooses the mechanism.
 
 ### Q3.4 — Date-range semantics (open decision C)
 (a) Replicate core's string comparison exactly — index a fixed-width sortable key (e.g. the padded
@@ -74,10 +76,15 @@ filter numerically; (b) keep interval overlap (more correct; +106 on the test sy
 behaviour doc describes it); (c) overlap but document. Either way the non-real end date must be
 handled. Recommendation: (a) if the goal is parity (Q0.2), since the advanced form produces these
 ends routinely.
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** a served range must give core's set, so
+the string comparison is reproduced (the sortable key) or ranges with non-real ends are declined;
+interval overlap as a served difference is out.
 
 ### Q3.5 — Date-range fields (start/end pairs)
 Core is buggy here (exact value → nothing; parameters reversed). Serve correctly, replicate the bug,
 or veto? (Links Q11.3.)
+**Catalogue marks (2026-10-16):** D24 and D25 are *check* — Chris verifies core's behaviour on a
+date-range field before deciding.
 
 ### Q3.6 — Field-specific searches on non-indexed fields
 Options: index every field's values (Q1.1); veto `field:value` when the field has no index flag
@@ -87,6 +94,9 @@ Options: index every field's values (Q1.1); veto `field:value` when the field ha
 Confirm plain `field:42` → `_q` exact (staged). `numrange` on a non-numeric text field: core compares
 titles as numbers — veto or replicate? Open-ended comparisons (`>=` without an upper bound) do not
 exist in core: add as an improvement or not?
+**Catalogue marks (2026-10-16):** E1–E5 are *must* and worked with the previous code (the `_f`
+range and single-bound forms, live-validated on field 170); E6 (a plain number in a numeric field,
+which core treats as a keyword in the field) and E7 (`numrange` on a text field) are *check*.
 
 ### Q3.8 — Negation of field terms, dates, numbers and nodes inside OR groups
 Core cannot do any of these; the plugin vetoes negative field searches. Keep (consistent) or go
@@ -125,16 +135,21 @@ not `$searchbyday` is set — replicate that.
 `date:2024, date:2025` is two joins ANDed — only resources holding both years (D26: 0); `date:2024;2025`
 is `LIKE "2024;2025%"`: nothing (D27). Replicate both (two ANDed `_q` filters; an impossible filter
 or a veto for the `;` form)? The SA7 veto of `;` must not treat a date field as an OR group.
+**Catalogue marks (2026-10-16):** D26 (two values on one field) is *must*; D27 (`;` on a date) is
+*check*.
 
 ### Q3.15 — `$ignore_filters`
 It reaches the hook and core uses it only to skip the date, `numrange` and fixed-list conversion of
 field terms (G41). Read it the same way in the parse (so `date:2024` with the flag is plain words),
 or veto when it is set? Which callers set it?
+**Catalogue marks (2026-10-16):** G41 is *must* — read the flag as core does.
 
 ### Q3.16 — Non-indexed date and numeric fields as a slice of Q1.1
 Date and number terms join nodes in core, so the index flag never matters for them (D22, D23, K11).
 Index `_q` / `_f` / `_k` for every date and numeric field regardless of `keywords_index`, whatever
 Q1.1 decides for text? Recommendation: yes (SD5).
+**Catalogue marks (2026-10-16):** D22 and D23 (a date field not flagged for indexing) are *check*;
+if required, this is the slice that serves them.
 
 ### Q3.17 — The exact rules of the field-name match
 Core compares the short name case-insensitively (I11) and whole (a slash is allowed, B9); a

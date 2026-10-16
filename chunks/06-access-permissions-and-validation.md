@@ -79,6 +79,8 @@ hook parameters made nullable where core passes null.
 Defer until sync and validation land (recommended), or build now (per-search grant ref lists, the
 grant_edit hook as a veto or OR-in)? Meanwhile the edit gates compare a plugin count with a core
 count — acceptable?
+**Catalogue marks (2026-10-16):** G38 is *must*, satisfied by declining (core answers) until this
+question builds editable-only searches.
 
 ### Q6.5 — Typesense-only mode and access
 If Q0.6 keeps it as a testing aid, document "never for real users" and make the setup page say so.
@@ -90,6 +92,9 @@ Replicate (needs dimensions indexed, Q1.6) or veto when it is set?
 ### Q6.7 — NOT over hidden and inactive fields
 Core's omit covers all fields; the plugin's covers the indexed, visible ones. Index inactive/hidden
 field values for negative matching only (cost, complexity), or accept the small difference?
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** a set difference (33 resources on
+`-landscape`), so either the words of inactive and hidden fields are indexed for negation only, or
+core's reading of inactive fields in a NOT is treated as a defect under Q11.3. Still to say which.
 
 ### Q6.8 — Share keys and external access
 Collection share keys go through `collection_readable()`; resource-level external keys

@@ -47,6 +47,9 @@ catalogue, acceptance criteria, test data, credentials, and where the tests live
 Commit `harness/` into the plugin on `typesense` (the folder name avoids core's `tests/` scanner)
 and merge the two unpushed branches? Or a separate test repository? Recommendation: in the plugin,
 next to the code it tests.
+**Decided 2026-10-16: in the plugin, `harness/`, on `typesense`**, with CLI guards and deny rules,
+excluded from deployments, results not committed; the two branches merged by Chris as H1's first
+act — decisions.md.
 
 ### Q10.2 — The verification method
 Keep both: the local harness for semantics (fast, no host) and the live A/B for counts and timing on
@@ -57,6 +60,10 @@ batteries? Worth it now?
 Define "pass": identical totals and ref order for every catalogue row that core answers sensibly,
 with an **accepted-divergence list** (relevance order, core bugs, decided differences) that the
 runners consult. Who maintains the list, and does an unlisted difference fail the run?
+**Decided 2026-10-16: the acceptance rule** — for a served search the set, total and order are exact,
+relevance-to-text order the only listed exception; declines must match their planned reason; core
+bugs per Q11.3; unlisted differences fail; the list lives in the harness, every entry cites a
+decision — decisions.md.
 
 ### Q10.4 — Test data
 Which dataset is the reference: the YSP database (real, large, limited field types) or a seeded
@@ -95,6 +102,8 @@ twice per case, the fixture library, 30 batteries and the factorial combinations
 infrastructure, not plugin code: it asserts on `do_search()` results and does not depend on the
 plugin's internals. Recommendation: reuse it reviewed (principle 6), bringing it in as task H1 and
 rewriting only the batteries that assumed old behaviour. Alternative: rebuild it too.
+**Decided 2026-10-16: reuse reviewed (H1) plus a MySQL-backed mode for the emulated forms (H9)** —
+decisions.md. Q10.2 now includes whether the MySQL mode runs in CI.
 
 ### Q10.12 — Battery naming tied to the catalogue
 One harness file per package (`harness/ab/<ID>_<slug>.php`), case labels carrying the catalogue row

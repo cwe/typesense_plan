@@ -34,6 +34,7 @@ Shapes: SA3, SA5, SA7, SA8, SD3, SG*, D9.
 used only for wildcards (full parity for K2/K3; more memory, Q1.11); (c) flagged only, nothing else.
 Rec.: (a) — parity by construction for words, options and field terms; bare wildcards over
 non-indexed fields become an accepted difference or a veto (Q2.3).
+Note (Q10.3): an approximate set is out, so (a) means those forms decline; (b) means they serve.
 Shapes: B1, B2, B4, SA5, SB3, SK1, SD5, SE1.
 - **Answer:**
 - **Reason:**
@@ -46,6 +47,7 @@ construction; quoted words sent unstemmed as core does; phrases need no special 
 check that the tokeniser leaves pre-stemmed tokens alone); keep Typesense's stemmer and list the
 differing forms, solving phrases under Q2.5; or trial both on the fixture first.
 Rec.: pre-stem.
+Note (Q10.3): drift changes sets, so the choice is pre-stem or decline under `$stemming`.
 Shapes: A3, A5, B2, SA3, SA12, Q2.5.
 - **Answer:**
 - **Reason:**
@@ -67,6 +69,7 @@ and EDTF `2024-12-99` give core's answer; year-only stored values never match a 
 inside their year, as in core); (b) interval overlap on `_range_start`/`_range_end` (more correct,
 +106 on the test system), documented; (c) overlap with non-real ends clamped.
 Rec.: (a) if Q0.2 is parity — the advanced form produces these ends routinely.
+Note (Q10.3): overlap as a served difference is out; (a), or decline ranges with non-real ends.
 Shapes: A4, SD3, SD4, H35, J5, J6.
 - **Answer:**
 - **Reason:**
@@ -108,15 +111,21 @@ The design (one mode + all restrictions + a shared keyword step, a query plan co
 parameters, execute, hydrate) absorbed every addition without orchestrator changes. Rec.: keep the
 design, rewrite the code. Alternative: per-form handlers or a single query builder.
 Shapes: D1–D11, every S package.
-- **Answer:**
-- **Reason:**
+- **Answer:** (a), written procedurally; the plan admits AND clauses plus five declared mechanisms
+  (recent-N, suppression, the `J`-in-collection rule, OR alternatives, budgets) and nothing else;
+  SH1 gates every merge. Decided 2026-10-16.
+- **Reason:** core ANDs everything, so combinations are the sum of their parts; the five mechanisms
+  are the exceptions, four already proven in the old code. See decisions.md.
 
 #### Q0.14 — Approve the module layout
 The file split in [tasks/README.md](tasks/README.md). Agree, or change the split before tasks are
 cut to it.
 Shapes: every task's *builds* line.
-- **Answer:**
-- **Reason:**
+- **Answer:** option 3 — one file per concept, one per mode and restriction, the loader at the
+  conventional entry point, with the naming, split-at-a-seam and require-only-earlier-files rules.
+  Decided 2026-10-16.
+- **Reason:** the most maintainable split: readable files, small diffs, parallel work on separate
+  files, isolated unit batteries. See decisions.md.
 
 #### Q10.11 — Reuse the existing harness code?
 The harness (SQLite for MySQL, a private Typesense, real core and plugin run twice per case, the
@@ -124,8 +133,11 @@ fixture library, the batteries, the factorial combinations) is test infrastructu
 Rec.: reuse it reviewed (principle 6), as task H1, re-cutting only the batteries that assumed old
 behaviour.
 Shapes: H1, every battery.
-- **Answer:**
-- **Reason:**
+- **Answer:** option (c): reuse reviewed now (H1: three couplings rewritten, batteries re-cut per
+  package, trace harness retired, results cleared) and a MySQL-backed mode later (H9) for the forms
+  the shim emulates. Decided 2026-10-16.
+- **Reason:** the shim is the proven hard part; its emulations matter more now that wildcards and
+  the full-text box are must, and a second driver removes that caveat cheaply. See decisions.md.
 
 ### Schema (M1)
 
@@ -171,6 +183,8 @@ documented; (B) index `hit_count` and `user_rating` and sort keyword-less search
 date_field_sort, ref` (387 of core's top 400; fresh only after a rebuild) — keyword searches still
 differ; (C) veto keyword-less relevance meanwhile. And: is a different relevance order acceptable to
 the users at all?
+Note (Q10.3): keyword-less relevance must be exact — a composite sort key, exact as of the last
+rebuild; the remaining choice is whether that staleness is acceptable.
 Shapes: D9, A3, SG2, SC1 (node-only order), SF2 (Q5.3).
 - **Answer:**
 - **Reason:**
@@ -334,16 +348,23 @@ Shapes: I1.
 `harness/` in the plugin on `typesense` (not `tests/`), merging the two unpushed branches; or a
 separate test repository. Rec.: in the plugin.
 Shapes: H1.
-- **Answer:**
-- **Reason:**
+- **Answer:** option (a): `plugins/typesense_search/harness/` on `typesense`, guarded and excluded
+  from deployments, results not committed; the two branches merged by Chris first. Decided
+  2026-10-16.
+- **Reason:** batteries move with the code; one checkout for CI and upgrades; principle 3 holds. See
+  decisions.md.
 
 #### Q10.3 — Acceptance criteria
 "Pass" = identical totals and order for every catalogue row core answers sensibly, with an
 accepted-divergence list the runners consult. Who maintains the list; does an unlisted difference
 fail the run?
 Shapes: H1, H3, SH1, coverage.md.
-- **Answer:**
-- **Reason:**
+- **Answer:** served = exact set, total and order; relevance-to-text order the only listed
+  exception; declines match their planned reason; core bugs per Q11.3; unlisted differences fail;
+  the list in the harness, every entry citing a decision, Chris approving at merge. Decided
+  2026-10-16.
+- **Reason:** "anything we want Typesense to support that doesn't involve relevancy to a text string
+  should exact match". It directs Q3.4, Q2.14, Q1.1, Q1.13, Q6.7 and Q7.1 — see decisions.md.
 
 #### Q10.4 — Test data
 The YSP database (real, large, limited field types) or a seeded system (chosen data: a tree, dynamic

@@ -53,7 +53,7 @@ Generated from the chunk files (`### Q<chunk>.<n> — title` headings). Answer i
 - **Q2.12** Unknown words and suggestions ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.13** Which keyword quirks to raise upstream rather than copy ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.14** Pre-stem with ResourceSpace's own stemmer on both sides? ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
-- **Q2.15** The full-text box: permanent veto? ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
+- **Q2.15** The full-text box: which operators, and how far ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.16** Short wildcards ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.17** A wildcard inside a word ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))
 - **Q2.18** Accent folding ([02-free-text-keyword-semantics.md](chunks/02-free-text-keyword-semantics.md))

@@ -59,6 +59,9 @@ Core's wildcard, full-text and field-specific date/numeric searches reach non-in
 detectable; a bare wildcard is not); (b) index every active field's values, searchable or not
 depending on flags (cost: size, and `query_by` must still exclude non-indexed fields for plain
 keyword searches); (c) accept the difference. The size cost is unmeasured.
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** wildcard and full-text forms over
+non-indexed fields must give core's set, so either every field's values are indexed (b) or those
+forms decline when a visible non-indexed text field exists; serving them approximately is out.
 
 ### Q1.2 — Which representations per field type?
 Keep the current set? Specific points: `_q` for text fields is unused (the bare-colon filter on
@@ -124,6 +127,8 @@ Core turns only the first `$node_keyword_index_chars` characters of a value into
 wildcard reads the whole value (K10). Index two representations (the capped text for word matching,
 the whole value for wildcards), cap everything, or index everything and accept that a word past the
 cap matches in the plugin but not in core (harness A27: 1 / 2)?
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** a word past the cap must not match,
+so the word-matching representation is capped like core's keywords.
 
 ### Q1.14 — The registry as the extension contract
 Every index field as an entry in one registry (name or pattern, type, flags, the field types and

@@ -25,13 +25,19 @@ per mechanism, each owning its rows, with its own fixture and battery — see
 (E and F — the earlier "modes" and "field forms" areas — are absorbed into S; the letters are not
 reused so that older references stay unambiguous.)
 
-## Proposed module layout (Q0.14)
+## Module layout (Q0.14, decided 2026-10-16)
+
+One file per concept, each a few hundred lines; the entry point as ResourceSpace developers expect
+it; one file per mode and per restriction because that is where parallel work and the "add a
+special search" extension happen.
 
 ```
 plugins/typesense_search/
-  typesense_search.yaml  config/config.php  languages/en.php
-  hooks/all.php                   entry points only; the C5, C6, C9 handlers just mark rows
+  typesense_search.yaml  config/config.php  languages/en.php  dbstruct/table_typesense_search_sync_queue.txt (C1)
+  hooks/all.php                   includes include/typesense_search_functions.php only; the C5, C6, C9 handlers just mark rows
   include/
+    typesense_search_functions.php  the loader and the shared helpers: requires the index and sync modules at load,
+                                    the search/ modules only inside the search hook
     client.php                    A2  requests, multi_search, imports, breaker (over lib/ if Q9.10 says so)
     state.php                     A6  generation, ready, bulk_pending, snapshots, counters
     tenancy.php                   A8  the prefix: validation, every server-side name, identity, clash check
@@ -44,15 +50,23 @@ plugins/typesense_search/
     import.php                    B7  chunked imports, per-line errors, count verification
     rebuild.php                   B8–B9  generation build, swap, verify, versions, patch
     sync.php                      C1–C4, C7  queue, apply, flush, worker, bulk
-    search/
-      context.php parse.php plan.php keywords.php fields.php nodes.php sort.php escape.php (D12)
-      execute.php hydrate.php validate.php (C8)
-      restrictions/ standard.php access.php group_filter.php featured.php
-      modes/ standard.php collection.php last.php list.php resource.php
-             contributions.php hasdata.php pending.php unsupported.php
-             properties.php empty.php related.php images.php flags.php geo.php colour.php unused.php
     collections.php               SF2  the access gate (helper wrapper or copy)
+    search/
+      run.php                     D1  the driver: context → parse → build → execute → hydrate
+      parse.php                   D2  context and parse
+      plan.php                    D3  the plan and the compiler — no HTTP in this file
+      escape.php                  D12 every value that enters an expression or SQL
+      criteria.php                D4  keywords, field terms, nodes: the shared step
+      sort.php                    D9
+      execute.php                 D10 the only search file that calls the client; windows, recent-N, merges
+      hydrate.php                 D11
+      validate.php                C8
+      restrictions/ standard.php access.php group_filter.php featured.php
+      modes/ standard.php collection.php last.php list.php resource.php contributions.php hasdata.php
+             pending.php unsupported.php  (later: properties.php empty.php related.php images.php
+             flags.php geo.php colour.php unused.php)
   scripts/reindex.php  scripts/sync.php  scripts/explain.php (G7)   each CLI-guarded; .htaccess deny (X3)
+  job_handlers/typesense_search_reindex.php   B8, as the clip plugin does it
   lib/                            A7  the vendored client and its stack (phpcs excludes it)
   pages/setup.php
   harness/                        H  (not tests/: core's runner scans that)
@@ -61,6 +75,17 @@ plugins/typesense_search/
   docs/                           incl. data-protection.md (X7)
 ```
 
+Three rules keep it navigable and testable:
+
+1. **Names carry the module.** `typesense_search_<module>_<verb>()`, so `typesense_search_plan_add_filter()`
+   is in `plan.php` without looking.
+2. **Split at a seam, never grow.** A file passing about six hundred lines is split along a concept
+   boundary; the old plugin's 2,230-line functions file was the largest in the repository.
+3. **Require only earlier files.** parse → plan → criteria → sort → execute → hydrate, in that order;
+   modes and restrictions require the plan and nothing after it; `execute.php` never requires a
+   mode; `plan.php` contains no HTTP. This is what lets a unit battery include only the file under
+   test, lets the compiler battery and the explain tool stop before anything is sent, and the harness
+   checks it mechanically.
 ## Task format
 
 Every task has the same lines so they can be read quickly and compared:
@@ -87,7 +112,7 @@ and **Battery** lines in the same way.
 | M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, X5, H5 |
 | M4 Field, date, number, index-flag forms | Catalogue groups B, C (rest), D, E, K and the form strings identical or declined | SB1–SB6, SC3, SD1–SD5, SE1, SK1–SK3, SJ1, H8 |
 | M5 Specials and collections | Catalogue group F for the data already indexed; the collection matrix | SF1–SF7, SF17, I2, X6 (the pre-pilot review) |
-| M6 Keyword semantics | Catalogue group A beyond plain words; the relevance decision implemented | SA2–SA10, D9 (relevance) |
+| M6 Keyword semantics | Catalogue group A beyond plain words; the relevance decision implemented | H9 (the MySQL mode, first), SA2–SA10, D9 (relevance) |
 | M7 Further sorts, new specials, operations, core hooks | Sort keys; the specials that need index fields; setup page, docs, deployment; the core hooks PR | SG1–SG4, SF9–SF16, G1–G5, G6 (the page), G8 (the check), H6, C9, I3–I6, X7 |
 
 Inside a milestone the tasks are listed in order; a task's *depends on* line is the rule, the

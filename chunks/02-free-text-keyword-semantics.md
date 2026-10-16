@@ -75,6 +75,11 @@ outcome.
 ### Q2.7 — OR-groups `a;b`
 Keep the veto. Core's bare `a;b` only works after a field search has created the combined keyword
 (Core 9) — a core bug. Field-scoped OR (`title:a;b`) could be served as two ORed filters: do it?
+**Direction 2026-10-16 (for now):** field-scoped OR as a filter `||` now; an all-fields OR as the
+same filter-OR over the user's visible fields if its operation count fits the raised server limit,
+otherwise merged per-alternative searches; relevance order of OR searches an accepted difference.
+Still to settle: whether a bare `a;b` should work at all (A16 is marked *check*), and the measured
+operation count.
 
 ### Q2.8 — Punctuation and commas
 `foo-bar` is a phrase in core when the search has no plain-split path, otherwise two words;
@@ -112,6 +117,8 @@ words would be sent unstemmed as core does, and phrases under stemming (Q2.5) wo
 rule. Costs: a rebuild when the stemmer or `$stemming` changes (already true), stems visible in
 Typesense (never shown — rows are hydrated from MySQL), and a check that Typesense's tokeniser
 leaves the pre-stemmed tokens alone. Recommendation: yes, for SA12 and SA3.
+**Direction from the acceptance rule (Q10.3, 2026-10-16):** stemmer drift changes sets, so the
+stems must agree — pre-stem with core's stemmer, or decline when `$stemming` is on.
 
 ### Q2.15 — The full-text box: which operators, and how far
 `"@FULL_TEXT:…"` is MySQL boolean mode over node names of every field, indexed or not; words without

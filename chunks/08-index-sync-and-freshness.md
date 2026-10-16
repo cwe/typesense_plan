@@ -85,6 +85,10 @@ and collection bulk writes without hooks wait for the nightly rebuild until Phas
 
 ### Q8.9 — Hit-count freshness
 If Q7.1 chooses B, `hit_count` is refreshed only by the rebuild (daily). Acceptable?
+**Catalogue marks (2026-10-16):** the hit-count sorts are *must*. `hit_count` is written only by the
+maintenance cron's copy from `new_hit_count`, with no hook, so the index is exact as of the last
+rebuild — schedule the nightly build after that cron, or accept the day's drift. `user_rating` has
+the `modifyuserrating` hook (register row E27).
 
 ### Q8.10 — Rebuild window and capacity
 Time of day; duration budget; disk and memory for two generations briefly (2 × ~800 MB on the test

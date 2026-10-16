@@ -99,12 +99,18 @@ restrictions + a shared keyword step, a query plan compiled to parameters, execu
 absorbed every addition (collections, `J`, grants, group filters, `!last`, field forms) without
 changes to the orchestrator. Recommendation: keep the design, rewrite the code. Alternative: a
 different decomposition (per-search-form handlers, or a single query builder).
+**Decided 2026-10-16: keep the design, procedural, with the composition rule (five declared
+interaction mechanisms, nothing else) and SH1 as the merge gate** — decisions.md.
 
 ### Q0.14 — Approve the module layout
 [tasks/README.md](../tasks/README.md) proposes the files: `client`, `schema`, `dates`, `text`,
 `fields`, `documents`, `rebuild`, `sync` at `include/`, and `search/` split into context, parse,
 plan, keywords, nodes, sort, execute, hydrate, validate with `restrictions/` and `modes/` folders.
 Agree, or change the split before tasks are cut to it.
+**Decided 2026-10-16: option 3** — one file per concept (parse, plan, escape, criteria, sort,
+execute, hydrate, validate), one per mode and restriction, a loader at the conventional entry
+point, and the three rules (names carry the module; split at ~600 lines; require only earlier
+files) — decisions.md and the layout in tasks/README.md.
 
 ## Done when
 

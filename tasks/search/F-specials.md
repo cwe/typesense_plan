@@ -5,6 +5,12 @@ Anything after the first space is keywords, nodes or field terms applied on top;
 starting with `!` is ignored. Resource types still apply to most of them, workflow states do not
 apply to collections, lists and the pending searches, and the `z` permissions always apply.
 
+**Catalogue marks (2026-10-16):** required — SF1–SF8 (F40, F41 and F44 not required but served by
+composition anyway), SF9 `!properties`, SF10 `!empty` (not the name form), SF11 `!related`, SF12
+`!images`, SF13 `!locked` (`!integrityfail`, `!noningested` to check); *check* — SF16 `!unused`;
+parked as not required — SF14 `!geo`, SF15 `!colour`; SF17 confirmed on core. Rows marked *check*:
+F31, F37, F38, F39, F48, F52, F59, F62, F63, F65, F69.
+
 One package per special or family. SF1–SF8 are milestone M5 (the data is indexed already);
 SF9–SF16 are M7, each needing its index fields (Q4.1 orders them, Q4.2 batches the schema change);
 SF17 is the list that stays on core. Every mode gets keyword, node and field matching from D4, so

@@ -96,6 +96,7 @@ split is acceptable for collections specifically (a 30,000-member collection tak
 When set, `search_filter()` keeps the archive states the smart collection saved instead of the
 defaults (G40). The old plugin fell back for every smart search; the rule is one condition in D5.
 Serve it, or keep the fallback until Q4.6 settles what the plugin does with smart collections?
+**Catalogue marks (2026-10-16):** G40 is *must* — serve the saved states.
 
 ## Done when
 
