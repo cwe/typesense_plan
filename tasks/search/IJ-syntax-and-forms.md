@@ -5,6 +5,12 @@ battery of D2 — see [coverage.md](coverage.md) for the row-by-row ownership. G
 package: the strings `search_form_to_search_query()` and the search bar build, tested end to end
 from form input rather than from hand-typed text.
 
+**Catalogue marks (2026-10-20):** I1 is *no* (a special followed by a comma and no space is declined; core
+answers); I3, I6, I7, I8 and I12 are *check*; I2 and I9 are bug rows; I4, I5, I10 and I11 are *must*. J4, J9
+and J13 are *check*; the rest of J is *must*, J2 as a bug row. One tension to resolve: J3
+(`!contributions9,sculpture`, as the form posts it) is *must* while I1 (`!collection3808,sculpture`) is *no*,
+and both are the same parse rule — one disposition has to win (decisions.md).
+
 ### SJ1 — Strings as the pages assemble them
 - **Rows:** J1 J2 J3 J4 J11 I12 (owned) · J5 J6 J13 (SD3/SD1) · J7 (D10) · J8 J9 J10 (SC2) · J12
   (SA8) · the search bar's rebuilt text (harness 25)

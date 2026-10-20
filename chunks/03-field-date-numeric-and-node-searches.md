@@ -63,11 +63,17 @@ Every unresolved field value becomes a veto. Any case where serving a best-effor
 These are reached by clicking a metadata value, so they are common. Implement: strip the quotes,
 scope the phrase to the field (text) or resolve the option (fixed list)? Or veto?
 
+**Catalogue marks (2026-10-20):** B3 (`"title:henry moore"`) and B4 (`title:"henry moore"`) are *check* —
+core's handling of both quoted forms is confirmed before the marks are final; SB2 keeps the rows.
+
 ### Q3.3 — `basicyear:` / `basicmonth:` / `basicday:`
 Implement against the date field's representations (year, month, day parts are indexed in `_q`).
 Confirm, and confirm `$date_field` is the target when the dropdowns are used.
 **Catalogue marks (2026-10-16):** D10–D15 are *must* — the dropdowns and the legacy `nnnn|05` form
 are served; Q3.13 chooses the mechanism.
+
+**Catalogue marks (2026-10-20):** H19 and H20 (the simple-search year with a keyword and with a node) are *must*
+— SD2 must compose with both.
 
 ### Q3.4 — Date-range semantics (open decision C)
 (a) Replicate core's string comparison exactly — index a fixed-width sortable key (e.g. the padded
@@ -80,6 +86,9 @@ ends routinely.
 the string comparison is reproduced (the sortable key) or ranges with non-real ends are declined;
 interval overlap as a served difference is out.
 
+**Catalogue marks (2026-10-20):** H35 (a date range with a node and a keyword), J5 (a start year only) and J6
+(months only) are *must*; J13 (a value and a range on one field) is *check*.
+
 ### Q3.5 — Date-range fields (start/end pairs)
 Core is buggy here (exact value → nothing; parameters reversed). Serve correctly, replicate the bug,
 or veto? (Links Q11.3.)
@@ -89,6 +98,9 @@ date-range field before deciding.
 ### Q3.6 — Field-specific searches on non-indexed fields
 Options: index every field's values (Q1.1); veto `field:value` when the field has no index flag
 (the lookup knows); accept 0 results. The test system has one such date field in use.
+
+**Catalogue marks (2026-10-20):** K11 (a number range on a non-indexed numeric field) is *check*; no such field
+exists on the test system.
 
 ### Q3.7 — Numeric fields
 Confirm plain `field:42` → `_q` exact (staged). `numrange` on a non-numeric text field: core compares
@@ -102,6 +114,9 @@ which core treats as a keyword in the field) and E7 (`numrange` on a text field)
 Core cannot do any of these; the plugin vetoes negative field searches. Keep (consistent) or go
 beyond core?
 
+**Catalogue marks (2026-10-20):** B17 (`title:-sculpture`) is *check* — whether core really excludes nothing is
+confirmed before the mark is final (a bug would fall under Q11.3); SB5 keeps the row.
+
 ### Q3.9 — Node limits and toggles
 `$category_tree_search_use_and_logic` is implemented but untested — get a tree fixture before
 relying on it. AND chains above 40 nodes veto to core (core itself fails at 58 joins): acceptable?
@@ -110,6 +125,8 @@ Raise the server's `--filter-by-max-ops` on the target and the plugin's guard wi
 ### Q3.10 — Wildcard candidate caps on field searches
 `field:word*` is capped at 4 completions by default (`title:zeb*` 40 / 4). Raise to what, or
 exhaustive?
+
+**Catalogue marks (2026-10-20):** H5 (a field wildcard and a node) is *must*.
 
 ### Q3.11 — Field name lookup
 Core matches short names exactly (case?); unknown names become two words (replicated). Confirm
@@ -122,6 +139,11 @@ nothing on a fixed-list field that is not flagged for indexing (C9: 0). The bare
 a `field_<ref>_ss` array of option names (tokenised and stemmed like text) reproduces this, and a
 missing `_ss` on a non-indexed field matches nothing, as core. Confirm this replaces the veto of
 Q3.1 for SC3, and that `_ss` is stored for every indexed fixed-list field (Q1.1).
+
+**Catalogue marks (2026-10-20):** C4 (one word of an option), C5 (a wildcard on an option), C7 (the AND of two
+options) and C12 (one word of a dynamic keyword) are *check* — core's keyword-in-field fallback and the C7
+result are confirmed before the marks are final; SC3 keeps the rows. C23 (an option name and a node of the same
+field, SC2) is *check* for the same reason: its 0 in core is to be confirmed.
 
 ### Q3.13 — `basicyear` / `basicmonth` / `basicday`: integer components or `_q` tokens?
 The dropdowns address `$date_field` only, with `LIKE "____-05-__%"` forms that `_q`'s year /
@@ -144,6 +166,9 @@ field terms (G41). Read it the same way in the parse (so `date:2024` with the fl
 or veto when it is set? Which callers set it?
 **Catalogue marks (2026-10-16):** G41 is *must* — read the flag as core does.
 
+**Catalogue marks (2026-10-20):** G41 is *check* — which callers set `$ignore_filters` and what core does
+with it are confirmed before the mark is final.
+
 ### Q3.16 — Non-indexed date and numeric fields as a slice of Q1.1
 Date and number terms join nodes in core, so the index flag never matters for them (D22, D23, K11).
 Index `_q` / `_f` / `_k` for every date and numeric field regardless of `keywords_index`, whatever
@@ -161,6 +186,8 @@ on the test system. Confirm the lookup: exact, case-insensitive, no trimming of 
 SB2 and SB4 need `"title:henry moore"` and `exhibitiontitle:fabric-ation` as phrases confined to the
 field (core's rule). Verify live whether `field_8_s:\`henry moore\`` requires adjacency; if it is an
 AND of words, choose between an accepted difference and a veto for multi-word field phrases.
+
+**Catalogue marks (2026-10-20):** B3 is *check* (see Q3.2).
 
 ## Done when
 

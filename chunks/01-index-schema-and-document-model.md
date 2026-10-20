@@ -63,6 +63,9 @@ keyword searches); (c) accept the difference. The size cost is unmeasured.
 non-indexed fields must give core's set, so either every field's values are indexed (b) or those
 forms decline when a visible non-indexed text field exists; serving them approximately is out.
 
+**Catalogue marks (2026-10-20):** K2 (`nikon*`) and K3 (`camera:nik*`), the wildcard forms over a field not
+flagged for indexing, are *check*; K1 and K7 are *must* and are answered by core before the hook.
+
 ### Q1.2 — Which representations per field type?
 Keep the current set? Specific points: `_q` for text fields is unused (the bare-colon filter on
 `_s`/`_text` does the job) — drop it; add a sortable key per field that core can sort by (title,
@@ -74,6 +77,8 @@ Fragments are in `query_by` for partial-indexed fields, so a word held only in a
 findable. Catalogue E14 says fragments are *not* free-text searchable — reconcile (one of the two is
 out of date) and confirm the intended behaviour. Also confirm the memory cost is acceptable on the
 target server.
+
+**Catalogue marks (2026-10-20):** K5 (a bare fragment of a partially indexed field) is *must* — SB6 serves it.
 
 ### Q1.4 — Value cleaning at index time
 (a) Strip HTML tags and entities before indexing (core strips? verify) — yes/no; (b) translated
@@ -122,6 +127,9 @@ reachable by word (K9). Represent it as a non-tokenised string (one token per va
 phrase forms and wildcards still reach multi-word values, or treat the field as ordinary text and
 accept the difference? No such field exists on the test system; the fixture needs one (SK3).
 
+**Catalogue marks (2026-10-20):** K9 (complete indexing) is *check*; no such field exists on the test system,
+so the check needs the fixture.
+
 ### Q1.13 — The 500-character cap
 Core turns only the first `$node_keyword_index_chars` characters of a value into keywords, but a
 wildcard reads the whole value (K10). Index two representations (the capped text for word matching,
@@ -129,6 +137,8 @@ the whole value for wildcards), cap everything, or index everything and accept t
 cap matches in the plugin but not in core (harness A27: 1 / 2)?
 **Direction from the acceptance rule (Q10.3, 2026-10-16):** a word past the cap must not match,
 so the word-matching representation is capped like core's keywords.
+
+**Catalogue marks (2026-10-20):** K10 (a word beyond the 500th character) is *check*.
 
 ### Q1.14 — The registry as the extension contract
 Every index field as an entry in one registry (name or pattern, type, flags, the field types and

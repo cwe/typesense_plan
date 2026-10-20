@@ -5,6 +5,9 @@ Core matches a value as a **prefix on the stored string** and compares ranges **
 `basicyear`/`basicmonth`/`basicday` address `$date_field` from the simple search bar. Five packages,
 milestone M4; SD3 is the one with an open design decision (Q3.4).
 
+**Catalogue marks (2026-10-20):** SD1 required (13 must, 2 check); SD2 required (8 must, 1 check); SD3 required (5 must, 5 check); SD4 pending check (1 check, 1 bug); SD5 pending check (2 check). The check rows are in
+[checks.md](checks.md) under *Dates*; SD4 and SD5 are not started until theirs are done.
+
 ### SD1 — Date values
 - **Rows:** D1 D2 D3 D4 D17 D18 D20 D21 D26 D27 D28 H7 H8 H17 H21 · cross: J13 (SD3: a value and a range on one field)
 - **Builds:** `field:<YYYY | YYYY-MM | YYYY-MM-DD>` → `field_<ref>_q:=<value>` (P32) for every date

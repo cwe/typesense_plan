@@ -8,6 +8,7 @@ index in [questions.md](questions.md).
 
 Rec. = the recommendation already written in the plan. "Shapes" names the tasks and packages whose
 *must honour* or *serve* lines change with the answer.
+Standing (added 2026-10-20) = what the catalogue marks say about the question: see the end of the file.
 
 ## Part 1 — The six that shape the most packages
 
@@ -17,6 +18,7 @@ faster search where it is safe, core everywhere else; (c) better search than cor
 differences. The measure follows: % of catalogue rows identical, the live A/B pass rate, latency vs
 core, or a mix. The original brief was (a).
 Shapes: every `?` row in coverage.md; the accepted-divergence list.
+Standing (2026-10-20): **uncited** — no row and no blocking line names it; it acts through its *Shapes* line
 - **Answer:**
 - **Reason:**
 
@@ -25,6 +27,7 @@ Decline (veto → core answers, slower) or serve an approximation (faster, diffe
 approximations that are always acceptable (relevance order?) and some that never are (anything
 affecting what a user may see)? Principle 7 already rules out "everything" and "nothing".
 Shapes: SA3, SA5, SA7, SA8, SD3, SG*, D9.
+Standing (2026-10-20): **uncited** — no row and no blocking line names it; it acts through its *Shapes* line
 - **Answer:**
 - **Reason:**
 
@@ -36,6 +39,7 @@ Rec.: (a) — parity by construction for words, options and field terms; bare wi
 non-indexed fields become an accepted difference or a veto (Q2.3).
 Note (Q10.3): an approximate set is out, so (a) means those forms decline; (b) means they serve.
 Shapes: B1, B2, B4, SA5, SB3, SK1, SD5, SE1.
+Standing (2026-10-20): **required** — must rows A11, A27; check rows K2, K3; blocks A3, B1, SA5, SA8, SC3, SK1
 - **Answer:**
 - **Reason:**
 
@@ -49,6 +53,7 @@ differing forms, solving phrases under Q2.5; or trial both on the fixture first.
 Rec.: pre-stem.
 Note (Q10.3): drift changes sets, so the choice is pre-stem or decline under `$stemming`.
 Shapes: A3, A5, B2, SA3, SA12, Q2.5.
+Standing (2026-10-20): **required** — must rows A5; blocks B2
 - **Answer:**
 - **Reason:**
 
@@ -60,6 +65,7 @@ non-indexed fixed-list field has no `_ss` and matches nothing, as core. Variant:
 match, veto wildcards and BOM names until proven.
 Rec.: serve via `_ss`.
 Shapes: SC3, B2.
+Standing (2026-10-20): Q3.1: **required** — blocks SC2, SC3 · Q3.12: **required** — must rows B9, C3, C9; check rows C4, C5, C7, C12; blocks B2, SC3
 - **Answer:**
 - **Reason:**
 
@@ -71,6 +77,7 @@ inside their year, as in core); (b) interval overlap on `_range_start`/`_range_e
 Rec.: (a) if Q0.2 is parity — the advanced form produces these ends routinely.
 Note (Q10.3): overlap as a served difference is out; (a), or decline ranges with non-real ends.
 Shapes: A4, SD3, SD4, H35, J5, J6.
+Standing (2026-10-20): **required** — must rows D6, D19, H35, J5, J6; check rows D5, D7, D8, D9; blocks A4, B2, SD3
 - **Answer:**
 - **Reason:**
 
@@ -83,12 +90,14 @@ Categories: the existing hook-return patch; new hooks; a shared collection acces
 fixes; behaviour fixes to quirks. For each: fork-only, upstream PR, or neither (Q11.1 asks it per
 category).
 Shapes: I1–I5, SF2, C9, D10 (next/previous).
+Standing (2026-10-20): **required** — blocks I1
 - **Answer:**
 - **Reason:**
 
 #### Q0.5 — Target environments
 RS version(s); PHP floor; Typesense pinned to 30.x; single node; which servers beyond the test host.
 Shapes: A1, A2, G5.
+Standing (2026-10-20): **required** — blocks G8, X2
 - **Answer:**
 - **Reason:**
 
@@ -96,6 +105,7 @@ Shapes: A1, A2, G5.
 A testing aid (a declined search returns nothing instead of falling back) or a supported production
 mode? As a production mode it fails closed for every access-gate use of search (Q6.2, Q6.5).
 Shapes: D1, C8, G1.
+Standing (2026-10-20): **required** — blocks D1
 - **Answer:**
 - **Reason:**
 
@@ -103,6 +113,7 @@ Shapes: D1, C8, G1.
 Branching (keep `typesense`, or a branch per package merged into it); who commits and pushes (Chris
 so far); review before merge; plugin version bumps; how a change reaches the test host.
 Shapes: principles 3 and 10, G5.
+Standing (2026-10-20): **uncited** — no row and no blocking line names it; it acts through its *Shapes* line
 - **Answer:**
 - **Reason:**
 
@@ -111,6 +122,7 @@ The design (one mode + all restrictions + a shared keyword step, a query plan co
 parameters, execute, hydrate) absorbed every addition without orchestrator changes. Rec.: keep the
 design, rewrite the code. Alternative: per-form handlers or a single query builder.
 Shapes: D1–D11, every S package.
+Standing (2026-10-20): **required** — blocks A1
 - **Answer:** (a), written procedurally; the plan admits AND clauses plus five declared mechanisms
   (recent-N, suppression, the `J`-in-collection rule, OR alternatives, budgets) and nothing else;
   SH1 gates every merge. Decided 2026-10-16.
@@ -121,6 +133,7 @@ Shapes: D1–D11, every S package.
 The file split in [tasks/README.md](tasks/README.md). Agree, or change the split before tasks are
 cut to it.
 Shapes: every task's *builds* line.
+Standing (2026-10-20): **required** — blocks A1
 - **Answer:** option 3 — one file per concept, one per mode and restriction, the loader at the
   conventional entry point, with the naming, split-at-a-seam and require-only-earlier-files rules.
   Decided 2026-10-16.
@@ -133,6 +146,7 @@ fixture library, the batteries, the factorial combinations) is test infrastructu
 Rec.: reuse it reviewed (principle 6), as task H1, re-cutting only the batteries that assumed old
 behaviour.
 Shapes: H1, every battery.
+Standing (2026-10-20): **required** — blocks H1
 - **Answer:** option (c): reuse reviewed now (H1: three couplings rewritten, batteries re-cut per
   package, trace harness retired, results cleared) and a MySQL-backed mode later (H9) for the forms
   the shim emulates. Decided 2026-10-16.
@@ -146,6 +160,7 @@ Drop `_q` for text fields (unused); add sortable keys for the sorts chosen in Q7
 `_range_start` covers every case; add `_k` (string-comparison key) if Q3.4 chooses (a); `_ss` for
 fixed-list fields (Q3.12); integer date components for `$date_field` (Q3.13).
 Shapes: A3, B2, SD2, SD3, SG1–SG4.
+Standing (2026-10-20): **required** — blocks A3, B2
 - **Answer:**
 - **Reason:**
 
@@ -154,6 +169,7 @@ Shapes: A3, B2, SD2, SD3, SG1–SG4.
 width, height; `lock_user`, `integrity_fail`, file presence; a geopoint; `colour_key`; related refs;
 `rty.order_by`; a sortable title. One batch (one rebuild) or per package (Q4.2)?
 Shapes: A3, B2, SF9–SF16, SG1–SG3.
+Standing (2026-10-20): **required** — blocks A3
 - **Answer:**
 - **Reason:**
 
@@ -161,12 +177,14 @@ Shapes: A3, B2, SF9–SF16, SG1–SG3.
 Generation collections + aliases (P7); what triggers a full rebuild (field config, `$stemming`,
 schema version); how the version is recorded; whether `PATCH` stays for additive changes.
 Shapes: B8, B9, G5.
+Standing (2026-10-20): **required** — blocks A3, B9
 - **Answer:**
 - **Reason:**
 
 #### Q1.10 — Document identity
 Resources `id = ref`; memberships `collection:resource`; grants: confirm the scheme.
 Shapes: B3–B6.
+Standing (2026-10-20): **required** — blocks A3, B6
 - **Answer:**
 - **Reason:**
 
@@ -174,6 +192,7 @@ Shapes: B3–B6.
 ~800 MB today for ~115k resources with fragments; two generations briefly during a rebuild. What is
 acceptable on the target, and does it rule anything out (Q1.1, Q1.6, Q1.3)?
 Shapes: B8, SK1, SB6.
+Standing (2026-10-20): **required** — blocks A3, B8
 - **Answer:**
 - **Reason:**
 
@@ -186,6 +205,7 @@ the users at all?
 Note (Q10.3): keyword-less relevance must be exact — a composite sort key, exact as of the last
 rebuild; the remaining choice is whether that staleness is acceptable.
 Shapes: D9, A3, SG2, SC1 (node-only order), SF2 (Q5.3).
+Standing (2026-10-20): **required** — check rows G11; blocks A3, B3, D9, SG2 (pending check)
 - **Answer:**
 - **Reason:**
 
@@ -197,6 +217,7 @@ unknown special → everything). (a) replicate, bugs included; (b) parse each sp
 form and veto the rest (core then answers — the user sees core's behaviour either way); (c) parse
 sensibly and accept differences. Rec.: (b).
 Shapes: D2, SF1, SF3, SF4, SF8.
+Standing (2026-10-20): **required** — must rows F3; bug rows F4, F31; blocks D2, SF1, SF3 (pending check), SF4
 - **Answer:**
 - **Reason:**
 
@@ -205,6 +226,7 @@ Shapes: D2, SF1, SF3, SF4, SF8.
 any row is dropped, queue a repair, count it. Rec.: (B) — a dropped row means the total and paging
 are wrong too. Mechanism: re-run `search_filter()` plus the `rca`/`rca2` joins in the hydrate query.
 Shapes: C8, D11.
+Standing (2026-10-20): **required** — blocks C8, D11
 - **Answer:**
 - **Reason:**
 
@@ -213,6 +235,7 @@ Shapes: C8, D11.
 veto (single-resource, refs-only or count-only searches), rely on validation and accept the window,
 or a core change so those call sites bypass external providers.
 Shapes: SF4, SF5, C8, D1.
+Standing (2026-10-20): **required** — blocks C8, X4, SF4
 - **Answer:**
 - **Reason:**
 
@@ -221,6 +244,7 @@ Shapes: SF4, SF5, C8, D1.
 override; group filter applied under `access_override`; `J` with no `j` → nothing; hook parameters
 nullable where core passes null. Approve?
 Shapes: D1, D5, D7, D8.
+Standing (2026-10-20): **required** — blocks D1, D5, D7, D8, D12
 - **Answer:**
 - **Reason:**
 
@@ -229,12 +253,14 @@ Keep 25,000? For `view.php`'s next/previous (`fetchrows = -1`): serve fully (20�
 index), force navigation to core (order differs from the grid), or change core's navigation to a
 windowed query (Q0.4). Rec.: the core change.
 Shapes: D10, I4.
+Standing (2026-10-20): **required** — blocks D10, I4
 - **Answer:**
 - **Reason:**
 
 #### Q2.2 — Typo tolerance
 Core has none. `num_typos=0` for parity, or allow typos as a deliberate improvement?
 Shapes: D3, SA1.
+Standing (2026-10-20): **required** — blocks D3, SA1
 - **Answer:**
 - **Reason:**
 
@@ -244,6 +270,7 @@ Shapes: D3, SA1.
 fragments where a field has them. Wildcards over non-indexed fields: core finds them — veto bare
 wildcards, index everything (Q1.1), or accept.
 Shapes: D3, SA1, SA5, SB3, SK1.
+Standing (2026-10-20): **required** — must rows A11; check rows A12, B7, H22, K2; blocks D3, D4, SA1, SA5, SB3, SK1
 - **Answer:**
 - **Reason:**
 
@@ -254,6 +281,7 @@ Nightly rebuild behind aliases (often enough? a window available?); a queue tabl
 per-minute cron worker (system cron available, or only RS's `hook("cron")`?); MySQL serves while
 bulk rows are pending; the plugin global with per-group enable; no deferred bulk work.
 Shapes: B8, C1–C7, A1.
+Standing (2026-10-20): **required** — blocks B8, C1, C2, C4, C7, G8
 - **Answer:**
 - **Reason:**
 
@@ -262,6 +290,7 @@ Confirm the hook list (node layer, resource type, custom access, `put_resource_d
 bulk writes, field-config arguments) and that hook-less writes wait for the nightly rebuild until
 then.
 Shapes: I3, C5, C6, C9.
+Standing (2026-10-20): **required** — blocks C5, C6, C9, I3
 - **Answer:**
 - **Reason:**
 
@@ -269,6 +298,7 @@ Shapes: I3, C5, C6, C9.
 Builder → queue + flush + worker → hooks → guards → validation in Phase 0 → generation rebuild.
 Anything to pull forward (the generation rebuild first, since it fixes freshness nightly on its own)?
 Shapes: the order of B8 and C2–C7.
+Standing (2026-10-20): **required** — blocks C1
 - **Answer:**
 - **Reason:**
 
@@ -276,6 +306,7 @@ Shapes: the order of B8 and C2–C7.
 Circuit breaker + fall back to MySQL (never empty results); the queue keeps accumulating; the worker
 retries with backoff. Confirm, and how Typesense-only mode behaves in an outage (Q0.6).
 Shapes: A2, C4, D1.
+Standing (2026-10-20): **required** — blocks A2, B7, C4
 - **Answer:**
 - **Reason:**
 
@@ -283,6 +314,7 @@ Shapes: A2, C4, D1.
 Own edits on the next page load; others' within seconds; bulk changes intraday with MySQL serving
 meanwhile; hook-less writes nightly. Any flow needing synchronous visibility?
 Shapes: C3, C4, C7.
+Standing (2026-10-20): **required** — blocks C3, C7
 - **Answer:**
 - **Reason:**
 
@@ -292,6 +324,7 @@ Shapes: C3, C4, C7.
 The option list and defaults (prefix, timeouts, max rows, max filter ops, import concurrency and
 chunks, worker count, validation, Typesense-only, rebuild schedule display); which are admin-facing.
 Shapes: A1, A2, G1.
+Standing (2026-10-20): **required** — blocks A1, A2, G1
 - **Answer:**
 - **Reason:**
 
@@ -299,6 +332,7 @@ Shapes: A1, A2, G1.
 The API key as plugin config in the database (set from the setup page) — acceptable? Separate
 search-only and admin keys?
 Shapes: A1, A2, G1.
+Standing (2026-10-20): **required** — blocks A1
 - **Answer:**
 - **Reason:**
 
@@ -308,6 +342,7 @@ keeps the size routing, chunking, breaker and timeouts (rec.); (b) the custom cu
 written; (c) the official client via the fork's root `composer.json`. The library covers every
 endpoint with typed exceptions but has no GET/POST choice, no concurrency and no breaker.
 Shapes: A2, B7, C4.
+Standing (2026-10-20): **required** — blocks A2, A7, B7
 - **Answer:**
 - **Reason:**
 
@@ -315,6 +350,7 @@ Shapes: A2, B7, C4.
 Core's `sysvars` table under a prefixed key (rec.: no new table, visible to core's tooling) or a
 plugin table with typed columns; MySQL either way, not ready by default on a fresh install.
 Shapes: A6, B8, B9, C4, C7, G1.
+Standing (2026-10-20): **required** — blocks A6
 - **Answer:**
 - **Reason:**
 
@@ -323,6 +359,7 @@ Mandatory and validated with the installation's identity written into each gener
 check (rec.), or derived from `$baseurl` with an override. Q9.8 is decided: several installations on
 one server is a requirement.
 Shapes: A8, A1, B8, G6.
+Standing (2026-10-20): **required** — blocks A8
 - **Answer:**
 - **Reason:**
 
@@ -332,6 +369,7 @@ Shapes: A8, A1, B8, G6.
 Fork-only, upstream PR, or neither — for the hook-return patch, new hooks, the collection gate
 helper, the next/previous and page-offset fixes, bug fixes, quirk fixes.
 Shapes: I1–I5.
+Standing (2026-10-20): **required** — blocks C9, I1, I2, I3, I6
 - **Answer:**
 - **Reason:**
 
@@ -339,6 +377,7 @@ Shapes: I1–I5.
 A prerequisite that must go upstream for the plugin to work on stock RS? Was it commented out
 upstream for a reason worth knowing before proposing it?
 Shapes: I1.
+Standing (2026-10-20): **required** — blocks I1
 - **Answer:**
 - **Reason:**
 
@@ -348,6 +387,7 @@ Shapes: I1.
 `harness/` in the plugin on `typesense` (not `tests/`), merging the two unpushed branches; or a
 separate test repository. Rec.: in the plugin.
 Shapes: H1.
+Standing (2026-10-20): **required** — blocks H1
 - **Answer:** option (a): `plugins/typesense_search/harness/` on `typesense`, guarded and excluded
   from deployments, results not committed; the two branches merged by Chris first. Decided
   2026-10-16.
@@ -359,6 +399,7 @@ Shapes: H1.
 accepted-divergence list the runners consult. Who maintains the list; does an unlisted difference
 fail the run?
 Shapes: H1, H3, SH1, coverage.md.
+Standing (2026-10-20): **required** — blocks H1, SH1 (pending check)
 - **Answer:** served = exact set, total and order; relevance-to-text order the only listed
   exception; declines match their planned reason; core bugs per Q11.3; unlisted differences fail;
   the list in the harness, every entry citing a decision, Chris approving at merge. Decided
@@ -371,6 +412,7 @@ The YSP database (real, large, limited field types) or a seeded system (chosen d
 keywords, a date-range field, numeric fields, HTML and translated values, related keywords, search
 filters, custom grants, `J`/`j*` users)? Extend the seeder for the missing kinds?
 Shapes: H4, every live battery.
+Standing (2026-10-20): **required** — blocks H4, H8
 - **Answer:**
 - **Reason:**
 
@@ -378,6 +420,7 @@ Shapes: H4, every live battery.
 One harness file per package, case labels carrying catalogue row IDs, `summarise.php` filling the
 catalogue's OK column, `catalogue_run.php <IDs>` for a package's live rows. Agree?
 Shapes: H1, H3, every package's *battery* line.
+Standing (2026-10-20): **required** — blocks H1
 - **Answer:**
 - **Reason:**
 
@@ -385,6 +428,7 @@ Shapes: H1, H3, every package's *battery* line.
 Per-package additions registered in the fixture library and loaded only by the batteries that need
 them (rec.), or one shared fixture that grows.
 Shapes: H1, every package's *fixture* line.
+Standing (2026-10-20): **required** — blocks H1
 - **Answer:**
 - **Reason:**
 
@@ -392,6 +436,7 @@ Shapes: H1, every package's *fixture* line.
 SH1 (~2.5 minutes at full scale) before every package merge, or once per milestone with a scaled-down
 run per package.
 Shapes: SH1, principle 3.
+Standing (2026-10-20): **uncited** — no row and no blocking line names it; it acts through its *Shapes* line
 - **Answer:**
 - **Reason:**
 
@@ -402,6 +447,7 @@ Two keys (a search-only key scoped to `documents:search` on `<prefix>_*`; an adm
 or one; in `config.php` as core keeps its secrets (rec.) or in the plugin config in the database;
 the setup page shows set / not set only; a rotation procedure. Supersedes Q9.2.
 Shapes: A2, X1, G1, G8.
+Standing (2026-10-20): **required** — blocks A2, G1, G8, X1
 - **Answer:**
 - **Reason:**
 
@@ -409,6 +455,7 @@ Shapes: A2, X1, G1, G8.
 Typesense on localhost or a private network; TLS mandatory when not local; certificate verification
 always on; the endpoints listed for a firewall rule.
 Shapes: A2, X2, G8.
+Standing (2026-10-20): **required** — blocks A2, G8, X2
 - **Answer:**
 - **Reason:**
 
@@ -416,6 +463,7 @@ Shapes: A2, X2, G8.
 Accept and protect the server (rec.), exclude confidential resources or hidden fields (granted users
 then lose Typesense), or add encryption at rest.
 Shapes: B2, B4, X7.
+Standing (2026-10-20): **required** — blocks X7
 - **Answer:**
 - **Reason:**
 
@@ -423,6 +471,7 @@ Shapes: B2, B4, X7.
 C8 option B in M2; the gate uses bypass the index or are always validated; Typesense-only never for
 real users; the acceptable listing window before the hooks land.
 Shapes: C8, D1, SF4, X4.
+Standing (2026-10-20): **required** — blocks C8, X4
 - **Answer:**
 - **Reason:**
 
@@ -430,6 +479,7 @@ Shapes: C8, D1, SF4, X4.
 `.htaccess` deny rules and CLI guards for `scripts/`, `lib/`, `harness/`, the harness excluded
 from deployments — or the harness kept outside the plugin (Q10.1).
 Shapes: X3, A7, H1.
+Standing (2026-10-20): **required** — blocks X3
 - **Answer:**
 - **Reason:**
 
@@ -438,6 +488,7 @@ Tenant keys only (the server check degrades to health and the tenant's own colle
 read-only server-wide diagnostics key entered per tenant, or server checks done outside RS. Verify
 first whether a prefix-scoped key also confines alias and synonym-set calls.
 Shapes: X1, G6, G8.
+Standing (2026-10-20): **required** — blocks G6, X1
 - **Answer:**
 - **Reason:**
 
@@ -499,3 +550,26 @@ is a test to run, not a question.)
 - **Q12.5** erasure and retention (X5) · **Q12.7** logging and redaction (X1, G2, G7) · **Q12.8**
   keys per instance (X1, G6) · **Q12.9** supply chain (A7, X6) · **Q12.10** the standing security
   cases (X4)
+
+## Standing after the marks (2026-10-20)
+
+Every row of the catalogue is marked, so each question above carries a *Standing* line: **required** when a
+*must* or *bug* row cites it or it blocks a task that is not parked; **check-only** when only *check* rows
+cite it and it blocks nothing else — it can wait for the check; **pruned** when only *no* rows cite it and
+it blocks only parked packages; **uncited** when no row and no blocking line names it (it acts through its *Shapes* line). For Part 3:
+
+### Check-only
+
+- **Q1.12** — check rows K9
+- **Q2.17** — check rows A13
+- **Q6.4** — check rows G38
+
+### Pruned
+
+- none: every Part 3 question is cited by a required row or blocks a live task
+
+### Cited by no row and blocking no task
+
+Q0.10 · Q0.11 · Q0.12 · Q1.14 · Q2.18 · Q5.5 · Q8.11 · Q9.8 · Q10.14 — answered when their task starts; nothing in the catalogue turns on them.
+
+Everything else in Part 3 is required.

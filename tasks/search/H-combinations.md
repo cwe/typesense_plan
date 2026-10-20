@@ -5,6 +5,10 @@ buckets, date and numeric joins, the special's own filter and the parameters. Ea
 the **last** package it needs (see [coverage.md](coverage.md)); this package is the invariant that
 the rows together prove, run as a gate.
 
+**Catalogue marks (2026-10-20):** H23 and H33 are *no*; H11, H16, H22, H28, H29, H31, H32 and H38 are
+*check*; the rest are *must*. H31, the capstone, being *check* means its exact expectation is confirmed
+against core before the gate is armed; the gate itself is unchanged.
+
 ### SH1 — The combinations gate
 - **Rows:** H31 (the capstone) · every other H row is listed here and owned elsewhere: H1 H4 H6
   (SC1) · H2 H18 (SC2) · H3 H25 (SB1) · H5 (SB3) · H7 H8 H17 H21 (SD1) · H9 H10 (D5) · H11 H26 H38

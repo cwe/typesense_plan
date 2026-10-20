@@ -62,6 +62,9 @@ ref, which is five keys where Typesense allows three: a composite sort key built
 (option B, extended). Hit counts move by core's cron with no hook, so the order is exact as of the
 last rebuild. Still to say: is that staleness acceptable, or does keyword-less relevance decline?
 
+**Catalogue marks (2026-10-20):** G11 (relevance) is *check* — Chris checks core's relevance order, the
+keyword and the keyword-less case, before the mark is final; the direction above stands meanwhile.
+
 ### Q7.2 — Which further sorts to serve
 Each needs a sortable field: title (a case-insensitive key), status (`archive` is already sortable —
 trivial), resource type (`rty.order_by`), extension and file path, rating and popularity (with
@@ -78,6 +81,12 @@ rating sort there is ref order. Multi-key orders exceed Typesense's three sort s
 composite key built at index time. **Noted 2026-10-16:** four packed `int64` keys cover all
 three over-length orders — `ur_hits`, `hits_ur`, `date_ref`, `rating_ur` (SG2 has the table); "no
 value" encoded as the minimum reproduces MySQL's NULL placement in both directions.
+
+**Catalogue marks (2026-10-20), amended:** date (G14), resource id (G18), modified (G22), unknown (G28)
+and the direction rows (G29, G30) stay *must*; popularity (G12), rating (G13), title (G16), file path
+(G17), resource type (G19), extension (G20), status (G21) and a date field by number (G25) are *check*,
+so SG1 and SG2 wait on Chris's check of core — what `rating`, `user_rating` and `hit_count` do there
+in particular; colour, random and country stay *no*. The packed keys remain the design for SG2.
 
 ### Q7.3 — The row limit and next/previous
 Keep 25,000? Lower? For next/previous: make the plugin serve `-1` fully (20–37 s on the whole index —
@@ -114,6 +123,10 @@ field from a per-field sort key (an improvement that returns rows where core ret
 **Catalogue marks (2026-10-16):** G26 and G43 (a field that is not a join column) are *must* — core
 returns nothing, so declining satisfies it; G27 (the title field by number) is *must* and needs a
 per-field sort key.
+
+**Catalogue marks (2026-10-20):** G26 and G27 are *check*, so SG4 waits on the check; G43 keeps its mark
+until Chris recalls why it sat apart — it is the Core 8 row, and whether the bug is copied, fixed or
+declined is Q11.3, separate from the mark.
 
 ## Done when
 

@@ -98,6 +98,9 @@ defaults (G40). The old plugin fell back for every smart search; the rule is one
 Serve it, or keep the fallback until Q4.6 settles what the plugin does with smart collections?
 **Catalogue marks (2026-10-16):** G40 is *must* — serve the saved states.
 
+**Catalogue marks (2026-10-20):** G40 is *check* — core's smart-search handling of the saved states is
+confirmed before the mark is final.
+
 ## Done when
 
 The parity plan's Phase 2 matrix runs in the harness and live; collection views are served with core's

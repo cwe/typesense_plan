@@ -13,6 +13,13 @@ relevance (harness O19 shows what Typesense-only mode does with a vetoed sort).
 country is *must*); SG3 is parked; SG5 stays a decline. The count-based sorts are exact as of the
 last rebuild for `hit_count` and immediate for `user_rating` (Q8.9).
 
+**Catalogue marks (2026-10-20), amended:** the base sorts the pipeline serves (G14 date, G18 resource
+id, G22 modified, G28 unknown, G29 and G30 direction) stay *must*; every other sort row (G11 relevance,
+G12 popularity, G13 rating, G16 title, G17 file path, G19 resource type, G20 extension, G21 status,
+G25 a date field by number, G26, G27) is *check*, so SG1, SG2 and SG4 wait on Chris's check of core
+before they are confirmed; SG3 stays parked and SG5 a decline. G43 keeps its mark until its special
+status is recalled (it is the Core 8 row, governed by Q11.3).
+
 ### SG1 — Text-key sorts: title, status, resource type, extension, file path
 - **Rows:** G16 G17 G19 G20 G21 G24
 - **Builds:** sort keys `title_sort` (case-insensitive, from `$view_title_field`), `archive`

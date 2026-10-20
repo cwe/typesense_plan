@@ -57,6 +57,11 @@ serve via fragments/infix where the field has them? Wildcards over non-indexed f
 them, the plugin cannot unless Q1.1 indexes everything — veto bare wildcards, index everything, or
 accept.
 
+**Catalogue marks (2026-10-20):** A12 (leading wildcard) and B7 (leading wildcard in a field) are *check* —
+Chris checks core's behaviour before the marks are final; SA5 and SB3 keep the rows meanwhile.
+
+**Catalogue marks (2026-10-20):** H22 (two wildcards) and K2 (a wildcard over a non-indexed field) are *check*.
+
 ### Q2.4 — Stop words
 Strip `$noadd` words from `q` before sending (core skips them). A search that is only stop words:
 return everything (core) or nothing? Phrase with a stop word: core's distance-only check cannot be
@@ -68,9 +73,18 @@ Options: (a) stem the phrase tokens client-side with the same stemmer as the ind
 phrases when `$stemming` is on; (d) turn stemming off in the index and stem at query time only
 (changes keyword matching). This is the largest single divergence on the test system.
 
+**Catalogue marks (2026-10-20):** H14 (a phrase and a node) is *must* — SA3's phrase must compose with a node
+bucket.
+
 ### Q2.6 — Negated phrase `-"…"`
 Implement (does Typesense accept `-"a b"`? verify) or veto. Today it returns everything, the worst
 outcome.
+
+**Catalogue marks (2026-10-20):** A10 (`-"sculpture park"`) is *check* — core's exclusion of the phrase is
+confirmed before the mark is final; SA4 keeps the row.
+
+**Catalogue marks (2026-10-20):** H23 (a phrase and a NOT phrase) is *no* — never served; A10 (the NOT phrase
+alone) stays *check*.
 
 ### Q2.7 — OR-groups `a;b`
 Keep the veto. Core's bare `a;b` only works after a field search has created the combined keyword
@@ -81,13 +95,25 @@ otherwise merged per-alternative searches; relevance order of OR searches an acc
 Still to settle: whether a bare `a;b` should work at all (A16 is marked *check*), and the measured
 operation count.
 
+**Catalogue marks (2026-10-20):** A15 (OR of two wildcards) moves from *must* to *check*, alongside A16. The
+mechanism decided here stands; whether A15 and A16 are served with it is confirmed after Chris checks core.
+
+**Catalogue marks (2026-10-20):** H33 (a wildcard OR and a node) is *no*; H34 (a field OR and a node) is *must*,
+so the mechanism decided here is required for the field form at least; H32 (a bare OR and a node) is a bug
+row (Core 9) that Chris would check.
+
 ### Q2.8 — Punctuation and commas
 `foo-bar` is a phrase in core when the search has no plain-split path, otherwise two words;
 `a,b` with no whitespace is a phrase. The plugin receives core's split keywords, so the difference is
 only in how it treats a punctuated single token. Replicate (quote it) or simplify?
 
+**Catalogue marks (2026-10-20):** I2 (a comma without a space) is a bug row (Core 10) Chris would check; I3 (a
+comma inside a field term) is *check*.
+
 ### Q2.9 — Type-name and contributor-name words
 Index them (Q1.7) or veto searches containing a type name / username when `$index_contributed_by`?
+
+**Catalogue marks (2026-10-20):** H37 (a type name and a keyword) is *must*.
 
 ### Q2.10 — Related keywords
 Core ORs related keywords into the union. Options: Typesense synonym sets (one-way or multi-way —
@@ -98,6 +124,8 @@ search containing a keyword that has related entries. The test system has one pa
 A year typed as a word matches date values in core. Add date representations (`_q`) to `query_by`
 so `2024` matches dates? Bare numbers with `$config_search_for_number` off: core boosts the exact
 ref to the top — implement with `_eval(ref:=N)` (verified) or keep vetoing?
+
+**Catalogue marks (2026-10-20):** H36 (a year as a word and a keyword) is *must*.
 
 ### Q2.12 — Unknown words and suggestions
 Core returns a suggestion string (integer `fetchrows` only) and never consults the plugin when a word
@@ -139,6 +167,9 @@ ones), or one rule for both and record the difference?
 `sc*pture` reaches MySQL as `+sc*pture` and only the trailing part is honoured, so it behaves as
 `sc*` (A13: 69,679). Replicate (treat it as `sc*`), veto (core then gives the same quirk), or serve
 it properly where fragments allow (partial-indexed fields only)? Recommendation: veto.
+
+**Catalogue marks (2026-10-20):** A13 is *check* — whether core really treats `sc*pture` as `sc*` is confirmed
+before the mark is final; SA5 keeps the row.
 
 ### Q2.18 — Accent folding
 MySQL's default collations fold accents and so does Typesense, but the local harness cannot check

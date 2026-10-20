@@ -6,6 +6,9 @@ short-wildcard branch. It does **not** govern full-text and other wildcards (nod
 and number terms, options by name, `@@` tokens, `!hasdata` and `!empty` (nodes). Three packages,
 milestone M4; SK1 is the slice of Q1.1 that the catalogue makes concrete.
 
+**Catalogue marks (2026-10-20):** K2, K3, K4, K8, K9, K10, K11 and K12 are *check*; K1, K5, K6 and K7 are
+*must* (K1 and K7 are answered by core before the hook, K6 is P37, K5 is SB6).
+
 ### SK1 — Fields not flagged for indexing
 - **Rows:** B12 B13 B19 K1 K2 K3 K7 · cross: C9 (SC3), D22 D23 (SD5), K11 (SE1), K4 K8 (SA8)
 - **Builds:** B2's selector for which representations a non-indexed field gets, and D4/SB1's

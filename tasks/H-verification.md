@@ -93,7 +93,8 @@ existing code the rebuild is likely to keep (Q10.11).
 
 ### H7 — Core-bug batteries
 - **Builds:** keep the batteries that reproduce core's own bugs (Core 1–10, the CSV TypeError, the
-  `!last` + node bucket row) so an upstream fix is noticed.
+  `!last` + node bucket row) so an upstream fix is noticed; the rows are the ones marked *bug* in
+  `catalogue.md`.
 - **Size:** S · **Depends on:** H1
 - **Blocking questions:** Q10.10
 - **Proves it:** they run as "expected to fail" and flip when core changes.

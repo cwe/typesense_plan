@@ -60,6 +60,12 @@ returns one row, Core 1) and F47 (`!empty` of a non-global field, Core 6): *must
 replicate it or fix it, which this question decides. F31 (Core 3) is *check*; F46 and F49 (Core 5)
 are not required.
 
+**Catalogue marks (2026-10-20):** every core-bug row now carries the mark *bug* — F5, D24, F31, F46, F49,
+F47, F4, F68, H12, G26, G43, A16, H32, I2, F67, I9 and J2 — with the earlier must / check / no kept in
+the row's note; this question decides each one. Not marked: Core 4 (no row), D16 (dead code), G41
+(pending Chris's check), F23 (slow, not wrong), the CSV TypeError (no row), I1 and J3 (the parser's
+rule), A17 (by design), C7 (test data).
+
 ### Q11.4 — Tracking upstream
 How the fork follows RS releases (rebase `typesense` onto each release? merge?), who does it, and
 how the patch list is checked after each one.

@@ -82,6 +82,9 @@ count — acceptable?
 **Catalogue marks (2026-10-16):** G38 is *must*, satisfied by declining (core answers) until this
 question builds editable-only searches.
 
+**Catalogue marks (2026-10-20):** G38 is *check* — core's editable-only behaviour is confirmed before the
+mark is final; the decline stands meanwhile.
+
 ### Q6.5 — Typesense-only mode and access
 If Q0.6 keeps it as a testing aid, document "never for real users" and make the setup page say so.
 If it becomes a mode, which gate uses must still fall back even in that mode?

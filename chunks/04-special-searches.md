@@ -60,6 +60,9 @@ and `!noningested` are *check*); *check* — `!unused` (SF16); not required — 
 `!colourkey` (SF15), and `!rgb`, `!duplicates`, `!nodownloads`, `!report` stay on core (SF17), as
 planned. Still open: the order (Q4.2 batches the index fields).
 
+**Catalogue marks (2026-10-20):** H30 (`!properties` and a date) and J11 (a property filter with terms) are
+*must*, so the `!properties` composition is required.
+
 ### Q4.2 — Index fields for them: one batch or per special?
 Each new special needs fields (chunk 1, Q1.6) and a rebuild. One schema change and one rebuild for
 all of them, or incremental?
@@ -104,8 +107,14 @@ plugin return nothing / a declined-search message for `!unknown` (a deliberate d
 **Catalogue marks (2026-10-16):** F67 is *must* — satisfied by declining, since core then returns
 everything, unless this question chooses a different answer; F68 (two specials) is *must*.
 
+**Catalogue marks (2026-10-20):** I9 (`!LAST100`) is a bug row Chris would check: an unknown special search
+returns everything in core.
+
 ### Q4.10 — The form's `!properties` + `!list` collision
 Core ignores the resource-IDs box when a property is filled in. Replicate, or raise with core?
+
+**Catalogue marks (2026-10-20):** J2 is a bug row (the `!properties` and `!list` prefixes collide) that Chris
+marks *must*: replicate or fix is this question's and Q11.3's call.
 
 ### Q4.11 — `!properties`: the key set and the unknown-key rule
 The keys in `search_special()` are `cu fext fmax fmin hmax hmin i orientation pi s wmax wmin`
