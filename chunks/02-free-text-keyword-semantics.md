@@ -62,6 +62,10 @@ Chris checks core's behaviour before the marks are final; SA5 and SB3 keep the r
 
 **Catalogue marks (2026-10-20):** H22 (two wildcards) and K2 (a wildcard over a non-indexed field) are *check*.
 
+**Q1.1 decided (b) on 2026-10-20:** the values of every active field are in the index, so wildcards over
+non-indexed fields are served once the mechanism here is settled; the question that remains is the
+mechanism for leading and inner wildcards and the candidate caps.
+
 ### Q2.4 — Stop words
 Strip `$noadd` words from `q` before sending (core skips them). A search that is only stop words:
 return everything (core) or nothing? Phrase with a stop word: core's distance-only check cannot be

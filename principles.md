@@ -45,5 +45,6 @@ reasonable, made in different sessions with no shared record of why.
     file nearest in purpose: snake_case functions with the plugin prefix, docblocks of core's shape
     (a one-line summary, a blank line, `@param type $name description`, `@return`), `//` comments in
     new code, the `ps_query` / `ps_value` / `ps_array` helpers rather than raw SQL, core's helpers
-    and config globals rather than re-implementations. Comments stay terse (principle 8). Where the
+    and config globals rather than re-implementations. Comments stay terse (principle 8). Mandatory, not aspirational, since 2026-10-20: the plugin ships
+    inside ResourceSpace 11.1, so the code goes through ResourceSpace's own `phpcs` and `phpstan` checks. Where the
     plugin must differ (a class-based pipeline, say), the file says why in one line.

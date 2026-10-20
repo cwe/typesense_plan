@@ -104,17 +104,21 @@ and **Battery** lines in the same way.
 
 ## Build order and milestones
 
+**Deadline (Chris, 2026-10-20): finished before the end of 2026, shipping inside ResourceSpace 11.1.** Ten
+weeks from the date of the decision. The live work is 74 small and 37 medium tasks (parked and
+pending-check packages excluded), which does not fit in full at one developer's pace; the scope for
+11.1 and what follows in a point release is decided in decisions.md.
+
 | Milestone | Outcome | Tasks |
 |---|---|---|
 | M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; dependencies vendored; the core hook patch settled; harness in the repo | A1–A8, X1–X3, I1, H1 |
 | M1 An index from scratch | Builders produce complete documents; a generation rebuild on the fixture and on the test system gives counts equal to MySQL | B1–B9, G8 (the checklist), G6 (the proof), H2 |
 | M2 The first served search | Plain words, node tokens and resolved options, with every restriction, the served sorts, windows, shapes and read-time validation; every other `!` and every declined sort falls back | D1–D12, C1, C8, G7, X4, SA1, SA11, SA12, SC1, SC2, SF8, SG5, SH1 (first pool), H3, H4 (first live run), H7 |
-| M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, X5, H5 |
+| M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, I3, C9, X5, H5 |
 | M4 Field, date, number, index-flag forms | Catalogue groups B, C (rest), D, E, K and the form strings identical or declined | SB1–SB6, SC3, SD1–SD5, SE1, SK1–SK3, SJ1, H8 |
 | M5 Specials and collections | Catalogue group F for the data already indexed; the collection matrix | SF1–SF7, SF17, I2, X6 (the pre-pilot review) |
 | M6 Keyword semantics | Catalogue group A beyond plain words; the relevance decision implemented | H9 (the MySQL mode, first), SA2–SA10, D9 (relevance) |
-| M7 Further sorts, new specials, operations, core hooks | Sort keys; the specials that need index fields; setup page, docs, deployment; the core hooks PR | SG1–SG4, SF9–SF16, G1–G5, G6 (the page), G8 (the check), H6, C9, I3–I6, X7 |
-
+| M7 Further sorts, new specials, operations, core hooks | Sort keys; the specials that need index fields; setup page, docs, deployment; the remaining core changes | SG1–SG4, SF9–SF16, G1–G5, G6 (the page), G8 (the check), H6, I4, I6, X7, G9 |
 Inside a milestone the tasks are listed in order; a task's *depends on* line is the rule, the
 listing is the suggestion. SH1 (the combinations gate) and SJ1 (the pages' strings) run again at
 the end of every milestone from M2.

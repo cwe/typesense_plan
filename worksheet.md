@@ -40,8 +40,8 @@ non-indexed fields become an accepted difference or a veto (Q2.3).
 Note (Q10.3): an approximate set is out, so (a) means those forms decline; (b) means they serve.
 Shapes: B1, B2, B4, SA5, SB3, SK1, SD5, SE1.
 Standing (2026-10-20): **required** — must rows A11, A27; check rows K2, K3; blocks A3, B1, SA5, SA8, SC3, SK1
-- **Answer:**
-- **Reason:**
+- **Answer:** (b), for now — every active field's values are indexed; the flags decide reach, not presence. Plus an exclusion list on the setup page (G9). Revisit against different data sets (H8).
+- **Reason:** measured 2026-10-20: the non-indexed text is one field on each test database (26.7 MB of 37 MB on the first, 16.5 MB against 494 MB on the second), so (b) is cheap and attributable, while (a) would decline every wildcard and full-text search on both. See decisions.md.
 
 ### Q2.14 — Pre-stem with ResourceSpace's own stemmer on both sides?
 Core stems with `GetStem()` (irregular plurals, then Porter). Typesense's Snowball agrees on 34 of
@@ -91,15 +91,15 @@ fixes; behaviour fixes to quirks. For each: fork-only, upstream PR, or neither (
 category).
 Shapes: I1–I5, SF2, C9, D10 (next/previous).
 Standing (2026-10-20): **required** — blocks I1
-- **Answer:**
-- **Reason:**
+- **Answer:** yes, any kind: core changes are made in ResourceSpace itself (see Q11.1).
+- **Reason:** Chris works for Montala; a change the plugin needs is a core change in a release, and the plugin states the minimum version it needs.
 
 #### Q0.5 — Target environments
 RS version(s); PHP floor; Typesense pinned to 30.x; single node; which servers beyond the test host.
 Shapes: A1, A2, G5.
 Standing (2026-10-20): **required** — blocks G8, X2
-- **Answer:**
-- **Reason:**
+- **Answer:** (in part) ResourceSpace 11.1 — the plugin ships inside it (Q11.6), so the PHP floor is 11.1's; Typesense 30.x; the servers beyond the test host still to state.
+- **Reason:** Chris, 2026-10-20: the plugin will ship with ResourceSpace 11.1 as part of ResourceSpace.
 
 #### Q0.6 — What is Typesense-only mode for?
 A testing aid (a declined search returns nothing instead of falling back) or a supported production
@@ -161,8 +161,8 @@ Drop `_q` for text fields (unused); add sortable keys for the sorts chosen in Q7
 fixed-list fields (Q3.12); integer date components for `$date_field` (Q3.13).
 Shapes: A3, B2, SD2, SD3, SG1–SG4.
 Standing (2026-10-20): **required** — blocks A3, B2
-- **Answer:**
-- **Reason:**
+- **Answer:** (a) version 1 = the old set minus `_q` on text, `_ts` and the facet flag on `_s`; nothing speculative. A representation enters only with the package that proves it; additions batched into one rebuild per release.
+- **Reason:** a later addition is one schema version and one generation rebuild, which the nightly job does anyway; speculative fields cost memory and proof time M0 does not have. decisions.md 2026-10-20.
 
 #### Q1.6 — Which extra fields go in now?
 `hit_count`/`user_rating` (relevance, popularity, rating sorts); `has_image`; file size, extension,
@@ -370,16 +370,16 @@ Fork-only, upstream PR, or neither — for the hook-return patch, new hooks, the
 helper, the next/previous and page-offset fixes, bug fixes, quirk fixes.
 Shapes: I1–I5.
 Standing (2026-10-20): **required** — blocks C9, I1, I2, I3, I6
-- **Answer:**
-- **Reason:**
+- **Answer:** every category is a core change in ResourceSpace: the hook reorder, the sync hooks, the collection gate function, next/previous and the page offset when wanted; bugs and quirks fixed in core by default, Q11.3 per row.
+- **Reason:** Chris works for Montala, so the fork-only / upstream split does not exist. decisions.md 2026-10-20.
 
 #### Q11.2 — The existing hook-return patch
 A prerequisite that must go upstream for the plugin to work on stock RS? Was it commented out
 upstream for a reason worth knowing before proposing it?
 Shapes: I1.
 Standing (2026-10-20): **required** — blocks I1
-- **Answer:**
-- **Reason:**
+- **Answer:** the reorder as it is in the fork, into core, no gating or second hook.
+- **Reason:** upstream never had the return handling commented out; the only change is the order, and it is needed for every special search. Chris: no fancy workaround.
 
 ### Testing
 

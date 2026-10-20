@@ -67,7 +67,15 @@ Milestone M0. Everything else builds on these five modules.
     `creation_date` (day limit) and `date_field_sort` (text sort key) (P19, P20).
   - Dynamic field patterns `field_.*_<suffix>`; explicit fields where a per-field option is needed.
   - Per-collection synonyms are gone in 30.x; synonym sets instead.
-- **Blocking questions:** Q1.1, Q1.2, Q1.6, Q1.8, Q1.10, Q1.11, Q7.1
+  - **Every active field's values are indexed** (Q1.1 decided (b), 2026-10-20): the index flags decide
+    `query_by` membership and the word filters at query time, not presence in the document; the
+    condition is a rebuild on the test system with field 86 (`accessibilityalttext`, 25.7 MB of text)
+    included, measured against the 800 MB baseline; a field on the exclusion list (G9) gets nothing.
+  - **Version 1 of the schema** (Q1.2 decided (a), 2026-10-20): `_s`, `_text`, `_ss`, `_q` for dates and
+    numbers only, `_f`, `_range_start` / `_range_end`, `_p`; no `_q` on text fields, no `_ts`, no facet
+    on `_s`. A representation enters the schema only with the package that proves it, and additions
+    are batched into one rebuild per release (hours on a 1.4 M-resource system).
+- **Blocking questions:** Q1.1 (decided), Q1.2 (decided), Q1.6, Q1.8, Q1.10, Q1.11, Q7.1
 - **Proves it:** collections created from scratch on the local Typesense; a schema snapshot test
   against the schema document; sample documents for every field pattern accepted.
 
@@ -136,6 +144,9 @@ Milestone M0. Everything else builds on these five modules.
   (`composer update` in `lib/`, the A2 battery, a plugin version bump).
 - **Size:** S · **Depends on:** A1 · only when Q9.10 chooses the library
 - **Must honour:**
+  - The plugin ships inside ResourceSpace 11.1 (2026-10-20), so `lib/` is committed into the
+    ResourceSpace repository itself: its licences and supply chain are reviewed under Montala's own
+    policy (Q12.9); `phpcs.xml.dist` already excludes `plugins/*/lib`.
   - Core's own `vendor/` is not tracked and is installed at deploy time; the plugin's `lib/` is
     committed complete so a deployment needs no Composer step on the host (as `simplesaml`, `totp`
     and `adobe_link` do); `phpcs.xml.dist` already excludes `plugins/*/lib`.

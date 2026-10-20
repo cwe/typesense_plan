@@ -21,7 +21,7 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | A8 | Phrase with a stop word: `"black and white"` | 3,179 | 3,179 | SA3 | ? | Q2.4 stop-word gap | must |  |
 | A9 | NOT a keyword: `-landscape` | 32,045 | 32,078 | SA4 | = | the 33 extra are inactive-field keywords (SK2, Q6.7) | must |  |
 | A10 | NOT a phrase: `-"sculpture park"` | 93,979 | 100,862 | SA4 | ? | Q2.6 | check |  |
-| A11 | Trailing wildcard: `sculpt*` | 51,007 | 49,610 | SA5 | ? | Q2.3; full parity needs non-indexed values (Q1.1) | must |  |
+| A11 | Trailing wildcard: `sculpt*` | 51,007 | 49,610 | SA5 | ? | Q2.3; Q1.1 (b): the values are in the index | must |  |
 | A12 | Leading wildcard: `*scape` | 68,601 | 381 | SA5 | ? | Q2.3 leading wildcard | check |  |
 | A13 | Wildcard inside a word: `sc*pture` | 69,679 | 0 | SA5 | ? | Q2.17 behaves as sc* in core | check |  |
 | A14 | Short wildcard (under 3 letters): `so*` | 15,618 | 6,676 | SA5 | ? | Q2.16 keyword-table branch | must |  |
@@ -353,13 +353,13 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | Row | Search | Core | Old | Owner | Plan | Note | Required | Done |
 |---|---|---|---|---|---|---|---|---|
 | K1 | Word that exists only in a non-indexed field: `nikon` | 0 | 0 | SK1 | · | core answers before the hook | must |  |
-| K2 | The same word with a wildcard: `nikon*` | 23,412 | 0 | SK1 | ? | Q1.1 / Q2.3 | check |  |
-| K3 | Wildcard inside the non-indexed field: `camera:nik*` | 23,412 | 0 | SK1 | ? | Q1.1 | check |  |
-| K4 | Full-text box on a non-indexed field: `"@FULL_TEXT:nikon"` | 23,412 | 0 | SA8 | ↩ |  | check |  |
+| K2 | The same word with a wildcard: `nikon*` | 23,412 | 0 | SK1 | ? | Q1.1 (b); Q2.3 mechanism | check |  |
+| K3 | Wildcard inside the non-indexed field: `camera:nik*` | 23,412 | 0 | SK1 | ? | Q1.1 (b): a prefix on the field's representation | check |  |
+| K4 | Full-text box on a non-indexed field: `"@FULL_TEXT:nikon"` | 23,412 | 0 | SA8 | ? | Q1.1 (b): the box queries every visible field | check |  |
 | K5 | Bare fragment of a partially indexed field: `ksho` | 665 | 665 | SB6 | ? | Q1.3 fragment as a bare word | must |  |
 | K6 | Word in an inactive field: `description:sculpture` | 0 | 57 | SK2 | = | P37 | must |  |
 | K7 | Phrase held only in non-indexed fields: `"library book"` | 0 | 0 | SK1 | · | core answers before the hook | must |  |
-| K8 | The same phrase through full text: `"@FULL_TEXT:[QUOTES]library book[QUOTES]"` | 1 | 0 | SA8 | ↩ |  | check |  |
+| K8 | The same phrase through full text: `"@FULL_TEXT:[QUOTES]library book[QUOTES]"` | 1 | 0 | SA8 | ? | Q1.1 (b): the box queries every visible field | check |  |
 | K9 | Complete indexing: `field:two words` | n/a | n/a | SK3 | ? | Q1.12 no such field on the test system | check |  |
 | K10 | Word beyond the 500th character: `field:word` | n/a | n/a | SK3 | ? | Q1.13 | check |  |
 | K11 | Number range on a non-indexed numeric field: `field:numrange1\|10` | n/a | n/a | SE1 | ? | Q3.6 no such field on the test system | check |  |
@@ -375,8 +375,8 @@ answer is reached), and *check* rows keep their symbol until the check is done.
 | Plan | Rows | must | check | bug | no |
 |---|---|---|---|---|---|
 | = | 143 | 115 | 23 | 0 | 5 |
-| ? | 117 | 71 | 46 | 0 | 0 |
-| ↩ | 18 | 2 | 3 | 0 | 13 |
+| ? | 119 | 71 | 48 | 0 | 0 |
+| ↩ | 16 | 2 | 1 | 0 | 13 |
 | ✗ | 17 | 0 | 0 | 17 | 0 |
 | · | 8 | 3 | 5 | 0 | 0 |
 

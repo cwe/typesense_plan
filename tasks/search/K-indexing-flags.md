@@ -19,7 +19,7 @@ milestone M4; SK1 is the slice of Q1.1 that the catalogue makes concrete.
   although the values are there (B12, B13, B19); a word of an option of a non-indexed fixed-list
   field is nothing (C9); but `nikon*`, `camera:nik*` and the full-text box read node names and
   match (K2, K3, K4: 23,412); dates and numbers join nodes and work (D22, D23, K11).
-- **Serve:** two consistent choices — (a) index values of flagged fields only: plain words,
+- **Serve:** decided (b) on 2026-10-20 (Q1.1); the two choices were — (a) index values of flagged fields only: plain words,
   field words and options are parity by construction; wildcards over non-indexed fields (K2, K3)
   cannot be served → veto a bare `word*` when any visible non-indexed text field exists, or accept
   the difference; dates and numbers indexed regardless (SD5). (b) index every field's values

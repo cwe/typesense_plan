@@ -9,9 +9,13 @@ way, and the policy for each: fork-only, upstream, replicate, or ignore.
 
 ## What we know
 
-- The fork already carries a core patch: `include/do_search.php` enables the `external_search` hook's
-  return handling (it was commented out — "just from my testing"). Without it the plugin's results are
-  ignored, so stock RS cannot use the plugin.
+- The fork carries two core changes (checked against the upstream mirror on 2026-10-20):
+  `include/do_search.php` moves the `external_search` hook before `search_special()`, so a provider
+  sees every search and `false` falls through to the specials and the standard query — upstream fires
+  the hook only for standard searches and has always honoured its result (the earlier note that the
+  return handling was commented out was wrong); and `include/resource_functions.php` adds
+  `get_visible_indexed_fields()`, a helper the old plugin used, to be moved into the plugin or
+  generalised in core when D4 is written.
 - Core changes the plans want: a shared `!collection` access gate (G1); hooks — node layer
   (`after_resource_nodes_changed`, `after_set_node`, before/after node delete),
   `after_update_resource_type`, `after_resource_custom_access_change`, `after_put_resource_data`,
@@ -29,7 +33,8 @@ way, and the policy for each: fork-only, upstream, replicate, or ignore.
   passes `null` for a typed hook parameter; `!related` can exceed 120 s; the advanced form's
   `!properties` + `!list` collision; `startdate:`/`enddate:` dead code; `$ignore_filters` is
   effectively dead.
-- Chris's decision so far (2 Oct): core bugs left as they are, review only.
+- Chris's decision so far (2 Oct): core bugs left as they are, review only. Superseded on 20 October:
+  Chris works for Montala and core changes are made in ResourceSpace itself (Q11.1).
 - Upstream is Montala's ResourceSpace; the plugin's yaml names Montala as author and marks it
   experimental, so it may be intended to go upstream, where core changes would not be available.
 
@@ -47,9 +52,19 @@ For each: fork-only, upstream PR, or neither. Categories: the hook-return patch;
 collection gate helper; the next/previous and page-offset fixes; bug fixes; behaviour fixes to
 quirks. (Q0.4 asks this in general; answer it here per category.)
 
+**Decided 2026-10-20:** core changes are made in ResourceSpace itself — Chris works for Montala — so the
+fork-only / upstream split is gone. Hook reorder, sync hooks, the collection gate function, the
+next/previous and page-offset changes: core changes in a release, the plugin stating the minimum
+version it needs. Bugs and quirks: fixed in core by default, Q11.3 deciding per row what the plugin
+does until the fix ships. Also answers Q0.4.
+
 ### Q11.2 — The existing hook-return patch
 Is it a prerequisite that must go upstream for the plugin to work on stock RS? Was it commented out
 upstream for a reason worth knowing before proposing it?
+
+**Decided 2026-10-20:** the reorder goes into core as it stands in the fork — the hook before
+`search_special()`, `false` falling through — with no gating and no second hook. Upstream never had
+the return handling commented out; the only change is the order.
 
 ### Q11.3 — Each core bug: raise, copy, or ignore
 Go through the list above and mark each. The ones that change what users see most: unknown special
@@ -66,9 +81,17 @@ the row's note; this question decides each one. Not marked: Core 4 (no row), D16
 (pending Chris's check), F23 (slow, not wrong), the CSV TypeError (no row), I1 and J3 (the parser's
 rule), A17 (by design), C7 (test data).
 
+**Direction (2026-10-20, from Q11.1):** the default for a bug row is a fix in core; the row then decides
+what the plugin does on versions before the fix (copy the wrong result, or decline so core gives it)
+and H7's battery becomes a regression test of the fix.
+
 ### Q11.4 — Tracking upstream
 How the fork follows RS releases (rebase `typesense` onto each release? merge?), who does it, and
 how the patch list is checked after each one.
+
+**Direction (2026-10-20):** no fork to track — the question becomes release alignment: the minimum
+ResourceSpace version each plugin version needs, checked at activation, with `CORE_PATCHES.md` as the
+list of core changes behind it (I5).
 
 ### Q11.5 — A cleaner provider contract
 The hook hands the plugin `$sql_filter` with keyword criteria already mixed into the permission
@@ -76,9 +99,21 @@ filter, which is why read-time validation must rebuild the permission part. Prop
 provider hook that receives the permission filter separately (and structured criteria)? Or keep the
 plugin working with the hook as it is?
 
+**Direction (2026-10-20):** a design question now, not a proposal — if a provider hook that receives the
+permission filter and the parsed search separately is wanted, it is built in core (I6) and C8's
+rebuild-the-filter step goes.
+
 ### Q11.6 — Is this plugin meant to go upstream?
 If yes, the constraints are: no core changes beyond what upstream accepts, no fork-only behaviour.
 That decision changes the answers to most of this chunk.
+
+**To confirm (2026-10-20):** with core changes made in ResourceSpace, the remaining question is whether
+the plugin ships inside ResourceSpace (its yaml names Montala as author) or separately; shipping inside
+fixes the version floor (Q0.5) by construction.
+
+**Decided 2026-10-20: yes — the plugin ships inside ResourceSpace 11.1, as part of ResourceSpace.** Its
+core changes land in the same release; there is no version floor, no patch list and no interim for
+hook-less writes (I3 and C9 move to M3). The 11.1 release date is the plan's deadline.
 
 ## Done when
 

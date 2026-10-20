@@ -116,3 +116,5 @@ A meeting copy of the review exists as a Claude doc (keep in step with the repo 
 - CSV metadata export fails with a PHP TypeError for every group (null passed to a typed hook
   parameter).
 - Core's own bugs (Core 1–10) and quirks, and which to copy, raise or ignore.
+
+**2026-10-20:** every catalogue row marked; Q1.1 (b), Q0.4/Q11.1/Q11.2 (core changes made in ResourceSpace), Q11.6 (the plugin ships inside ResourceSpace 11.1) decided; deadline: finished before the end of 2026.

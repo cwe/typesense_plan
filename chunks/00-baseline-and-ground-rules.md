@@ -59,6 +59,13 @@ fork-only, upstream PR, or neither. (Chunk 11 goes through the candidates.)
 RS version(s) the plugin must run on; PHP version floor; Typesense pinned to 30.x; single Typesense
 node only; which servers beyond the test host (sizes, number of instances per Typesense server).
 
+**Note (2026-10-20, from Q11.1):** core changes now ship in ResourceSpace releases, so the version floor
+decides whether the interim mechanisms for hook-less writes (C7) are needed at all: a floor at the
+release carrying the hooks removes them.
+
+**Decided in part 2026-10-20 (Q11.6):** the ResourceSpace version is 11.1 — the plugin is part of it — so
+the PHP floor is 11.1's. Still to state: the servers beyond the test host and the Typesense pin (30.x).
+
 ### Q0.6 — What is Typesense-only mode for?
 Today it is a testing aid: a declined search returns nothing instead of falling back. If it is ever a
 production mode it fails closed for every access-gate use of search (chunk 6). Testing aid only, or a

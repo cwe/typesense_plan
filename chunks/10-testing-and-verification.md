@@ -56,6 +56,10 @@ Keep both: the local harness for semantics (fast, no host) and the live A/B for 
 real data. Add CI (GitHub Actions with a Typesense container and SQLite) so every push runs the
 batteries? Worth it now?
 
+**Note (2026-10-20, from Q11.6):** the plugin is part of ResourceSpace 11.1, so its batteries belong in
+ResourceSpace's own CI beside `phpcs` and `phpstan`; the question becomes how the local Typesense and the
+MySQL-backed mode (H9) run there.
+
 ### Q10.3 — Acceptance criteria
 Define "pass": identical totals and ref order for every catalogue row that core answers sensibly,
 with an **accepted-divergence list** (relevance order, core bugs, decided differences) that the

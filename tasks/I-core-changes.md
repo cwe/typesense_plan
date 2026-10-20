@@ -3,6 +3,20 @@
 I1 is milestone M0 (the plugin cannot work without it); I2 is M5; I3–I5 are M7. Every item here
 depends on the policy in Q0.4 / Q11.1.
 
+**Decided 2026-10-20 (Q0.4, Q11.1, Q11.2):** core changes are made in ResourceSpace itself — Chris works
+for Montala — so "fork patch" and "upstream PR" collapse into "a core change in release X". I1 is the
+hook reorder committed to core as it stands (plus a decision on the fork's stray
+`get_visible_indexed_fields()` helper: into the plugin, or generalised in core, when D4 is written);
+I3's hooks can be added when the sync work needs them rather than waiting for M7, which makes C7's
+interim a question of the version floor (Q0.5, Q8.4); I4's dispositions are fix in core, copy, or
+ignore; I5 becomes release alignment — the minimum ResourceSpace version a plugin version needs,
+checked at activation; I6 is a design to implement if Q11.5 wants it. `CORE_PATCHES.md` becomes the
+list of core changes a plugin version requires.
+
+**Decided 2026-10-20 (Q11.6):** the plugin is part of ResourceSpace 11.1. One release, one version: I5 is
+void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 move to M3, and the
+11.1 release date is the plan's deadline.
+
 ### I1 — The hook-return patch
 - **Builds:** `include/do_search.php`: the `external_search` hook's return handling, as a documented
   fork patch (`CORE_PATCHES.md`) or an upstream PR.

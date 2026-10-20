@@ -45,12 +45,12 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 
 | Suffix | Applies to | Type | Value rule | Needed by | Freshness | Version | Status |
 |---|---|---|---|---|---|---|---|
-| `_s` | single-line text (types 0, 13) that is indexed and not numeric | string, stem per Q2.14 (the old schema also sets `facet`, unused — drop, Q1.2) | A5 `clean()` + cap (Q1.13) | SB1, D4 | R | 1 |  |
+| `_s` | single-line text (types 0, 13) that is indexed and not numeric | string, stem per Q2.14 (no facet — dropped, Q1.2 decided 2026-10-20) | A5 `clean()` + cap (Q1.13) | SB1, D4 | R | 1 |  |
 | `_text` | multi-line, large, TinyMCE (types 1, 5, 8), indexed | string, stem per Q2.14 | A5 (markup per Q1.4) | SB1, D4 | R | 1 |  |
 | `_ss` | fixed lists (types 2, 3, 7, 9, 12): the option names | string[], facet, stemmed iff `$stemming` (already so in the old schema) | A5 `clean()` (BOM stripped, P33); translations per Q1.4 | SC3; D4 (option words as keywords, indexed fields only) | R (E20 node rename: gap until C9) | 1 |  |
 | `_q` | dates (types 4, 6, 10, 14): year, year-month, full date; numeric single-line (`field_constraint = 1`): the plain value | string[] / string, never stem | A4 representations; numbers verbatim | SD1, SE1, SA9 (Q2.11) | R | 1 |  |
 | `_f` | numeric single-line, `is_numeric` values only | float | the number | SE1, SG4 | R | 1 |  |
-| `_ts` | full dates only | int64 epoch | A4 `timestamp()` | (none yet: candidate for removal, Q1.2) | R | 1 |  |
+| `_ts` | — | — | — | dropped (Q1.2 decided 2026-10-20): the range pair carries the value at its own precision | — | — | dropped |
 | `_range_start`, `_range_end` | every date type: the value at its own precision; type 14: the span | int64 | A4 | SD3 (b), SD4 | R | 1 |  |
 | `_p` | partial-indexed text | string[] | A5 `fragments()` (every substring ≥ `$partial_index_min_word_length`) | SB6, SA5 (leading wildcards) | R; cfg (min length) | 1 |  |
 | `_k` | every date type: the padded value's digits as an integer | int64 | A4 (raw digits, non-real dates kept) | SD3 (a) | R | planned (Q3.4) |  |
@@ -59,8 +59,10 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `_sort` | fields core can order by (`$sort_fields`) | string / float | lower-cased key; numeric fields use `_f` | SG4 | R | planned (Q7.9) |  |
 
 Selector rules (B2): a representation applies to a field only when the field's type and flags
-match; `_s`, `_text`, `_ss` and `_p` need `keywords_index` / `partial_index` / `complete_index`
-unless Q1.1 chooses (b); `_q`, `_f`, `_k`, `_range_*` apply to every date or numeric field
+match; `_s`, `_text` and `_ss` apply to every active field of their type (Q1.1 decided (b),
+2026-10-20) and the index flags decide `query_by` membership and the word filters at query time; `_p`
+needs `partial_index`; a field on the exclusion list (G9) gets no representation and its nodes stay
+out of `nodes[]` and `populated_field_ids[]`; `_q`, `_f`, `_k`, `_range_*` apply to every date or numeric field
 regardless of flags (Q3.16); inactive fields get no representations (P37, Q6.7); a field hidden by
 permission is indexed but excluded from `query_by` and field filters at query time (catalogue K12).
 

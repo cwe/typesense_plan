@@ -112,7 +112,10 @@ per-row plan is in [coverage.md](coverage.md).
 - **Battery:** `harness/ab/SA5_wildcards.php` — A11–A14, H22, harness A21–A25, Q1, Q4–Q6, U5,
   `$wildcard_always_applied` on and off; core's side on the MySQL mode (H9), since SQLite emulates
   `MATCH` and `RLIKE`.
-- **Blocking questions:** Q2.3, Q1.1
+- **Decision note (2026-10-20):** Q1.1 is (b) — every active field's values are in the index, so A11,
+  K2 and K3 can be exact; what remains is Q2.3's mechanism; a field excluded on the setup page (G9)
+  makes the wildcard forms decline for users who can see it.
+- **Blocking questions:** Q2.3, Q1.1 (decided)
 - **Open questions:** Q2.16 (short wildcards), Q2.17 (wildcard inside a word)
 
 ### SA6 — Punctuation, hyphens, apostrophes and commas
@@ -187,7 +190,9 @@ per-row plan is in [coverage.md](coverage.md).
 - **Battery:** `harness/ab/SA8_full_text.php` — A27, A28, A29, A34, J12, K4, K8 and one case per
   operator; core's side on the MySQL mode (H9), because SQLite emulates `MATCH`; the live run on
   the test system confirms the set.
-- **Blocking questions:** Q2.15, Q1.1, Q2.7
+- **Decision note (2026-10-20):** Q1.1 is (b) — the box queries every visible field, so K4 and K8 can be
+  exact; an excluded field (G9) makes the box decline for users who can see it.
+- **Blocking questions:** Q2.15, Q1.1 (decided), Q2.7
 
 ### SA9 — Words that are not metadata
 - **Rows:** A23 A24 A25 A26 H36 H37 · cross: F30/F31 (SF4)

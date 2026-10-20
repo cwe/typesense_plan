@@ -65,6 +65,9 @@ before/after node delete, `after_update_resource_type`, `after_resource_custom_a
 `after_put_resource_data`, collection bulk hooks, arguments on the field-config hooks. Confirm the
 list, and the interim: hook-less writes wait for the nightly rebuild.
 
+**Note (2026-10-20, from Q11.1):** the hooks are core changes Chris can make, so Phase 2 need not wait
+for M7; whether the interim is built depends on the ResourceSpace version floor (Q0.5).
+
 ### Q8.5 — Phase 0 scope and order
 Confirm: builder first; then queue + flush + worker; then hooks; then guards; validation in Phase 0
 (Q6.10); then the generation rebuild. Anything to pull forward (e.g. the generation rebuild before

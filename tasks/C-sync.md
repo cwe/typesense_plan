@@ -2,7 +2,8 @@
 
 Keeping the index in step with MySQL between rebuilds. Nine tasks: C1 and C8 are milestone M2 (the
 queue table is tiny and read-time validation is the only protection until the rest works), C2–C7
-are M3, C9 is M7 (it needs the core hooks of I3). The map of every write that changes what a
+are M3, and so is C9 since 2026-10-20 — the plugin ships inside ResourceSpace 11.1 with the hooks of
+I3, so no interim is built for a write that gets its hook there (Q11.6). The map of every write that changes what a
 search returns — its hook or its gap, its queue row, the package that handles it and the freshness
 case that proves it — is [C-event-register.md](C-event-register.md); it plays the role the catalogue
 plays for the search packages.

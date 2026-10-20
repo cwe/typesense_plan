@@ -66,11 +66,32 @@ forms decline when a visible non-indexed text field exists; serving them approxi
 **Catalogue marks (2026-10-20):** K2 (`nikon*`) and K3 (`camera:nik*`), the wildcard forms over a field not
 flagged for indexing, are *check*; K1 and K7 are *must* and are answered by core before the hook.
 
+**Measured (2026-10-20), active fields, raw text held in node names:** on the test system (114,596
+resources) the flagged text fields hold 10.3 MB (23 fields, 472,221 values), the flagged option names
+25.1 MB, the flagged dates 2.0 MB; the non-flagged text fields hold 26.7 MB (5 fields, 209,935 values),
+of which `accessibilityalttext` (field 86, multi-line, a value on 114,100 resources, about 225 characters
+each) is 25.7 MB and `camera` 0.9 MB (451 distinct values on 76,743 resources). On the second, larger
+test database (1,377,433 resources) the flagged text fields hold 493.7 MB (78 fields, 20.2 M values,
+values up to 4,477 characters), the flagged option names 122.6 MB; the only non-flagged text field is
+`camera`, 16.5 MB (490 distinct values on 1,143,498 resources). So option (b) adds 2.6× the flagged text
+on the first system (one field) and 3 % on the second.
+
+**Decided 2026-10-20: option (b), for now.** Every active field's values are indexed; the index flags decide
+which fields a plain keyword search, a field term or an option word reaches, while wildcards and the
+full-text box reach every visible field, as core does. Revisited when tested against different data
+sets (H8). An exclusion list set on the setup page (G9) keeps named fields out of the index entirely,
+and the searches that could reach an excluded field decline for users who can see it.
+
 ### Q1.2 — Which representations per field type?
 Keep the current set? Specific points: `_q` for text fields is unused (the bare-colon filter on
 `_s`/`_text` does the job) — drop it; add a sortable key per field that core can sort by (title,
 custom `field<n>` with numeric and dot-notation rules, status) — which fields; keep `_ts` when
 `_range_start` covers every case.
+
+**Decided 2026-10-20: option (a).** Version 1 is the old set minus its dead weight — `_q` on text fields,
+`_ts` and the facet flag on `_s` go — and nothing speculative. A representation enters the schema only
+with the package that proves it; additions are batched into one rebuild per release. `_k` waits for
+Q3.4, the sort keys for Q7.2, the date components for Q3.13, `_c` and `_w` for Q1.12 and Q1.13.
 
 ### Q1.3 — Fragments: keep, and should they be free-text searchable?
 Fragments are in `query_by` for partial-indexed fields, so a word held only in a fragment is
@@ -120,6 +141,12 @@ resource). Confirm all three.
 ### Q1.11 — Size budget
 ~800 MB today for ~115k resources with fragments; two generations exist briefly during a rebuild.
 What is acceptable on the target server, and does that rule anything out (Q1.1, Q1.6)?
+
+**Measured (2026-10-20):** the second test database holds 494 MB of flagged text and 123 MB of option
+names across 1.38 M resources against the test system's 10 MB and 25 MB across 115 k — roughly 40× the
+text for 12× the documents, with values up to 4,477 characters (the 500-character cap, K10, matters
+there). If the test index's 800 MB resident scales with the text, that installation needs several GB;
+the budget question is this one, not Q1.1's extra field.
 
 ### Q1.12 — Complete-indexed fields
 Core stores a complete-indexed value as one keyword, never split, so only a single-token value is

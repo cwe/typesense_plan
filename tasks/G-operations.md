@@ -6,6 +6,7 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Builds:** `pages/setup.php` — the admin-facing options (Q9.1), health (ready flag, last rebuild
   time/result/duration, queue depth and oldest row, count drift vs MySQL, validation drops),
   warnings, "Rebuild now" and "Resync now" (the offline job, P11), the Typesense-only warning text.
+- **Also builds (2026-10-20):** the excluded-fields control (G9).
 - **Size:** M · **Depends on:** A1, A6, B8, C4
 - **Must honour:** the rebuild schedule is the administrator's scheduled-task entry; the plugin
   reports it (P15); group config overrides are the A/B mechanism and must not be hidden by the page.
@@ -39,6 +40,9 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 ### G5 — Deployment procedure and versioning
 - **Builds:** the written procedure (deploy code, then rebuild; a schema change is a generation
   rebuild; the plugin yaml version bump rule; a migration note per schema version).
+- **Decided 2026-10-20 (Q11.6):** the plugin ships inside ResourceSpace 11.1, so its version is
+  ResourceSpace's and deployment follows the ResourceSpace release process; what remains here is the
+  rebuild-on-upgrade rule and the migration note per schema version.
 - **Size:** S · **Depends on:** B9
 - **Blocking questions:** Q9.7
 - **Proves it:** one deployment to the test system follows it without improvisation.
@@ -90,3 +94,23 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Blocking questions:** Q3.9, Q12.1, Q12.2, Q8.1, Q0.5
 - **Proves it:** the test host configured from the checklist alone; the setup page warns when
   `--filter-by-max-ops` is lowered below the guard.
+
+### G9 — Field exclusion list
+- **Builds:** `$typesense_search_excluded_fields` (field refs, empty by default) in `config.php`, set from
+  a control on the setup page (G1: every active field with a checkbox, POST with a form token); B2's
+  selector honours it — an excluded field gets no representation, its nodes stay out of `nodes[]` and
+  `populated_field_ids[]`; the decline rule in the parse and the pipeline — a search that names an
+  excluded field (`field:…`, `!hasdata<field>`, a node token of it) declines, and a wildcard or
+  full-text search declines for a user who can see an active excluded field; a change to the list bumps
+  the schema version (B9) and queues a rebuild (C7).
+- **Size:** S · **Depends on:** A1, B2, B9, D4, G1, SA5, SA8 · **Milestone:** M7 (the control); the
+  option and the selector rule from M4, so SK1's battery runs with and without an exclusion
+- **Must honour:** wanted beyond size (Chris, 2026-10-20) — a field an installation does not want copied
+  to Typesense (Q12.3) is the same mechanism; an excluded field is exactly option (a) of Q1.1, so its
+  decline logic is the only place (a) survives and it stays confined to the list; "can see" is per user
+  (`metadata_field_view_access`), so the rule runs in X4's battery.
+- **Blocking questions:** Q1.1 (decided), Q12.3
+- **Proves it:** `harness/ab/G9_excluded_fields.php` — with the fixture's field 96 excluded: its values
+  are absent from the document; `field:word` on it declines; `word*` and the full-text box decline for a
+  user who can see it and serve for one who cannot; the list change forces a rebuild; a GET to the
+  setup action changes nothing.
