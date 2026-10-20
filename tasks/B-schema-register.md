@@ -15,7 +15,8 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 
 | Field | Type | Source | Flags | Needed by | Freshness | Version | Status |
 |---|---|---|---|---|---|---|---|
-| `id` / `ref` | int32 | `resource.ref` | id; sort | everything | R | 1 |  |
+| `id` | string | `resource.ref` as text | the document id (Q1.10: natural keys, decided 2026-10-20) | everything | R | 1 |  |
+| `ref` | int32 | `resource.ref` | sort; numeric filters | everything | R | 1 |  |
 | `ref_s` | string | `resource.ref` as text | no stem | SA9 (a number as a word) | R | 1 |  |
 | `title` | string | `$view_title_field` value | stem per Q2.14 | D4 `query_by`; D11 | R | 1 |  |
 | `resource_type` | int32 | `resource.resource_type` | facet | D5, SF5 | R (E8 type change: gap until C9) | 1 |  |

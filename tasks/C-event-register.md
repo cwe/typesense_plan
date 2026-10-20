@@ -59,7 +59,7 @@ rebuild; *C8* = read-time validation hides a stale row meanwhile (access and sta
 | E24 | Resource type create / rename / delete | `admin_resource_type_edit.php` | none; delete moves resources via `update_resource_type` (E8) | `full (3)` if type names are indexed (SA9) | C7 | rebuild | rename a type (if `words` exists) |  |
 | E25 | `$stemming`, `$partial_index_min_word_length`, `$resource_field_verbatim_keyword_regex`, `$config_separators` | `config.php` edits only; `set_config_option()` has no hook | none | "rebuild required" from the global-config snapshot diff (B9) | C7 | rebuild | change `$stemming`; the setup page warns; the nightly build rebuilds |  |
 | E26 | `$view_title_field`, `$date_field` | as E25 | none | `full (3)` from the snapshot diff | C7 | rebuild | change `$date_field`; sort keys and components follow |  |
-| E27 | Hit counts, ratings | core cron (`hit_count`); ratings page (`modifyuserrating` hook exists) | none for hit counts | — | — | rebuild | `hit_count` fresh nightly (Q8.9) |  |
+| E27 | Hit counts, ratings | core cron (`hit_count`, at most once a day); ratings page (`modifyuserrating` hook exists) | `after_copy_hitcount_to_live` (I3, Q7.1 decided 2026-10-20); `modifyuserrating` | `resource R…` (1) | C5, C9 | rebuild until the hook ships | `hit_count` exact after each daily copy; `user_rating` at once |  |
 
 ## Collections (C6; gaps C9)
 

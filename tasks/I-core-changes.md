@@ -47,7 +47,9 @@ void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 mov
   `delete_collection`, `remove_all_resources_from_collection`, `add_saved_search_items`,
   `copy_collection`, the type changers; arguments on the field-config hooks; plus the two the
   register adds for later packages: `after_related_resources_changed` (SF11) and
-  `after_resource_lock_change` (SF13).
+  `after_resource_lock_change` (SF13); and `after_copy_hitcount_to_live` at the end of
+  `copy_hitcount_to_live()` with the refs whose `hit_count` changed (Q7.1, 2026-10-20) — the daily
+  cron is the only writer of the live column.
 - **Size:** M · **Depends on:** I1
 - **Must honour:** the node layer has zero hooks today; the collection add/remove hooks fire before
   the write; custom-access writers via requests and collection email have no hook and no log;

@@ -170,31 +170,31 @@ width, height; `lock_user`, `integrity_fail`, file presence; a geopoint; `colour
 `rty.order_by`; a sortable title. One batch (one rebuild) or per package (Q4.2)?
 Shapes: A3, B2, SF9–SF16, SG1–SG3.
 Standing (2026-10-20): **required** — blocks A3
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) base rows plus the hit-count cluster (`hit_count`, `user_rating`, `rating`, the packed keys), conditional on Q7.1 and the G11 check; everything else with its package, batched per release.
+- **Reason:** the cluster is the one extra an M2 task needs — keyword-less relevance order, the default order of the search page; the rest belongs to 11.2 packages. decisions.md 2026-10-20.
 
 #### Q1.8 — Schema evolution
 Generation collections + aliases (P7); what triggers a full rebuild (field config, `$stemming`,
 schema version); how the version is recorded; whether `PATCH` stays for additive changes.
 Shapes: B8, B9, G5.
 Standing (2026-10-20): **required** — blocks A3, B9
-- **Answer:**
-- **Reason:**
+- **Answer:** rebuild only — every collection-definition change is a generation rebuild, no PATCH; version in the generation metadata; "rebuild required" served from the old generation. Schema changes only: the document-level mechanisms are the sync questions' (Q8.x), later.
+- **Reason:** PATCH alters the serving collection, was slow, and can leave schema and builder out of step; additions are batched per release anyway (Q1.2). decisions.md 2026-10-20.
 
 #### Q1.10 — Document identity
 Resources `id = ref`; memberships `collection:resource`; grants: confirm the scheme.
 Shapes: B3–B6.
 Standing (2026-10-20): **required** — blocks A3, B6
-- **Answer:**
-- **Reason:**
+- **Answer:** (a) natural keys: resources `id` = ref as a string (plus integer `ref`, `ref_s`); memberships `collection:resource`; grants `resource:user:usergroup` with `-1` unused; one id function per collection in B2.
+- **Reason:** idempotent imports make queue replay and the rebuild catch-up safe; deletes address by id; duplicate rows collapse. decisions.md 2026-10-20.
 
 #### Q1.11 — Size budget
 ~800 MB today for ~115k resources with fragments; two generations briefly during a rebuild. What is
 acceptable on the target, and does it rule anything out (Q1.1, Q1.6, Q1.3)?
 Shapes: B8, SK1, SB6.
 Standing (2026-10-20): **required** — blocks A3, B8
-- **Answer:**
-- **Reason:**
+- **Answer:** no budget rule: room to serve one generation and build the next is the requirement; B8 checks memory before a build and refuses when the second generation would not fit; G8 states sizing guidance from the measured points; levers documented, nothing cut in advance.
+- **Reason:** memory is a server-sizing fact, not a design constraint. decisions.md 2026-10-20.
 
 #### Q7.1 — The relevance model
 (A) accept Typesense's text match for keyword searches and newest-first for keyword-less ones,
@@ -206,8 +206,8 @@ Note (Q10.3): keyword-less relevance must be exact — a composite sort key, exa
 rebuild; the remaining choice is whether that staleness is acceptable.
 Shapes: D9, A3, SG2, SC1 (node-only order), SF2 (Q5.3).
 Standing (2026-10-20): **required** — check rows G11; blocks A3, B3, D9, SG2 (pending check)
-- **Answer:**
-- **Reason:**
+- **Answer:** (B) the hit-count cluster in version 1; keyword-less relevance exact via the packed keys, kept fresh by a new hook in `copy_hitcount_to_live()` plus the rating and edit hooks. Keyword searches ordered by relevance differ from core (per-search node-hit score): the one accepted difference, documented.
+- **Reason:** core refreshes hit counts at most daily, so the hook makes the order exact rather than stale; keyword-less relevance is the default order of every browse view. decisions.md 2026-10-20.
 
 ### Search core (M2)
 
@@ -343,8 +343,8 @@ written; (c) the official client via the fork's root `composer.json`. The librar
 endpoint with typed exceptions but has no GET/POST choice, no concurrency and no breaker.
 Shapes: A2, B7, C4.
 Standing (2026-10-20): **required** — blocks A2, A7, B7
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) the custom curl client, behind a transport seam (`client.php` contract + `client_curl.php` transport) so the official library can be swapped in later; A7 dropped from M0, kept as the swap procedure.
+- **Reason:** inside ResourceSpace 11.1 the library means a vendored stack in the core repository for little saving; the curl client is proven and can import in parallel. decisions.md 2026-10-20.
 
 #### Q9.11 — Where plugin state lives
 Core's `sysvars` table under a prefixed key (rec.: no new table, visible to core's tooling) or a
@@ -573,3 +573,7 @@ it blocks only parked packages; **uncited** when no row and no blocking line nam
 Q0.10 · Q0.11 · Q0.12 · Q1.14 · Q2.18 · Q5.5 · Q8.11 · Q9.8 · Q10.14 — answered when their task starts; nothing in the catalogue turns on them.
 
 Everything else in Part 3 is required.
+
+### Part 3 questions decided
+
+- **Q1.9** (2026-10-20): Typesense 30.0 or later, tested on 30.x; refuse below, warn above the tested range. decisions.md.

@@ -65,6 +65,15 @@ last rebuild. Still to say: is that staleness acceptable, or does keyword-less r
 **Catalogue marks (2026-10-20):** G11 (relevance) is *check* — Chris checks core's relevance order, the
 keyword and the keyword-less case, before the mark is final; the direction above stands meanwhile.
 
+**Decided 2026-10-20: option (B).** The hit-count cluster is in the version-1 schema; a keyword-less search
+ordered by relevance is served exactly (hit count, user rating, date field, ref via the packed keys) and
+kept in step with core by a new hook at the end of `copy_hitcount_to_live()` — core copies hit counts
+live at most once a day — plus the existing `modifyuserrating` hook and the edit hook. **Divergence,
+documented:** a keyword search ordered by relevance differs from core — core's score is the per-search
+sum of the matched nodes' hit counts, which Typesense cannot reproduce; the plugin orders by its text
+match, then the same keys. The one accepted difference under Q10.3, listed in the harness and in the
+user documentation.
+
 ### Q7.2 — Which further sorts to serve
 Each needs a sortable field: title (a case-insensitive key), status (`archive` is already sortable —
 trivial), resource type (`rty.order_by`), extension and file path, rating and popularity (with

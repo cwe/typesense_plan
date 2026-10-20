@@ -95,6 +95,11 @@ root `composer.json` (cleaner, a core divergence unless the plugin goes upstream
 B7's parallel imports become an optional later optimisation: the single-stream rebuild is about a
 minute on the test system, and principle 11 says not to add the layer until the budget needs it.
 
+**Decided 2026-10-20: option (b), the custom curl client, behind one transport seam.** The contract and
+the transport-independent logic live in `include/client.php`, the transport in `include/client_curl.php`;
+the official library can replace the transport later without touching callers, and A2's battery is the
+swap test. A7 is dropped from M0 and kept as the procedure for that swap.
+
 ### Q9.11 — Where plugin state lives
 The rebuild, the worker and every search share state (live and building generation, `ready`,
 `bulk_pending`, snapshots, counters, the breaker). Core's `sysvars` table through `get_sysvar()` /

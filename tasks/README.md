@@ -38,7 +38,8 @@ plugins/typesense_search/
   include/
     typesense_search_functions.php  the loader and the shared helpers: requires the index and sync modules at load,
                                     the search/ modules only inside the search hook
-    client.php                    A2  requests, multi_search, imports, breaker (over lib/ if Q9.10 says so)
+    client.php                    A2  the client contract: size routing, chunking, breaker, timeouts
+    client_curl.php               A2  the curl transport (swappable for the official library later)
     state.php                     A6  generation, ready, bulk_pending, snapshots, counters
     tenancy.php                   A8  the prefix: validation, every server-side name, identity, clash check
     schema.php                    A3  versioned schema, aliases, generations
@@ -67,7 +68,7 @@ plugins/typesense_search/
              flags.php geo.php colour.php unused.php)
   scripts/reindex.php  scripts/sync.php  scripts/explain.php (G7)   each CLI-guarded; .htaccess deny (X3)
   job_handlers/typesense_search_reindex.php   B8, as the clip plugin does it
-  lib/                            A7  the vendored client and its stack (phpcs excludes it)
+  lib/                            A7  (dropped 2026-10-20: no dependency to vendor; the procedure stays for a later swap)
   pages/setup.php
   harness/                        H  (not tests/: core's runner scans that)
     ab/<ID>_<slug>.php            one battery per task or package, labels = catalogue rows
@@ -111,7 +112,7 @@ pending-check packages excluded), which does not fit in full at one developer's 
 
 | Milestone | Outcome | Tasks |
 |---|---|---|
-| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; dependencies vendored; the core hook patch settled; harness in the repo | A1–A8, X1–X3, I1, H1 |
+| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; the core hook patch settled; harness in the repo | A1–A6, A8, X1–X3, I1, H1 (A7 dropped: Q9.10) |
 | M1 An index from scratch | Builders produce complete documents; a generation rebuild on the fixture and on the test system gives counts equal to MySQL | B1–B9, G8 (the checklist), G6 (the proof), H2 |
 | M2 The first served search | Plain words, node tokens and resolved options, with every restriction, the served sorts, windows, shapes and read-time validation; every other `!` and every declined sort falls back | D1–D12, C1, C8, G7, X4, SA1, SA11, SA12, SC1, SC2, SF8, SG5, SH1 (first pool), H3, H4 (first live run), H7 |
 | M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, I3, C9, X5, H5 |

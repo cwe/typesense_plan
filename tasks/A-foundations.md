@@ -20,11 +20,15 @@ Milestone M0. Everything else builds on these five modules.
   changes behaviour in a request made by a user of that group (the Q8.3 test).
 
 ### A2 — Typesense client
-- **Builds:** `include/client.php` — either a thin adapter over the official `typesense-php` client
-  vendored in `lib/`, or a curl client (Q9.10): `search()` (GET or POST `multi_search` by size),
-  `multi_search()`, `import()` with per-line results, `collection_exists()`, alias calls; a ready
-  flag and a circuit breaker; exceptions mapped to the breaker so nothing leaks into a search.
-- **Size:** M · **Depends on:** A1, A7 (when Q9.10 chooses the library)
+- **Builds:** a curl client (Q9.10 decided (b), 2026-10-20) behind one transport seam. `include/client.php`
+  holds the contract every caller uses — `search()` (GET or POST `multi_search` by size),
+  `multi_search()`, `import()` with per-line results, `delete()`, `collection_exists()`, collection,
+  alias and health calls — and everything transport-independent: the size routing, the chunking, the
+  ready flag and circuit breaker, the two timeouts, exceptions mapped to the breaker so nothing leaks
+  into a search. `include/client_curl.php` is the transport (keep-alive handle, `curl_multi` for
+  parallel imports). A later `client_library.php` implements the same contract if the official
+  library is adopted, with no change to callers; this battery is the swap test.
+- **Size:** M · **Depends on:** A1
 - **Must honour:**
   - A GET query string is capped at 4,000 bytes; `per_page` above 250 returns 422; `multi_search`
     takes at most 50 searches; `page` can go deep but cost grows faster than linear.
@@ -35,8 +39,11 @@ Milestone M0. Everything else builds on these five modules.
   - On 503 back off 10–60 s with jitter and halve concurrency (P16); concurrent imports ≤ cores − 2;
     leave the server's own batch size alone.
   - Never create collections outside the rebuild path.
+  - **Server version** (Q1.9 decided (a), 2026-10-20): minimum 30.0, tested on 30.x — read once at setup
+    from `/debug`; below the minimum the plugin refuses to activate, above the tested range it warns;
+    the battery records the tested range.
   - An outage must end in a fallback to MySQL, never an empty result (P7 rollback = fall back).
-- **Blocking questions:** Q8.6, Q9.1, Q9.10, Q1.9, Q12.1, Q12.2
+- **Blocking questions:** Q8.6, Q9.1, Q9.10 (decided), Q1.9 (decided), Q12.1, Q12.2
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
 
@@ -75,7 +82,10 @@ Milestone M0. Everything else builds on these five modules.
     numbers only, `_f`, `_range_start` / `_range_end`, `_p`; no `_q` on text fields, no `_ts`, no facet
     on `_s`. A representation enters the schema only with the package that proves it, and additions
     are batched into one rebuild per release (hours on a 1.4 M-resource system).
-- **Blocking questions:** Q1.1 (decided), Q1.2 (decided), Q1.6, Q1.8, Q1.10, Q1.11, Q7.1
+  - **Version 1 top-level fields** (Q1.6 decided (b), 2026-10-20): the base rows of the register plus
+    `hit_count`, `user_rating`, `rating` and the four packed sort keys — confirmed by Q7.1 (B); every other
+    candidate arrives with its package.
+- **Blocking questions:** Q1.1 (decided), Q1.2 (decided), Q1.6 (decided), Q1.8 (decided), Q1.10 (decided), Q1.11 (decided), Q7.1 (decided)
 - **Proves it:** collections created from scratch on the local Typesense; a schema snapshot test
   against the schema document; sample documents for every field pattern accepted.
 
@@ -137,6 +147,9 @@ Milestone M0. Everything else builds on these five modules.
   prefix isolation); B8, B9, C4, C7 and G1 read and write state only through it.
 
 ### A7 — Vendored dependencies
+- **Dropped from M0 (Q9.10 decided (b), 2026-10-20):** the client is custom and the plugin has no
+  dependency to vendor. Kept as the procedure for adopting the official library later behind A2's
+  transport seam; not in any milestone until then.
 - **Builds:** `plugins/typesense_search/lib/` holding the official `typesense-php` client and its
   HTTPlug stack, installed by Composer from a committed `lib/composer.json` and `composer.lock`,
   its `vendor/autoload.php` required once from `hooks/all.php`; `lib/README.md` with the pinned

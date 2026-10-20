@@ -30,6 +30,9 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Proves it:** manual check in each state.
 
 ### G4 — Documentation
+- **Must say (Q7.1, 2026-10-20):** a search with keywords ordered by relevance is ordered differently
+  from core — core scores by the matched nodes' hit counts, the plugin by Typesense's text match —
+  while every other order is identical; the one documented difference.
 - **Builds:** in the plugin: an operations page (install, configure, rebuild, monitor, recover), the
   schema document (every field, type, source, flags, reason), `CORE_PATCHES.md`, and updates to the
   behaviour spec and architecture doc as tasks land; in this repo: the decisions.
@@ -86,6 +89,13 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
   (Q8.11); the two cron entries (worker every minute, nightly rebuild); permissions for the CLI
   scripts; log rotation. And a setup-page check (G1) that reads `/debug` and `/health`, compares the
   server's version and `filter_by_max_ops` with the plugin's assumptions and warns on a mismatch.
+- **Sizing guidance (Q1.11, 2026-10-20):** the server needs room for two generations of the index
+  plus headroom; reference points from the measured systems (about 800 MB per 115 k resources with
+  fragments on the test system; the 1.4 M-resource database measured in M1); the levers for a short
+  server, in order: the exclusion list (G9), no uncapped `_w` copy, fragments only on partial-indexed
+  fields, option names once in a joined collection (a parity trade, last).
+- **Server version (Q1.9, 2026-10-20):** Typesense 30.0 or later; the tested range is listed here and
+  updated when a new major is proved; the setup page shows the server's version against it.
 - **Size:** S · **Depends on:** A2, G4; the check with G1 · the checklist before the first live
   rebuild (M1), the check with G1 (M7)
 - **Must honour:** the guard (P34) counts operations as the server does, so a raised server limit

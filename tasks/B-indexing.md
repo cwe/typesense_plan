@@ -173,7 +173,9 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   (`job_handlers/typesense_search_reindex.php`) that runs the identical build: take the build lock;
   record `building_generation`; create the three `_g<N+1>` collections from B2's schema with
   metadata `{generation, schema_version, plugin_version, instance (A8), started}`, `async_reference`,
-  `cascade_delete` — and the clash check before creating anything; stream
+  `cascade_delete` — the clash check before creating anything, and the memory check (Q1.11, 2026-10-20): the server
+  must have room for a second generation (`/metrics.json`), else the build is refused with a message
+  that names the shortfall; stream
   resources, memberships, grants (and synonyms, if SA10 chooses them) through B4–B7; **catch-up**
   of queue rows stamped during the build (a seam that calls C2's `apply` — a no-op until C2
   exists); pause the worker, final catch-up, verify, mark complete, swap all three aliases, set
@@ -203,13 +205,20 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
 - **Covers:** register section 5 (versions).
 - **Builds:** the version in each generation's metadata; at boot and before serving, compare it
   with `schema_version()` → a "rebuild required" state the setup page shows (G1) and the nightly
-  build acts on; `scripts/reindex.php --patch` for additive changes (add or drop a field on the
-  live collection, make a field optional by drop-and-re-add keeping values — verified) with the
-  rule that only additive changes use it; the triggers that force a rebuild (`$stemming`, a
-  field-config change moving a field between representations — detected by C7's snapshot diff —
-  and a version bump).
+  build acts on; **no PATCH** (Q1.8 decided 2026-10-20): every change to the collection definition is
+  a generation rebuild, and the live collection is never altered in place; the triggers that force a
+  rebuild (`$stemming`, `$config_separators`, the fragment length, the verbatim regex,
+  `$view_title_field`, `$date_field`, the exclusion list (G9), a version bump).
+- **Change map (candidate — the sync questions Q8.x decide the middle rows later):** *nothing* for a
+  field's name, order, tab, help text or its visibility to a group, and for the keyword index flag
+  on a text or list field (Q1.1 (b) stores every active field's values; the flag decides reach at
+  query time); *the affected documents* (per-resource or a C7 stream) for the partial, complete and
+  numeric flags, a field type change, a field deleted, an option renamed or deleted, a type's sort
+  order, and, per Q6.7, a field made inactive; *nothing, matching core,* for an option moved under
+  another parent (core stores ancestors at save time too); *rebuild* for the collection-level
+  settings and the two site-wide fields above.
 - **Size:** S · **Depends on:** B8, A6 · **Milestone:** M1
-- **Must honour:** a PATCH needed a 600 s timeout on the test index; the version mismatch must not
+- **Must honour:** a PATCH needed a 600 s timeout on the test index (one reason it is out); the version mismatch must not
   make searches fail — serve the old generation until the rebuild, unless the mismatch is one the
   query code cannot work with (then `ready = false`).
 - **Battery:** `harness/ab/B9_schema_version.php` — an upgrade from a previous version on the

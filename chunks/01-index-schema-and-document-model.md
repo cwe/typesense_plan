@@ -120,6 +120,10 @@ Candidates and what they unlock: `hit_count` (+`user_rating`) → relevance/popu
 `!colourkey`, `!rgb`-adjacent; related refs → `!related`; `rty.order_by` → resource-type sort; a
 sortable title → title sort. Add as one batch (one rebuild) or per chunk?
 
+**Decided 2026-10-20: option (b).** Version 1 is the base rows plus the hit-count cluster (`hit_count`,
+`user_rating`, `rating`, the four packed keys), the cluster conditional on Q7.1 accepting rebuild-fresh
+ordering and on the G11 check; everything else enters with its package, batched per release (Q1.2).
+
 ### Q1.7 — Resource-type names and contributor usernames as searchable words
 Core matches "Photo" to every resource of that type, and usernames when `$index_contributed_by` is
 on. Index a `type_name` (and `contributor`) token field, or veto searches containing a type name?
@@ -130,13 +134,27 @@ rebuild (field config change, `$stemming` change, plugin schema version change);
 version is recorded (alias name suffix, a metadata document); whether `PATCH` upgrades remain for
 additive changes between rebuilds.
 
+**Decided 2026-10-20: rebuild only.** A change to the collection definition is a generation rebuild; the
+live collection is never altered in place (no PATCH). Version in the generation metadata; a mismatch
+is "rebuild required", served from the old generation meanwhile. Decides schema changes only: which
+document-level changes are streamed, queued or left to the rebuild belongs to the sync questions
+(Q8.x), decided later; B9 carries a candidate change map for them.
+
 ### Q1.9 — Typesense version and features
 Pin to 30.x and use synonym sets, `_eval` sorts, `multi_search`, reference joins, `cascade_delete`,
 aliases. Any reason to support an older server?
 
+**Decided 2026-10-20: option (a).** Minimum Typesense 30.0, tested on 30.x; refuse to activate below the
+minimum, warn on an untested later major; the version check at setup, shown on the setup page; the
+features above used without compatibility layers.
+
 ### Q1.10 — Document identity
 Resources: `id = ref`; memberships: `collection:resource`; grants: confirm the id scheme (user/group +
 resource). Confirm all three.
+
+**Decided 2026-10-20: natural keys, confirmed for all three.** Resources `id` = the ref as a string (plus
+an integer `ref` and `ref_s`); memberships `collection:resource`; grants `resource:user:usergroup`
+with `-1` in the unused slot. One id function per collection in B2, shared by import, queue and delete.
 
 ### Q1.11 — Size budget
 ~800 MB today for ~115k resources with fragments; two generations exist briefly during a rebuild.
@@ -147,6 +165,11 @@ names across 1.38 M resources against the test system's 10 MB and 25 MB across 1
 text for 12× the documents, with values up to 4,477 characters (the 500-character cap, K10, matters
 there). If the test index's 800 MB resident scales with the text, that installation needs several GB;
 the budget question is this one, not Q1.1's extra field.
+
+**Decided 2026-10-20: no budget rule.** The server must have room to serve one generation and build the
+next beside it; B8 checks the memory before a build and refuses when a second generation would not fit;
+the setup page shows the generation's size; G8 gives sizing guidance from the measured reference
+points. The levers stay documented, nothing is cut in advance.
 
 ### Q1.12 — Complete-indexed fields
 Core stores a complete-indexed value as one keyword, never split, so only a single-token value is

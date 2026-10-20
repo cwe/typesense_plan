@@ -169,7 +169,11 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     `modified …` → `modified_date, ref`; `r.ref …` → `ref`; `c.sortorder …` → the collection mode's
     order; everything else vetoes (rating, popularity, colour, title, type, extension, status,
     random, custom fields) until Q7.2 adds sort keys.
-  - Relevance on a match-all query is meaningless; the keyword-less order is Q7.1.
+  - Relevance on a match-all query is meaningless; the keyword-less order is Q7.1 — decided (B),
+    2026-10-20: `hits_ur, date_ref` exactly, fresh through the hit-count hook (I3). **A keyword search
+    ordered by relevance differs from core** (core's per-search sum of node hit counts cannot be
+    reproduced): `_text_match` first, then `ur_hits, date_ref` — the one accepted difference under
+    Q10.3, listed in the harness and in the user documentation (G4).
   - `!last` + relevance → `ref` with core's upper-case-DESC test (P29); a bare number with
     `$config_search_for_number` off → `_eval(ref:=N):desc` first (verified) if Q7.4 says so.
   - Modified ties broken by ref (80–97 % of rows share a `modified_date`).
