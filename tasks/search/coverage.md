@@ -189,7 +189,7 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | F35 | !contributions, own: `!contributions{userref}` | 0 | 0 | SF5 | = | P26 replicated | must |  |
 | F36 | !images: `!images` | 100,757 | 0 | SF12 | ? | Q4.1 | must |  |
 | F37 | !unused: `!unused` | 6,967 | 0 | SF16 | ? | Q4.7 | check |  |
-| F38 | !list: `!list416:4460:8692` | 1 | 1 | SF3 | = |  | check |  |
+| F38 | !list: `!list416:4460:8692` | 1 | 1 | SF3 | = |  | must |  |
 | F39 | !listall: `!listall416:4460:8692` | 1 | 1 | SF3 | = |  | check |  |
 | F40 | !list plus a keyword: `!list416:4460:8692 sculpture` | 1 | 1 | SF3 | = | not required; served by composition | no |  |
 | F41 | !list with commas: `!list416,4460` | 1 | 1 | SF3 | = | not required; served by composition — comma ends the list | no |  |
@@ -374,7 +374,7 @@ answer is reached), and *check* rows keep their symbol until the check is done.
 
 | Plan | Rows | must | check | bug | no |
 |---|---|---|---|---|---|
-| = | 143 | 114 | 24 | 0 | 5 |
+| = | 143 | 115 | 23 | 0 | 5 |
 | ? | 117 | 71 | 46 | 0 | 0 |
 | ↩ | 18 | 2 | 3 | 0 | 13 |
 | ✗ | 17 | 0 | 0 | 17 | 0 |
@@ -424,7 +424,7 @@ gathered in [checks.md](checks.md).
 | SE1 | required | 5 | 4 | 0 | 0 |
 | SF1 | required | 3 | 1 | 3 | 0 |
 | SF2 | required | 14 | 2 | 0 | 0 |
-| SF3 | pending check | 0 | 3 | 0 | 2 |
+| SF3 | required | 1 | 2 | 0 | 2 |
 | SF4 | required | 1 | 0 | 1 | 0 |
 | SF5 | required | 3 | 0 | 0 | 0 |
 | SF6 | required | 2 | 1 | 0 | 1 |

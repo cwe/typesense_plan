@@ -80,6 +80,9 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Serve:** `ref:=[…]`, every archive state, D5's `z` exclusions kept.
 - **Battery:** `harness/ab/SF3_list.php` — F38–F41, H28, J1 and the parse cases.
 - **Blocking questions:** Q4.3
+- **Catalogue marks (2026-10-20):** F38 *must* — the advanced form's J1 (SJ1) depends on `!list`, so the
+  package is required; F39 and H28 *check* (the state rule and the node AND, on the fixture: the live refs
+  are hidden from the test users); F40 and F41 *no*, served by composition, F41 being Q4.3's parse rule.
 
 ### SF4 — `!resource` and bare numbers
 - **Rows:** F30 F31 · cross: A25 (SA9)

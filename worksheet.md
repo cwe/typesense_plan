@@ -217,7 +217,7 @@ unknown special → everything). (a) replicate, bugs included; (b) parse each sp
 form and veto the rest (core then answers — the user sees core's behaviour either way); (c) parse
 sensibly and accept differences. Rec.: (b).
 Shapes: D2, SF1, SF3, SF4, SF8.
-Standing (2026-10-20): **required** — must rows F3; bug rows F4, F31; blocks D2, SF1, SF3 (pending check), SF4
+Standing (2026-10-20): **required** — must rows F3; bug rows F4, F31; blocks D2, SF1, SF3, SF4
 - **Answer:**
 - **Reason:**
 

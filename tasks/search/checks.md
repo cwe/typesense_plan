@@ -1,6 +1,6 @@
 # The check register
 
-Every catalogue row marked *check* (78 rows on 2026-10-20), grouped by what has to be confirmed in core
+Every catalogue row marked *check* (77 rows: 78 on 2026-10-20, then F38 marked *must* the same day because J1 depends on it), grouped by what has to be confirmed in core
 before the row's mark is final. A check is run against core itself — the live API runner on the test
 system for rows its data can show, and the MySQL-backed harness mode (H9) for the rest — and its
 outcome is recorded on the row: *must*, *no*, *n/a*, or *bug* (Q11.3). Until then the row keeps its
@@ -10,7 +10,7 @@ package and its Plan symbol in [coverage.md](coverage.md); a package with only c
 Where a check could show that core treats the form as a search type of its own, the theme says so
 (*split candidate*): that is the point at which a package is cut in two or a new one added.
 
-Packages pending check (no *must* row): SD4, SD5, SF3, SF16, SG1, SG2, SG4, SH1, SK3. The pipeline tasks D1, D5, D6 and D9 own
+Packages pending check (no *must* row): SD4, SD5, SF16, SG1, SG2, SG4, SH1, SK3. The pipeline tasks D1, D5, D6 and D9 own
 check rows too (G37, G38, G42, G8, G9, G40, G39, G11, G25) but are required regardless.
 
 ## Wildcards beyond a trailing prefix
@@ -125,14 +125,13 @@ E6: a plain number in a numeric field is an ordinary keyword search — confirm.
 
 ## Special searches
 
-`!unused` (F37), `!list`/`!listall` and their state and z-permission handling (F38, F39), `!empty` with a resource type (F48), the `!properties` keys (F52 extension wildcard, F59 orientation from the dimensions table, F62 unknown key → everything), `!integrityfail` (F63), `!noningested` for non-admins → everything (F65), `!last` with a comma (F69), and the collection, list and hasdata combinations (H11, H28, H29, H38). Confirm each against the catalogue's *What core does*.
+`!unused` (F37), `!list`/`!listall` and their state and z-permission handling (F39; F38 is *must* because J1 depends on it), `!empty` with a resource type (F48), the `!properties` keys (F52 extension wildcard, F59 orientation from the dimensions table, F62 unknown key → everything), `!integrityfail` (F63), `!noningested` for non-admins → everything (F65), `!last` with a comma (F69), and the collection, list and hasdata combinations (H11, H28, H29, H38). Confirm each against the catalogue's *What core does*.
 
 **Split candidate.** `!properties` keys behave as three families (a text property with wildcards, a computed one from dimensions, an unknown key that filters nothing): SF9 may split by family. F65 and F62 ("everything") are decline-by-construction candidates.
 
 | Row | Search | What core does | Settles | Owner |
 |---|---|---|---|---|
 | F37 | !unused: `!unused` | In no collection. | Q4.7 | SF16 |
-| F38 | !list: `!list416:4460:8692` | Refs separated by colons (the example refs are in three different states); workflow states not applied, z permissions are. | — | SF3 |
 | F39 | !listall: `!listall416:4460:8692` | Same, by name "all"; the filter difference is in search_filter, which treats both alike. | — | SF3 |
 | F48 | !empty with a resource type: `!empty170` restypes=1 | Candidates limited to the given types. | Q4.8 | SF10 |
 | F52 | !properties, extension wildcard: `!propertiesfext:jp*` | * becomes %: jpg and jpeg. | Q4.1, Q4.11 | SF9 |

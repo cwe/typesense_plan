@@ -32,7 +32,7 @@ alphabet; the `S` prefix keeps them apart.)
 ## Standing after the marks (2026-10-20)
 
 Every catalogue row is marked and [coverage.md](coverage.md)'s Plan column is derived from the marks.
-Of the 54 packages, 39 are **required** (they own a *must* row); 9 are **pending check** — SD4, SD5, SF3, SF16, SG1, SG2, SG4, SH1, SK3 —
+Of the 54 packages, 40 are **required** (they own a *must* row); 8 are **pending check** — SD4, SD5, SF16, SG1, SG2, SG4, SH1, SK3 —
 and are not started until their rows in [checks.md](checks.md) are confirmed; 1 is **bug only** (SF8, Q11.3);
 5 are **parked** (SF14, SF15, SF17, SG3, SG5). A required package starts on its *must* rows; its *check* rows wait
 for the register.
