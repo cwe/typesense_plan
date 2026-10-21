@@ -89,6 +89,11 @@ interval overlap as a served difference is out.
 **Catalogue marks (2026-10-20):** H35 (a date range with a node and a keyword), J5 (a start year only) and J6
 (months only) are *must*; J13 (a value and a range on one field) is *check*.
 
+**Decided 2026-10-21: option (a).** A fourteen-digit integer key `_k` per date value reproduces core's
+string comparison, non-real ends included; a stored year-month stays outside a range starting inside
+its month, as in core. `_k` enters the version-1 schema; `_range_start` / `_range_end` leave it (SD4
+gets its own start and end keys when confirmed). Overlap (b) is a set difference and is out.
+
 ### Q3.5 — Date-range fields (start/end pairs)
 Core is buggy here (exact value → nothing; parameters reversed). Serve correctly, replicate the bug,
 or veto? (Links Q11.3.)

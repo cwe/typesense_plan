@@ -3,9 +3,14 @@
 Milestone M7, except that G4's operations page starts in M1 (the rebuild) and grows.
 
 ### G1 — Setup page
-- **Builds:** `pages/setup.php` — the admin-facing options (Q9.1), health (ready flag, last rebuild
-  time/result/duration, queue depth and oldest row, count drift vs MySQL, validation drops),
-  warnings, "Rebuild now" and "Resync now" (the offline job, P11), the Typesense-only warning text.
+- **Builds:** `pages/setup.php` — the admin-facing options (Q9.1 decided 2026-10-21: host, port,
+  protocol, the two keys as password fields shown set / not set, enabled, the badge, the excluded
+  fields — each drawn locked when `$typesense_search_<option>_override` is set in `config.php`, keys
+  as hidden), the prefix read-only with the lockable "regenerate" action (Q9.12), health (ready flag,
+  server version against the tested range, live generation and size, last rebuild time/result/
+  duration, queue depth and oldest row, count drift vs MySQL, validation drops, breaker state, the
+  rebuild schedule, the "rebuild required" notice), warnings (Typesense-only on for any group),
+  "Rebuild now" and "Resync now" (the offline job, P11), both lockable.
 - **Also builds (2026-10-20):** the excluded-fields control (G9).
 - **Size:** M · **Depends on:** A1, A6, B8, C4
 - **Must honour:** the rebuild schedule is the administrator's scheduled-task entry; the plugin
@@ -96,6 +101,10 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
   fields, option names once in a joined collection (a parity trade, last).
 - **Server version (Q1.9, 2026-10-20):** Typesense 30.0 or later; the tested range is listed here and
   updated when a new major is proved; the setup page shows the server's version against it.
+- **Shared server (Q9.13, 2026-10-21):** stagger each installation's rebuild window; set the
+  filter-operations limit once on the server and mirror it into every tenant's `config.php`; raise a
+  tenant's import streams above the default of two only where the server has room; monitor server-wide
+  load, memory and version outside ResourceSpace — no tenant holds a server-wide key.
 - **Size:** S · **Depends on:** A2, G4; the check with G1 · the checklist before the first live
   rebuild (M1), the check with G1 (M7)
 - **Must honour:** the guard (P34) counts operations as the server does, so a raised server limit

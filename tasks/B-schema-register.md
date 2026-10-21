@@ -52,9 +52,9 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `_q` | dates (types 4, 6, 10, 14): year, year-month, full date; numeric single-line (`field_constraint = 1`): the plain value | string[] / string, never stem | A4 representations; numbers verbatim | SD1, SE1, SA9 (Q2.11) | R | 1 |  |
 | `_f` | numeric single-line, `is_numeric` values only | float | the number | SE1, SG4 | R | 1 |  |
 | `_ts` | — | — | — | dropped (Q1.2 decided 2026-10-20): the range pair carries the value at its own precision | — | — | dropped |
-| `_range_start`, `_range_end` | every date type: the value at its own precision; type 14: the span | int64 | A4 | SD3 (b), SD4 | R | 1 |  |
-| `_p` | partial-indexed text | string[] | A5 `fragments()` (every substring ≥ `$partial_index_min_word_length`) | SB6, SA5 (leading wildcards) | R; cfg (min length) | 1 |  |
-| `_k` | every date type: the padded value's digits as an integer | int64 | A4 (raw digits, non-real dates kept) | SD3 (a) | R | planned (Q3.4) |  |
+| `_range_start`, `_range_end` | — | — | — | out of version 1 (Q3.4 decided (a), 2026-10-21): SD3 uses `_k`; the date-range field type gets `_k_start` / `_k_end` when SD4's rows are confirmed | — | — | dropped |
+| `_p` | partial-indexed text | string[] | A5 `fragments()` (every substring ≥ `$partial_index_min_word_length`); in `query_by` so a bare fragment matches as in core (Q1.3 decided 2026-10-21, K5) | SB6, SA5 (leading wildcards) | R; cfg (min length) | 1 |  |
+| `_k` | every date type: the value's digits padded to fourteen places (`YYYYMMDDHHMMSS`) as an integer; no key for a non-digit value | int64 | A4 (raw digits, non-real dates kept; bounds built the same way, the end padded to 235959) | SD3 | R | 1 (Q3.4 decided 2026-10-21) |  |
 | `_c` | complete-indexed text: one token per value | string, no tokenisation | the whole value | SK3 | R | planned (Q1.12) |  |
 | `_w` | text fields: the whole value when the cap applies to `_s`/`_text` | string | A5 without the cap | SK3 (wildcards past the cap) | R | planned (Q1.13) |  |
 | `_sort` | fields core can order by (`$sort_fields`) | string / float | lower-cased key; numeric fields use `_f` | SG4 | R | planned (Q7.9) |  |

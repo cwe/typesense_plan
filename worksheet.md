@@ -78,8 +78,8 @@ Rec.: (a) if Q0.2 is parity — the advanced form produces these ends routinely.
 Note (Q10.3): overlap as a served difference is out; (a), or decline ranges with non-real ends.
 Shapes: A4, SD3, SD4, H35, J5, J6.
 Standing (2026-10-20): **required** — must rows D6, D19, H35, J5, J6; check rows D5, D7, D8, D9; blocks A4, B2, SD3
-- **Answer:**
-- **Reason:**
+- **Answer:** (a) a fourteen-digit integer key `_k` reproducing core's string comparison, non-real ends included; `_k` enters version 1, the range pair leaves it.
+- **Reason:** exact on every row; a stored year-month is outside a day or month range in core too; overlap would be the first set difference on the accepted list. decisions.md 2026-10-21.
 
 ## Part 2 — The rest of the gating questions (M0–M3)
 
@@ -106,8 +106,8 @@ A testing aid (a declined search returns nothing instead of falling back) or a s
 mode? As a production mode it fails closed for every access-gate use of search (Q6.2, Q6.5).
 Shapes: D1, C8, G1.
 Standing (2026-10-20): **required** — blocks D1
-- **Answer:**
-- **Reason:**
+- **Answer:** a testing aid only — group override for test groups, never real users; returns nothing in an outage; the setup page says so.
+- **Reason:** as a production mode it empties every declined form and fails closed on the access gates. decisions.md 2026-10-20.
 
 #### Q0.8 — Working practices
 Branching (keep `typesense`, or a branch per package merged into it); who commits and pushes (Chris
@@ -307,8 +307,8 @@ Circuit breaker + fall back to MySQL (never empty results); the queue keeps accu
 retries with backoff. Confirm, and how Typesense-only mode behaves in an outage (Q0.6).
 Shapes: A2, C4, D1.
 Standing (2026-10-20): **required** — blocks A2, B7, C4
-- **Answer:**
-- **Reason:**
+- **Answer:** confirmed — breaker on transport failures and 5xx only, open = immediate fallback, half-open probe on `/health`, queue keeps marking, worker backs off and drains, rebuild runs when the server is back, breaker state on the setup page. Never an empty result for an outage.
+- **Reason:** the design as written; the only open part was Typesense-only mode (Q0.6). decisions.md 2026-10-20.
 
 #### Q8.7 — Freshness target
 Own edits on the next page load; others' within seconds; bulk changes intraday with MySQL serving
@@ -325,8 +325,8 @@ The option list and defaults (prefix, timeouts, max rows, max filter ops, import
 chunks, worker count, validation, Typesense-only, rebuild schedule display); which are admin-facing.
 Shapes: A1, A2, G1.
 Standing (2026-10-20): **required** — blocks A1, A2, G1
-- **Answer:**
-- **Reason:**
+- **Answer:** (a) with a lock rule: any page option fixable from `config.php` via `_override`, drawn locked ("locked in global configuration"), keys hidden when locked. Page: server address, two keys (password fields), enabled, badge, excluded fields; health read-only; rebuild / resync lockable; tuning and max rows `config.php` only; Typesense-only off the page; validation not optional; global filter dropped.
+- **Reason:** the openai_gpt pattern Montala's hosting uses to keep keys outside client control; stored options overwrite same-named `config.php` values, so overrides are separately named. decisions.md 2026-10-21.
 
 #### Q9.2 — Secrets
 The API key as plugin config in the database (set from the setup page) — acceptable? Separate
@@ -351,8 +351,8 @@ Core's `sysvars` table under a prefixed key (rec.: no new table, visible to core
 plugin table with typed columns; MySQL either way, not ready by default on a fresh install.
 Shapes: A6, B8, B9, C4, C7, G1.
 Standing (2026-10-20): **required** — blocks A6
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) a plugin table `typesense_search_state` (prefix, name, value, updated) via dbstruct; atomic set, in-place counters; entries listed in decisions.md.
+- **Reason:** `sysvars` writes are delete-then-insert, null-equal values delete the row, and its two caches serve stale reads to long-running processes; the three per-search flags must never be stale. decisions.md 2026-10-21.
 
 #### Q9.12 — The prefix policy for tenants
 Mandatory and validated with the installation's identity written into each generation and a clash
@@ -360,8 +360,8 @@ check (rec.), or derived from `$baseurl` with an override. Q9.8 is decided: seve
 one server is a requirement.
 Shapes: A8, A1, B8, G6.
 Standing (2026-10-20): **required** — blocks A8
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) a random prefix generated at first setup, stored, read-only on the page, overridable from `config.php`; identity clash check kept; lockable "regenerate prefix" for clones.
+- **Reason:** no clashes by construction, nothing for a client to break. decisions.md 2026-10-21.
 
 ### Core
 
@@ -421,16 +421,16 @@ One harness file per package, case labels carrying catalogue row IDs, `summarise
 catalogue's OK column, `catalogue_run.php <IDs>` for a package's live rows. Agree?
 Shapes: H1, H3, every package's *battery* line.
 Standing (2026-10-20): **required** — blocks H1
-- **Answer:**
-- **Reason:**
+- **Answer:** agreed — one file per package, catalogue row ids as labels, `summarise.php` fills OK and Done, `catalogue_run.php <IDs>` for live rows; old batteries re-cut per package.
+- **Reason:** one index of what is proved; the old labels clash with the catalogue's ids. decisions.md 2026-10-21.
 
 #### Q10.13 — Fixture additions per package
 Per-package additions registered in the fixture library and loaded only by the batteries that need
 them (rec.), or one shared fixture that grows.
 Shapes: H1, every package's *fixture* line.
 Standing (2026-10-20): **required** — blocks H1
-- **Answer:**
-- **Reason:**
+- **Answer:** agreed — per-package additions in the fixture library, loaded only by the batteries that need them; SH1 loads the union.
+- **Reason:** packages prove alone, which parallel sessions need. decisions.md 2026-10-21.
 
 #### Q10.15 — The combinations gate per package or per milestone
 SH1 (~2.5 minutes at full scale) before every package merge, or once per milestone with a scaled-down
@@ -577,3 +577,7 @@ Everything else in Part 3 is required.
 ### Part 3 questions decided
 
 - **Q1.9** (2026-10-20): Typesense 30.0 or later, tested on 30.x; refuse below, warn above the tested range. decisions.md.
+- **Q9.13** (2026-10-21): the operator manages the shared server; the plugin is tenant-local — staggered windows by cron, two import streams by default, limits mirrored from the checklist, own figures only on the page; tenant keys only (Q12.11 direction). decisions.md.
+- **Q1.3** (2026-10-21): fragments stay and are free-text searchable (`query_by`), as in core; K5 served by SB6. decisions.md.
+- **Q1.4** (2026-10-21): value cleaning does what core does at each site — tags stripped as core strips them, every translation indexed, the 500-character cap, invisible characters stripped. decisions.md.
+- **Q10.2** (2026-10-21): no CI job; both runners kept; a one-file `tests/` entry runs the smoke battery under `composer dev:beforeCommit` when a local Typesense is reachable. decisions.md.

@@ -43,6 +43,14 @@ import timeouts, max rows, max filter ops, import concurrency and chunk sizes, w
 validation on/off, Typesense-only, rebuild schedule display. Which are admin-facing on the setup
 page, which are `config.php` only?
 
+**Decided 2026-10-21: option (a) with a lock rule.** Every page option can be fixed from `config.php`
+through `$typesense_search_<option>_override`, read via one accessor and drawn locked on the page
+("locked in global configuration"); keys locked this way are hidden. Editable unless locked: server
+address, the two keys (password fields, set / not set), enabled, badge, excluded fields. Read-only:
+the health block and the prefix. Actions: rebuild and resync, lockable. `config.php` only: the tuning
+knobs and maximum rows; Typesense-only off the page; validation not optional; the global filter
+dropped. See decisions.md for the full list.
+
 ### Q9.2 — Secrets
 The API key is plugin config (stored in the database when set from the setup page). Acceptable?
 Separate search-only and admin keys (the worker and rebuild need write access; search does not)?
@@ -107,6 +115,11 @@ The rebuild, the worker and every search share state (live and building generati
 own tooling), or a plugin table with typed columns? Either way it is MySQL, read on every search with
 a short per-request cache, and *not ready* by default on a fresh install (A6).
 
+**Decided 2026-10-21: option (b), a plugin table** `typesense_search_state` (prefix, name, value, updated)
+via `dbstruct`: atomic set, in-place counters, no caching behind the plugin's back, no key-length cap.
+`sysvars` was rejected after reading the helpers: delete-then-insert writes, null-equal values delete
+the row, a per-process array and the query cache serve stale reads to long-running processes.
+
 ### Q9.12 — The prefix policy for tenants
 Every collection, alias, generation and synonym set on a shared server is named `<prefix>_…`, so the
 prefix is the tenant boundary. Mandatory with no default, validated (letters, digits, underscore;
@@ -116,6 +129,10 @@ another installation is detected at the setup page and refused? Or derived autom
 installation (a hash of `$baseurl`) with an override? Recommendation: mandatory and validated, with
 the identity check.
 
+**Decided 2026-10-21: option (b).** A random prefix generated at first setup, stored, read-only on the
+page, overridable from `config.php` for hosted installations; the identity clash check and a lockable
+"regenerate prefix" action for clones.
+
 ### Q9.13 — Sharing a server's limits and schedules between tenants
 `--filter-by-max-ops`, memory and CPU are per server, not per tenant: N tenants need about N × 800 MB
 on the test index, and two generations each during a rebuild; the nightly rebuilds must be
@@ -123,6 +140,12 @@ staggered or they double the peak; import concurrency defaults must assume other
 (the cores − 2 rule is server-wide); a 503 from one tenant's load slows the others. Who sets the
 rebuild windows, and does each tenant's setup page show the server's total load (needs a server-wide
 key, Q12.11) or only its own figures?
+
+**Decided 2026-10-21: option (a).** The operator staggers rebuild windows through each installation's
+scheduled task; import concurrency defaults to two streams, raised per tenant from `config.php`; the
+filter-operations limit is mirrored from G8's checklist; the page shows the tenant's own figures and
+`/health` only; server-wide monitoring is the operator's, outside ResourceSpace. Direction for Q12.11:
+tenant keys only.
 
 ## Done when
 

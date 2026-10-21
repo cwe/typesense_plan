@@ -71,6 +71,11 @@ Today it is a testing aid: a declined search returns nothing instead of falling 
 production mode it fails closed for every access-gate use of search (chunk 6). Testing aid only, or a
 supported mode with documented consequences?
 
+**Decided 2026-10-20: a testing aid only.** Set by group configuration override for test groups (the A/B
+harness and the live user matrix), never for a real user group; the setup page says so. In an outage
+it returns nothing, by design. Never a production mode: it would fail closed on the access-gate uses
+of search.
+
 ### Q0.7 — What scale and usage should the design assume?
 Resource and membership counts (the test system has ~115k / ~155k), edit rate, concurrent users,
 how much of the traffic is search. These drive sync design, the row limit and the rebuild window.

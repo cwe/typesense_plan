@@ -7,11 +7,15 @@ existing code the rebuild is likely to keep (Q10.11).
 - **Builds:** `plugins/typesense_search/harness/`: `boot.php` (SQLite from `dbstruct/`, the real
   core `*_functions.php` with the SQL translations, a private local Typesense), `fixture_lib.php`,
   the A/B runner (`do_search()` with the plugin off then on; ref sets, totals, order, row keys), the
-  **accepted-divergence list** the runner reads, `run_all.sh`, `summarise.php`; optionally a CI job.
+  **accepted-divergence list** the runner reads, `run_all.sh`, `summarise.php`; and one file,
+  `plugins/typesense_search/tests/<n>_typesense_smoke.php`, that core's `tests/test.php` scans: it
+  runs the smoke battery when a local Typesense is reachable and skips otherwise (Q10.2 decided (b),
+  2026-10-21 — no CI job; `composer dev:beforeCommit` is the gate, as for core).
 - **Size:** M · **Depends on:** —
 - **Must honour:**
-  - Not `tests/` — core's test runner scans `plugins/*/tests` (P39). Decided (Q10.1): the harness
-    lives in `plugins/typesense_search/harness/` on `typesense`; the two unpushed branches are
+  - Not `tests/` for the harness itself — core's test runner scans `plugins/*/tests` (P39), which is
+    now the point: the one-file entry above lives there, the harness does not. Decided (Q10.1): the
+    harness lives in `plugins/typesense_search/harness/` on `typesense`; the two unpushed branches are
     merged by Chris first; `.htaccess` and CLI guards from X3; left out of deployment artefacts
     (G5); `results/` is not committed again — only the generated catalogue table in `docs/`.
   - Gotchas: define `RS_TEST_MODE` or `metadata_field_view_access()` returns true on the CLI; core
@@ -36,7 +40,7 @@ existing code the rebuild is likely to keep (Q10.11).
     names are the new ones); the batteries are re-cut per package as packages land; `trace/` is
     retired; `results/` is cleared. Core's side of a wildcard or full-text case is an emulation
     until H9.
-- **Blocking questions:** Q10.1, Q10.2, Q10.3, Q10.11, Q10.12, Q10.13
+- **Blocking questions:** Q10.1 (decided), Q10.2 (decided), Q10.3 (decided), Q10.11 (decided), Q10.12 (decided), Q10.13 (decided)
 - **Proves it:** the smoke battery runs green on a clean checkout with one command.
 
 ### H2 — Index batteries

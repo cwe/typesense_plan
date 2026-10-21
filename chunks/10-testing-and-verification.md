@@ -60,6 +60,11 @@ batteries? Worth it now?
 ResourceSpace's own CI beside `phpcs` and `phpstan`; the question becomes how the local Typesense and the
 MySQL-backed mode (H9) run there.
 
+**Decided 2026-10-21: option (b).** Both runners kept, nothing automatic. A one-file entry under
+`plugins/typesense_search/tests/` runs the smoke battery when a local Typesense is reachable and skips
+otherwise, so `composer dev:beforeCommit` covers the plugin as it covers core (its CI is a SonarQube
+scan only). Amends Q10.1: the harness stays in `harness/`, found through that entry.
+
 ### Q10.3 — Acceptance criteria
 Define "pass": identical totals and ref order for every catalogue row that core answers sensibly,
 with an **accepted-divergence list** (relevance order, core bugs, decided differences) that the
@@ -116,11 +121,18 @@ IDs (`A7`, `A7.2`, `x1`), so `summarise.php` can fill the catalogue table's *OK*
 scheme as their packages are built (their own labels overlap the catalogue's IDs today: harness
 `A3` is a stop word, catalogue `A3` is a comma). Agree?
 
+**Decided 2026-10-21: agreed.** One file per package, catalogue row ids as case labels, `summarise.php`
+filling the OK and Done columns, `catalogue_run.php <IDs>` for live rows; old batteries re-cut as
+their packages are built.
+
 ### Q10.13 — Fixture additions per package
 Keep the base fixture small and register each package's additions in the fixture library, loaded
 only by the batteries that need them (so a package's cases never depend on another package's data);
 or grow one shared fixture? The additions are listed in [tasks/search/README.md](../tasks/search/README.md).
 Recommendation: per-package additions.
+
+**Decided 2026-10-21: agreed.** Per-package additions in the fixture library, loaded only by the
+batteries that need them; SH1 loads the union.
 
 ### Q10.14 — Rows the API cannot send
 G37–G42 (request modes), I12, K9–K12 and the editable-only forms are n/a in the live catalogue, but

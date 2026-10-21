@@ -12,10 +12,15 @@ Milestone M0. Everything else builds on these five modules.
     `$typesense_search_enabled` override for A/B groups (P13).
   - Whether a per-group config override is applied before the search hook runs is untested (Q8.3):
     this task includes that test.
-  - The collection prefix is mandatory and validated — no default at all (A8); the old default
-    was `test3_`.
+  - The collection prefix is generated at first setup and stored (Q9.12 decided (b), 2026-10-21),
+    never entered; the old default was `test3_`.
+  - **Options are read through one accessor** (Q9.1, 2026-10-21): `$typesense_search_<option>_override`
+    in `config.php` wins over the stored value, which wins over the default; the setup page draws an
+    overridden option locked ("locked in global configuration to: [value]"), keys as "(hidden)". The
+    editable set, the read-only health block, the lockable actions and the `config.php`-only knobs
+    are listed in decisions.md (Q9.1).
   - Comments terse, in the plugin's existing style (P36).
-- **Blocking questions:** Q0.13, Q0.14, Q9.1, Q9.2
+- **Blocking questions:** Q0.13, Q0.14, Q9.1 (decided), Q9.2 (superseded by Q12.1)
 - **Proves it:** plugin activates on a clean install; setup page renders; a per-group override
   changes behaviour in a request made by a user of that group (the Q8.3 test).
 
@@ -43,7 +48,10 @@ Milestone M0. Everything else builds on these five modules.
     from `/debug`; below the minimum the plugin refuses to activate, above the tested range it warns;
     the battery records the tested range.
   - An outage must end in a fallback to MySQL, never an empty result (P7 rollback = fall back).
-- **Blocking questions:** Q8.6, Q9.1, Q9.10 (decided), Q1.9 (decided), Q12.1, Q12.2
+  - **Breaker** (Q8.6 decided, 2026-10-20): trips on transport failures and 5xx only, never on a 4xx;
+    open = immediate fallback with no network call; half-open probe against `/health` after a
+    cooldown; state readable by the setup page (G1) and by the flush (C3), which skips while open.
+- **Blocking questions:** Q8.6 (decided), Q9.1 (decided), Q9.10 (decided), Q1.9 (decided), Q12.1, Q12.2
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
 
@@ -78,9 +86,9 @@ Milestone M0. Everything else builds on these five modules.
     `query_by` membership and the word filters at query time, not presence in the document; the
     condition is a rebuild on the test system with field 86 (`accessibilityalttext`, 25.7 MB of text)
     included, measured against the 800 MB baseline; a field on the exclusion list (G9) gets nothing.
-  - **Version 1 of the schema** (Q1.2 decided (a), 2026-10-20): `_s`, `_text`, `_ss`, `_q` for dates and
-    numbers only, `_f`, `_range_start` / `_range_end`, `_p`; no `_q` on text fields, no `_ts`, no facet
-    on `_s`. A representation enters the schema only with the package that proves it, and additions
+  - **Version 1 of the schema** (Q1.2 decided (a), 2026-10-20; amended by Q3.4, 2026-10-21): `_s`,
+    `_text`, `_ss`, `_q` for dates and numbers only, `_f`, `_k` (the fourteen-digit date key), `_p`; no
+    `_q` on text fields, no `_ts`, no facet on `_s`, no range pair. A representation enters the schema only with the package that proves it, and additions
     are batched into one rebuild per release (hours on a 1.4 M-resource system).
   - **Version 1 top-level fields** (Q1.6 decided (b), 2026-10-20): the base rows of the register plus
     `hit_count`, `user_rating`, `rating` and the four packed sort keys — confirmed by Q7.1 (B); every other
@@ -90,8 +98,10 @@ Milestone M0. Everything else builds on these five modules.
   against the schema document; sample documents for every field pattern accepted.
 
 ### A4 — Date parsing
-- **Builds:** `include/dates.php` — `parse_date()` returning representations, timestamp, range start
-  and end, precision; `date_sort_key()`; `timestamp()`.
+- **Builds:** `include/dates.php` — `parse_date()` returning the representations, the fourteen-digit
+  comparison key and the precision (Q3.4 decided (a), 2026-10-21: no range start and end in version
+  1); `range_bounds()` building a query's start and end keys the way core builds its strings (the end
+  padded to 235959); `date_sort_key()`; `timestamp()` for the resource-level epochs.
 - **Size:** S · **Depends on:** —
 - **Must honour:**
   - Forms: `YYYY`, `YYYY-MM`, `YYYY-MM-DD`, with optional time after a full date; RS uses `00` for an
@@ -99,13 +109,15 @@ Milestone M0. Everything else builds on these five modules.
   - Year and month precision give an interval but no timestamp; month-only and day-only give
     representations only (no position on the timeline).
   - The advanced form pads a range end with `-31` and EDTF uses `-99`: `2024-02-31` is not a real
-    date but core compares it as a string, so it must still bound a range (Q3.4 decides how).
+    date but core compares it as a string, so it must still bound a range — the fourteen-digit key
+    does (Q3.4 decided (a)): digits padded to `YYYYMMDDHHMMSS`, non-real dates kept, a non-digit
+    value gets no key and never matches.
   - Date sort key: `0:` NULL, `1:` empty, `2:<value>` reproduces core's string sort of the cache
     column; matching the date field needs a word boundary (field 120 is not field 12).
   - Epochs (`_ts`, `creation_date`, `modified_date`) and the day-limit cut-off use the time zone of
     the MySQL values: RS stores server-local time, so PHP's default zone and MySQL's session zone
     must agree — a battery case at a DST change and at midnight.
-- **Blocking questions:** Q3.4 (whether a fixed-width comparison key is also needed)
+- **Blocking questions:** Q3.4 (decided)
 - **Proves it:** a unit table of every form above, the padded and EDTF ends, invalid dates, and the
   sort key.
 
@@ -118,15 +130,23 @@ Milestone M0. Everything else builds on these five modules.
     system held a BOM-prefixed option; RS's `cleanse_string` strips it, Typesense kept it) (P33).
   - Raw HTML makes tag names searchable and glues the word after a tag; translated values
     `~en:A~fr:B` glue to `afr`; core indexes the first `$node_keyword_index_chars` (500) characters.
+  - **Do what core does at each site** (Q1.4 decided (a), 2026-10-21), calling core's functions where
+    they can be called: tags stripped as `node_functions.php` strips them before keyword mapping
+    (`<a>` kept, so link text and URL words are searchable, as in core); every translation indexed;
+    the 500-character cap on the keyword representations, the uncapped `_w` only if K10 requires it;
+    invisible characters stripped as `cleanse_string` does (P33).
   - Fragments: every substring ≥ `$partial_index_min_word_length` of each word, lower-cased, as
     `add_partial_index()` does; mean 49 per filename, ~108 MB for 114,596 filenames.
-- **Blocking questions:** Q1.4, Q1.3
-- **Proves it:** unit cases for BOM/NBSP/word-joiner, `<p>hello`, `~en:A~fr:B`, the 500-character
-  cap, and fragment sets against RS's own function on sample words.
+- **Blocking questions:** Q1.4 (decided), Q1.3 (decided)
+- **Proves it:** unit cases for BOM/NBSP/word-joiner, `<p>hello`, a link whose URL words core indexes,
+  `~en:A~fr:B` with a phrase spanning the two translations, the 500-character cap, and fragment sets
+  — each compared with core's own function on the same sample values.
 
 ### A6 — Plugin state store
-- **Builds:** `include/state.php` — `state_get(name, default)`, `state_set(name, value)`,
-  `state_update(name, fn)` (a locked read-modify-write for counters); the named entries every other
+- **Builds:** `include/state.php` over a plugin table `typesense_search_state` (prefix, name, value,
+  updated; `dbstruct`, created on activation like the queue table — Q9.11 decided (b), 2026-10-21):
+  `state_get(name, default)`, `state_set(name, value)` as one insert-or-update,
+  `state_increment(name)` in place for the counters; the named entries every other
   task reads: `schema_version` of the live generation, `live_generation`, `building_generation`,
   `ready`, `bulk_pending`, `last_rebuild` (time, result, duration, counts), `last_worker_run`,
   `breaker_open_until`, `field_snapshot`, `config_snapshot`, and the counters (validation drops,
@@ -135,14 +155,15 @@ Milestone M0. Everything else builds on these five modules.
 - **Size:** S · **Depends on:** A1
 - **Must honour:**
   - Written by CLI processes (the rebuild, the worker) and by web requests alike, so it lives in
-    MySQL, never in a file or APCu; core's `sysvars` table with `get_sysvar()` / `set_sysvar()` is
-    the obvious home under a `typesense_search_<prefix>_` key, a plugin table the alternative
-    (Q9.11); structured values as JSON.
+    MySQL, never in a file or APCu, and never in `sysvars`: its setter is a delete-then-insert, a
+    null-equal value deletes the row, and its per-process array and query cache serve stale reads
+    to a long-running process (Q9.11); structured values as JSON; every read goes to the table
+    (a per-request cache with a short TTL at most).
   - `ready` and the breaker are read on every search: a per-request cache with a short TTL is
     fine, but the flag must survive a PHP-FPM restart and must default to *not ready* on a fresh
     install.
   - Plugin configuration (`set_plugin_config`) is for options, not state; the two never mix.
-- **Blocking questions:** Q9.11
+- **Blocking questions:** Q9.11 (decided)
 - **Proves it:** a unit battery (set, get, JSON round trip, a counter incremented from two processes,
   prefix isolation); B8, B9, C4, C7 and G1 read and write state only through it.
 
@@ -176,8 +197,10 @@ Milestone M0. Everything else builds on these five modules.
   `lib/`.
 
 ### A8 — Tenancy
-- **Builds:** `include/tenancy.php` — the prefix as the single tenant boundary: validation
-  (mandatory, letters, digits, underscore, a length cap), `name(kind, generation)` producing every
+- **Builds:** `include/tenancy.php` — the prefix as the single tenant boundary: generated at first
+  setup as a random token (Q9.12 decided (b), 2026-10-21), stored, read-only on the page, overridable
+  from `config.php`; validation of the override (letters, digits, underscore, a length cap); a lockable
+  "regenerate prefix" action for the clone case; `name(kind, generation)` producing every
   server-side name (`<prefix>_resources_g<N>`, the aliases, the synonym set), the installation
   identity written into each generation's metadata (`$baseurl`, database name, plugin version)
   and the clash check that refuses to build over another installation's collections; the state (A6)
@@ -188,11 +211,14 @@ Milestone M0. Everything else builds on these five modules.
     uses its own prefix on the shared local server for the same reason.
   - The old default prefix (`test3_`) would have made two installations share an index; there is
     no default now.
-  - Server-side limits are shared: the filter-operations guard, memory, CPU, import concurrency
-    (Q9.13); a tenant never assumes it is alone.
+  - Server-side limits are shared: the filter-operations guard, memory, CPU, import concurrency —
+    Q9.13 decided (a), 2026-10-21: the operator staggers the rebuild windows by cron, import
+    concurrency defaults to two streams and is raised per tenant from `config.php`, the
+    filter-operations limit is mirrored from G8's checklist, and the page shows the tenant's own
+    figures only; a tenant never assumes it is alone and never holds a server-wide key.
   - Keys are per tenant and scoped to `<prefix>_*` (X1, Q12.8); whether alias and synonym-set
     operations are also scoped is verified in X1's battery (Q12.11).
-- **Blocking questions:** Q9.12, Q9.13, Q12.8
+- **Blocking questions:** Q9.12 (decided), Q9.13 (decided), Q12.8
 - **Proves it:** `harness/ab/A8_tenancy.php` — two prefixes on the local server: each rebuilt,
   searched, resynced and deleted without touching the other; a prefix clash refused; an invalid
   prefix refused; every generated name matches the pattern.

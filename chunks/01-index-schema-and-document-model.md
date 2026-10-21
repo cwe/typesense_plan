@@ -101,11 +101,20 @@ target server.
 
 **Catalogue marks (2026-10-20):** K5 (a bare fragment of a partially indexed field) is *must* — SB6 serves it.
 
+**Decided 2026-10-21: option (a).** Fragments stay and are in `query_by` for every partial-indexed field;
+a bare fragment matches as in core (K5). Reconciled: core treats fragments as ordinary keywords; the
+"not free-text searchable" note described the old plugin. The memory cost is Q1.11's, not a limit.
+
 ### Q1.4 — Value cleaning at index time
 (a) Strip HTML tags and entities before indexing (core strips? verify) — yes/no; (b) translated
 values: index every language, only the default, or per-language fields; (c) cap at
 `$node_keyword_index_chars` like core, or index whole values (more matches than core); (d) keep the
 invisible-character stripping. Note the test data has none of (a)–(c), so decide on principle.
+
+**Decided 2026-10-21: option (a) — do what core does at each site.** Tags stripped as core strips them
+(`<a>` kept), every translation indexed, the 500-character cap on keyword representations (`_w` only
+if K10 requires it), invisible characters stripped as `cleanse_string` does. Decided on principle:
+neither test database holds the data.
 
 ### Q1.5 — Stemming and tokenisation
 Keep stemming gated on `$stemming` and the separator set. Stemmer drift (34/40 pairs agree):

@@ -77,6 +77,11 @@ the queue, since it fixes freshness nightly on its own)?
 Circuit breaker + fall back to MySQL (never empty results); the queue keeps accumulating; the worker
 retries with backoff. Confirm, and confirm how Typesense-only mode behaves in an outage (Q0.6).
 
+**Decided 2026-10-20: confirmed.** Breaker on transport failures and 5xx only; open = immediate fallback
+with no network call; half-open probe on `/health`; the queue keeps marking, the flush skips, the worker
+backs off and drains on recovery; the nightly rebuild runs when the server is back; breaker state on
+the setup page. Typesense-only mode is a testing aid (Q0.6) and returns nothing in an outage.
+
 ### Q8.7 — Freshness target
 Own edits visible on the next page load (request-end flush); others' within seconds (worker); bulk
 changes (node rename, field config) applied intraday with MySQL serving meanwhile; hook-less writes
