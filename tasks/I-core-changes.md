@@ -18,14 +18,19 @@ void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 mov
 11.1 release date is the plan's deadline.
 
 ### I1 — The hook-return patch
-- **Builds:** `include/do_search.php`: the `external_search` hook's return handling, as a documented
-  fork patch (`CORE_PATCHES.md`) or an upstream PR.
+- **Builds:** `include/do_search.php`: the `external_search` hook moved before `search_special()` (the
+  reorder as it stands in the fork, Q11.2), and — Q12.4 / Q6.2 decided 2026-10-22 — the gate call
+  sites bypassing the hook so an access decision never comes from the index:
+  `get_resource_access()`'s `!resource<ref>` (resource_functions.php:5149) and the `!collection<ref>`
+  checks in the request, collection-sharing and edit paths; the mechanism (a parameter on
+  `do_search()` or a scoped flag around those calls) is chosen here and listed in the 11.1 change
+  list (I4).
 - **Size:** S · **Depends on:** —
 - **Must honour:** when the provider returns anything other than `false` — including an empty set —
   core returns it; `false` lets core continue to `search_special()` and the standard query; the hook
   fires before both, with `$sql_filter`, `$sql_join` and `$select` already built (the keyword
   criteria are baked into them).
-- **Blocking questions:** Q11.1, Q11.2, Q0.4
+- **Blocking questions:** Q11.1 (decided), Q11.2 (decided), Q0.4 (decided)
 - **Proves it:** a stock RS checkout plus this patch runs the plugin; `CORE_PATCHES.md` lists it with
   its reason.
 

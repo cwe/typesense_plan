@@ -4,20 +4,23 @@ Milestone M0 for H1, then one battery per task as the tasks land. The harness is
 existing code the rebuild is likely to keep (Q10.11).
 
 ### H1 — Harness foundation in the repo
-- **Builds:** `plugins/typesense_search/harness/`: `boot.php` (SQLite from `dbstruct/`, the real
-  core `*_functions.php` with the SQL translations, a private local Typesense), `fixture_lib.php`,
+- **Builds:** `typesense_plan/harness/` — the planning repository, not the plugin (Q12.6 decided (b),
+  2026-10-22, provisional): `boot.php` (finds the ResourceSpace checkout through a path setting;
+  SQLite from its `dbstruct/`, the real core `*_functions.php` with the SQL translations, a private
+  local Typesense), `fixture_lib.php`,
   the A/B runner (`do_search()` with the plugin off then on; ref sets, totals, order, row keys), the
   **accepted-divergence list** the runner reads, `run_all.sh`, `summarise.php`; and one file,
-  `plugins/typesense_search/tests/<n>_typesense_smoke.php`, that core's `tests/test.php` scans: it
-  runs the smoke battery when a local Typesense is reachable and skips otherwise (Q10.2 decided (b),
-  2026-10-21 — no CI job; `composer dev:beforeCommit` is the gate, as for core).
+  `plugins/typesense_search/tests/<n>_typesense_smoke.php`, that core's `tests/test.php` scans: the
+  bridge to the external harness — it runs the smoke battery when the harness path is configured and
+  a local Typesense is reachable, and skips otherwise (Q10.2 decided (b), 2026-10-21 — no CI job;
+  `composer dev:beforeCommit` is the gate, as for core).
 - **Size:** M · **Depends on:** —
 - **Must honour:**
   - Not `tests/` for the harness itself — core's test runner scans `plugins/*/tests` (P39), which is
-    now the point: the one-file entry above lives there, the harness does not. Decided (Q10.1): the
-    harness lives in `plugins/typesense_search/harness/` on `typesense`; the two unpushed branches are
-    merged by Chris first; `.htaccess` and CLI guards from X3; left out of deployment artefacts
-    (G5); `results/` is not committed again — only the generated catalogue table in `docs/`.
+    now the point: the one-file bridge lives there, the harness does not. Location (Q10.1 as amended
+    by Q12.6): the planning repository, outside the release; H1's first act is moving the harness
+    files from the `typesense_search_harness` branch into it (the branch itself is Chris's to merge
+    or drop); `results/` is not committed again — only the generated catalogue table.
   - Gotchas: define `RS_TEST_MODE` or `metadata_field_view_access()` returns true on the CLI; core
     `exit()`s on an invalid search-filter id; a fixture word must exist in the keyword table or core
     returns before the hook; the veto reason is read from the debug file.

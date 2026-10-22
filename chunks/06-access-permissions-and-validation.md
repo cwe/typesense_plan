@@ -70,6 +70,11 @@ them (single-resource search, refs-only or count-only `fetchrows`) and veto; or 
 (Q6.1) and accept the residual window; or a core change so these call sites bypass external
 providers. Which?
 
+**Decided 2026-10-22 (with Q12.4): a core change.** The gate call sites — `get_resource_access()`'s
+`!resource<ref>`, the `!collection<ref>` checks in the request, sharing and edit paths — bypass the
+`external_search` hook; the plugin never sees them. `get_resource_access()`'s search is a primary-key
+lookup plus the filter conditions, so nothing is lost. Mechanism chosen when I1 is committed.
+
 ### Q6.3 — The small fixes
 Approve as a batch: `ignore_filters` no longer disables restrictions; grant expiry honoured in the
 group filter's override; group filter applied under `access_override`; `J` with no `j` → nothing;

@@ -19,11 +19,14 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
 - **Proves it:** manual check on the test system; each health figure matches a direct query.
 
 ### G2 — Logging
-- **Builds:** plugin `debug()` lines for every veto reason; a dedicated sync/rebuild log with
-  retention.
+- **Builds:** plugin `debug()` lines for every veto reason (through core's debug log, so off unless
+  `$debug_log`); a dedicated sync/rebuild log holding refs and outcomes, never search strings or
+  keys, with a configurable retention, thirty days by default (Q12.5, 2026-10-22).
 - **Size:** S · **Depends on:** C4, B8
 - **Must honour:** the harness reads the veto reason from the debug output — keep it one line per
-  search.
+  search; that line carries the search string and the parameters and exists only behind
+  `$debug_log`, under core's existing policy (Q12.7, 2026-10-22); keys and request headers never
+  appear in any line.
 - **Blocking questions:** Q9.5
 - **Proves it:** a failed rebuild and a parked queue row are diagnosable from the log alone.
 

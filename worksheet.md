@@ -236,8 +236,8 @@ veto (single-resource, refs-only or count-only searches), rely on validation and
 or a core change so those call sites bypass external providers.
 Shapes: SF4, SF5, C8, D1.
 Standing (2026-10-20): **required** — blocks C8, X4, SF4
-- **Answer:**
-- **Reason:**
+- **Answer:** a core change: the gate call sites bypass the `external_search` hook (decided with Q12.4).
+- **Reason:** `get_resource_access()` runs `r.ref = N` plus the filter conditions — milliseconds in MySQL; validation alone would still wrongly deny for up to a minute; shape detection is a heuristic. decisions.md 2026-10-22.
 
 #### Q6.3 — The small fixes, as a batch
 `ignore_filters` no longer disables restrictions; grant expiry honoured in the group filter's
@@ -392,7 +392,7 @@ Standing (2026-10-20): **required** — blocks H1
   from deployments, results not committed; the two branches merged by Chris first. Decided
   2026-10-16.
 - **Reason:** batteries move with the code; one checkout for CI and upgrades; principle 3 holds. See
-  decisions.md.
+  decisions.md. Amended 2026-10-22 (Q12.6): location moved to the planning repository.
 
 #### Q10.3 — Acceptance criteria
 "Pass" = identical totals and order for every catalogue row core answers sensibly, with an
@@ -448,40 +448,40 @@ or one; in `config.php` as core keeps its secrets (rec.) or in the plugin config
 the setup page shows set / not set only; a rotation procedure. Supersedes Q9.2.
 Shapes: A2, X1, G1, G8.
 Standing (2026-10-20): **required** — blocks A2, G1, G8, X1
-- **Answer:**
-- **Reason:**
+- **Answer:** two scoped keys per installation (search-only for the request path; write for the rebuild and worker), stored as plugin options, lockable and hidden from `config.php`; set / not set on the page; a provisioning action takes the bootstrap key once and never stores it; rotation = provision again.
+- **Reason:** a single key puts write access in the web tier; `config.php`-only shuts out administrators without file access, for whom the lock is the hosted answer. decisions.md 2026-10-22.
 
 #### Q12.2 — Network placement and transport
 Typesense on localhost or a private network; TLS mandatory when not local; certificate verification
 always on; the endpoints listed for a firewall rule.
 Shapes: A2, X2, G8.
 Standing (2026-10-20): **required** — blocks A2, G8, X2
-- **Answer:**
-- **Reason:**
+- **Answer:** localhost in the clear, TLS everywhere else, certificate verification that cannot be switched off; host/port/protocol validated and lockable; keys only in headers; server side (bind, firewall, CORS off, private CA) and the endpoint list in G8.
+- **Reason:** a shared hosted server is never reached in the clear; no installation can be left insecure by a switch. decisions.md 2026-10-22.
 
 #### Q12.3 — Is a full metadata copy in Typesense acceptable?
 Accept and protect the server (rec.), exclude confidential resources or hidden fields (granted users
 then lose Typesense), or add encryption at rest.
 Shapes: B2, B4, X7.
 Standing (2026-10-20): **required** — blocks X7
-- **Answer:**
-- **Reason:**
+- **Answer:** accept with protection: scoped keys and TLS (Q12.1, Q12.2); X7 states what the index holds and who can read it; G9 and encryption at rest named as the levers.
+- **Reason:** excluding confidential or hidden data would make granted users' searches decline wholesale; encryption at rest protects a disk, not a key. decisions.md 2026-10-22.
 
 #### Q12.4 — The stale-row window and the gate uses, as a security requirement
 C8 option B in M2; the gate uses bypass the index or are always validated; Typesense-only never for
 real users; the acceptable listing window before the hooks land.
 Shapes: C8, D1, SF4, X4.
 Standing (2026-10-20): **required** — blocks C8, X4
-- **Answer:**
-- **Reason:**
+- **Answer:** gate uses bypass external providers through a core change; C8 option B in M2; Typesense-only never for real users; window = request end for own changes, within a minute for others; the newly-permitted-but-absent residue documented in X7.
+- **Reason:** an access decision must never depend on index freshness, and the gate search is a primary-key lookup that gains nothing from Typesense. decisions.md 2026-10-22.
 
 #### Q12.6 — Web exposure of plugin files
 `.htaccess` deny rules and CLI guards for `scripts/`, `lib/`, `harness/`, the harness excluded
 from deployments — or the harness kept outside the plugin (Q10.1).
 Shapes: X3, A7, H1.
 Standing (2026-10-20): **required** — blocks X3
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) provisional — the harness lives in the planning repository, found by a path setting; only the one-file `tests/` bridge ships; `scripts/` gets a `PHP_SAPI` guard and a deny `.htaccess`, page actions a permission check and a form token; no `lib/`.
+- **Reason:** ResourceSpace has no release-exclusion mechanism, so separate means another repository; the planning repository holds the coverage table the harness fills. Chris may change this. decisions.md 2026-10-22.
 
 #### Q12.11 — A server-wide key for diagnostics, or tenant keys only?
 Tenant keys only (the server check degrades to health and the tenant's own collections), one
@@ -489,8 +489,8 @@ read-only server-wide diagnostics key entered per tenant, or server checks done 
 first whether a prefix-scoped key also confines alias and synonym-set calls.
 Shapes: X1, G6, G8.
 Standing (2026-10-20): **required** — blocks G6, X1
-- **Answer:**
-- **Reason:**
+- **Answer:** (b) tenant keys only, but the write key also carries `debug:list` and `metrics.json:list` — read-only server status, no data — so the version check and B8's memory check run with the tenant's own key.
+- **Reason:** no key can reach another tenant's data; the two actions expose load and version, verified in X1 to return no collection content. decisions.md 2026-10-22.
 
 ## Part 3 — Answered when the package starts
 
@@ -581,3 +581,8 @@ Everything else in Part 3 is required.
 - **Q1.3** (2026-10-21): fragments stay and are free-text searchable (`query_by`), as in core; K5 served by SB6. decisions.md.
 - **Q1.4** (2026-10-21): value cleaning does what core does at each site — tags stripped as core strips them, every translation indexed, the 500-character cap, invisible characters stripped. decisions.md.
 - **Q10.2** (2026-10-21): no CI job; both runners kept; a one-file `tests/` entry runs the smoke battery under `composer dev:beforeCommit` when a local Typesense is reachable. decisions.md.
+- **Q12.5** (2026-10-22): the index is derived — no backups or snapshots, rebuilt from the database; delete paths as designed; Typesense logs off or short-rotated; plugin debug via core's log; sync log thirty days; harness never on real data. decisions.md.
+- **Q12.7** (2026-10-22): logging as designed — keys and headers redacted, sync log refs and outcomes only, the per-search debug line behind `$debug_log` under core's policy, the explain tool admin-only and never a key. decisions.md.
+- **Q12.8** (2026-10-22): one scoped pair per tenant; aliases kept with a narrow grant (create / get / delete, no list) and prefixed, unguessable names; the same pattern allowed for synonym sets (Q2.10 chooses); a serve-time identity guard; X1's alias cases decide between this and one Typesense process per tenant. decisions.md.
+- **Q12.9** (2026-10-22): settled by Q9.10 — no dependency, no outbound call except Typesense, both confirmed in X6; who tracks Typesense advisories is for the meeting. decisions.md.
+- **Q12.10** (2026-10-22): X4 as written plus the cross-tenant join read, the identity guard, provisioning, the gate uses after I1, the three share paths and an excluded field. decisions.md.

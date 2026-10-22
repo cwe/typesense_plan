@@ -10,6 +10,11 @@ package and its Plan symbol in [coverage.md](coverage.md); a package with only c
 Where a check could show that core treats the form as a search type of its own, the theme says so
 (*split candidate*): that is the point at which a package is cut in two or a new one added.
 
+**Findings so far:** [checks-findings.md](checks-findings.md) (2026-10-22) holds the code-read results for
+every row that can be settled from core's source — what core actually does, whether the catalogue's
+claim holds, and a proposed mark — including two claims that were wrong (A12 / B7 leading wildcards,
+D25 date-range fields) and several test strings that could not show what they were meant to.
+
 Packages pending check (no *must* row): SD4, SD5, SF16, SG1, SG2, SG4, SH1, SK3. The pipeline tasks D1, D5, D6 and D9 own
 check rows too (G37, G38, G42, G8, G9, G40, G39, G11, G25) but are required regardless.
 

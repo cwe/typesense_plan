@@ -20,7 +20,7 @@ Milestone M0. Everything else builds on these five modules.
     editable set, the read-only health block, the lockable actions and the `config.php`-only knobs
     are listed in decisions.md (Q9.1).
   - Comments terse, in the plugin's existing style (P36).
-- **Blocking questions:** Q0.13, Q0.14, Q9.1 (decided), Q9.2 (superseded by Q12.1)
+- **Blocking questions:** Q0.13 (decided), Q0.14 (decided), Q9.1 (decided), Q9.2 (superseded by Q12.1, decided)
 - **Proves it:** plugin activates on a clean install; setup page renders; a per-group override
   changes behaviour in a request made by a user of that group (the Q8.3 test).
 
@@ -51,7 +51,7 @@ Milestone M0. Everything else builds on these five modules.
   - **Breaker** (Q8.6 decided, 2026-10-20): trips on transport failures and 5xx only, never on a 4xx;
     open = immediate fallback with no network call; half-open probe against `/health` after a
     cooldown; state readable by the setup page (G1) and by the flush (C3), which skips while open.
-- **Blocking questions:** Q8.6 (decided), Q9.1 (decided), Q9.10 (decided), Q1.9 (decided), Q12.1, Q12.2
+- **Blocking questions:** Q8.6 (decided), Q9.1 (decided), Q9.10 (decided), Q1.9 (decided), Q12.1 (decided), Q12.2 (decided)
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
 
@@ -216,9 +216,15 @@ Milestone M0. Everything else builds on these five modules.
     concurrency defaults to two streams and is raised per tenant from `config.php`, the
     filter-operations limit is mirrored from G8's checklist, and the page shows the tenant's own
     figures only; a tenant never assumes it is alone and never holds a server-wide key.
-  - Keys are per tenant and scoped to `<prefix>_*` (X1, Q12.8); whether alias and synonym-set
-    operations are also scoped is verified in X1's battery (Q12.11).
-- **Blocking questions:** Q9.12 (decided), Q9.13 (decided), Q12.8
+  - Keys are per tenant and scoped to `<prefix>_*` (X1, Q12.8) — and the pattern confines
+    collection endpoints only, so aliases and synonym sets rely on narrow grants and unguessable
+    names (Q12.8 decided 2026-10-22): a `config.php` prefix override is validated as not being a
+    prefix of, or prefixed by, any other tenant's on the server at provisioning; **a serve-time
+    guard** — before serving, and after every rebuild — checks that the alias resolves to a
+    generation whose metadata carries this installation's identity, and otherwise falls back and
+    alerts; X1's alias cases decide whether this is enough or whether a shared host runs one
+    Typesense process per tenant.
+- **Blocking questions:** Q9.12 (decided), Q9.13 (decided), Q12.8 (decided)
 - **Proves it:** `harness/ab/A8_tenancy.php` — two prefixes on the local server: each rebuilt,
   searched, resynced and deleted without touching the other; a prefix clash refused; an invalid
   prefix refused; every generated name matches the pattern.

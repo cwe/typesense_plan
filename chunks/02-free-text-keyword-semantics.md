@@ -124,6 +124,11 @@ Core ORs related keywords into the union. Options: Typesense synonym sets (one-w
 which matches core?), maintained by the existing `after_save_related_keywords` hook; or veto any
 search containing a keyword that has related entries. The test system has one pair.
 
+**Note (2026-10-22, from Q12.8):** synonym sets are usable on a shared server only with the narrow grant
+(create / get / delete, no list) and prefixed names, the same way aliases are; the alternative is
+expanding related keywords in the plugin through the alternatives mechanism (Q2.7). Both stay open
+for this question; neither gives a tenant key a `list` action.
+
 ### Q2.11 — Bare years and numbers
 A year typed as a word matches date values in core. Add date representations (`_q`) to `query_by`
 so `2024` matches dates? Bare numbers with `$config_search_for_number` off: core boosts the exact
