@@ -66,17 +66,19 @@ difference is never an accepted difference.
   a wrong host or port falls back; the setup page refuses an invalid host string.
 
 ### X3 — Web exposure and CLI guards
-- **Builds:** (Q12.6 decided (b) 2026-10-22) a `PHP_SAPI` guard as the first lines of every script in
-  `scripts/` and of the one-file `tests/` bridge (core's `batch/` and `tests/` pattern); a "Deny from
-  all" `.htaccess` in `scripts/` on the `include/` precedent, with the nginx `location` rule in the
-  operations page; every page action behind `checkperm('a')` and `enforcePostRequest()` with a form
-  token. The harness itself lives in the planning repository and never ships; there is no `lib/`.
+- **Builds:** (Q12.6, amended 2026-10-23) a `PHP_SAPI` guard as the first lines of every script in
+  `scripts/`, of every harness entry and of the one-file `tests/` bridge (core's `batch/` and
+  `tests/` pattern); a "Deny from all" `.htaccess` in `scripts/` and in `harness/` on the `include/`
+  precedent, with the nginx `location` rule in the operations page; every page action behind
+  `checkperm('a')` and `enforcePostRequest()` with a form token. The harness lives in the plugin on
+  the GitHub branch and is left out when Chris moves the code into the SVN trunk by hand; the guards
+  cover it on every test system it reaches meanwhile. There is no `lib/`.
 - **Size:** S · **Depends on:** A1
 - **Must honour:** the old `reindex.php` had no guard; core ships `include/.htaccess` only; an
   offline job runs as the admin who queued it.
-- **Blocking questions:** Q12.6 (decided, provisional)
-- **Proves it:** an HTTP request to each script and to the bridge returns 403 or 404, or the script
-  exits before including core; a GET to a setup action changes nothing.
+- **Blocking questions:** Q12.6 (decided)
+- **Proves it:** an HTTP request to each script, each harness entry and the bridge returns 403 or
+  404, or the script exits before including core; a GET to a setup action changes nothing.
 
 ### X4 — The security battery
 - **Builds:** `harness/ab/X4_security.php`, part of the smoke set run on every change: an anonymous

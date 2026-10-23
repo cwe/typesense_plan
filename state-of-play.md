@@ -120,3 +120,5 @@ A meeting copy of the review exists as a Claude doc (keep in step with the repo 
 **2026-10-20:** every catalogue row marked; Q1.1 (b), Q0.4/Q11.1/Q11.2 (core changes made in ResourceSpace), Q11.6 (the plugin ships inside ResourceSpace 11.1) decided; deadline: finished before the end of 2026.
 
 **2026-10-21:** the foundations questions decided (schema, client, state, tenancy, dates, text, testing); M0 waits only on the security set and the server list; scope for 11.1: nothing is cut.
+
+**2026-10-23:** check findings complete for all 77 rows (code, data, live, second database) and folded into the tasks; code branch `typesense_search` created from the updated master, which already ships the 0.1 plugin the rewrite replaces.

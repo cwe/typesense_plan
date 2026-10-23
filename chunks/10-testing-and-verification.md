@@ -54,6 +54,10 @@ act — decisions.md.
 **Amended 2026-10-22 (Q12.6):** the harness lives in the planning repository, not the plugin; only the
 one-file `tests/` bridge (Q10.2) ships with the plugin. The rest of this decision stands.
 
+**Restored 2026-10-23:** the harness lives in the plugin after all, `harness/` beside the code on the
+GitHub branch; the one-file `tests/` bridge runs it from there; the manual move into the SVN trunk
+leaves it out.
+
 ### Q10.2 — The verification method
 Keep both: the local harness for semantics (fast, no host) and the live A/B for counts and timing on
 real data. Add CI (GitHub Actions with a Typesense container and SQLite) so every push runs the

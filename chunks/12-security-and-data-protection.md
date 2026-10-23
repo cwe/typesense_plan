@@ -148,6 +148,12 @@ the plugin. What ships is guarded as core guards `batch/` and `tests/`: a `PHP_S
 deny `.htaccess` in `scripts/`, the nginx rule documented, page actions behind `checkperm('a')` and a
 form token. Chris may revisit.
 
+**Amended 2026-10-23: the harness goes back into the plugin** (`plugins/typesense_search/harness/`) on
+the GitHub branch, which is a temporary working copy; the release source is Montala's SVN trunk, into
+which Chris moves the code by hand and leaves the harness out. The guards stay: `PHP_SAPI` checks on
+every script and harness entry, deny `.htaccess` in `scripts/` and `harness/`, page actions behind a
+permission check and a form token.
+
 ### Q12.7 — Logging and redaction
 Never log a key or request headers; search strings and SQL in `debug()` output are personal data —
 only behind the debug switch, with the retention of Q12.5; the explain tool (G7) prints compiled

@@ -480,8 +480,8 @@ Standing (2026-10-20): **required** — blocks C8, X4
 from deployments — or the harness kept outside the plugin (Q10.1).
 Shapes: X3, A7, H1.
 Standing (2026-10-20): **required** — blocks X3
-- **Answer:** (b) provisional — the harness lives in the planning repository, found by a path setting; only the one-file `tests/` bridge ships; `scripts/` gets a `PHP_SAPI` guard and a deny `.htaccess`, page actions a permission check and a form token; no `lib/`.
-- **Reason:** ResourceSpace has no release-exclusion mechanism, so separate means another repository; the planning repository holds the coverage table the harness fills. Chris may change this. decisions.md 2026-10-22.
+- **Answer:** the harness lives in the plugin (`harness/`) on the GitHub branch, which is temporary; the manual move into the SVN trunk leaves it out; `PHP_SAPI` guards on every script and harness entry, deny `.htaccess` in `scripts/` and `harness/`, page actions behind a permission check and a form token; no `lib/`.
+- **Reason:** the release source is the SVN trunk, so exclusion happens at the hand move; the guards cover every test system the GitHub checkout reaches meanwhile. decisions.md 2026-10-23 (amends 2026-10-22).
 
 #### Q12.11 — A server-wide key for diagnostics, or tenant keys only?
 Tenant keys only (the server check degrades to health and the tenant's own collections), one

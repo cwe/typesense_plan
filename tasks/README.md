@@ -70,8 +70,8 @@ plugins/typesense_search/
   job_handlers/typesense_search_reindex.php   B8, as the clip plugin does it
   lib/                            A7  (dropped 2026-10-20: no dependency to vendor; the procedure stays for a later swap)
   pages/setup.php
-  tests/<n>_typesense_smoke.php   H1 the one-file bridge core's runner scans; the harness itself lives in
-                                     the planning repository (Q12.6, provisional)
+  tests/<n>_typesense_smoke.php   H1 the one-file bridge core's runner scans
+  harness/                        H  in the plugin on GitHub; left out of the manual SVN move (Q12.6)
     ab/<ID>_<slug>.php            one battery per task or package, labels = catalogue rows
     live/                         the API runner and the catalogue
   docs/                           incl. data-protection.md (X7)
@@ -115,7 +115,7 @@ register worked early (H8 and H9 pulled forward to serve it).
 
 | Milestone | Outcome | Tasks |
 |---|---|---|
-| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; the core hook patch settled; harness in the planning repository | A1–A6, A8, X1–X3, I1, H1 (A7 dropped: Q9.10) |
+| M0 Foundations | Plugin skeleton loads; client, schema, dates, text, state modules unit-tested; the core hook patch settled; harness in the plugin | A1–A6, A8, X1–X3, I1, H1 (A7 dropped: Q9.10) |
 | M1 An index from scratch | Builders produce complete documents; a generation rebuild on the fixture and on the test system gives counts equal to MySQL | B1–B9, G8 (the checklist), G6 (the proof), H2 |
 | M2 The first served search | Plain words, node tokens and resolved options, with every restriction, the served sorts, windows, shapes and read-time validation; every other `!` and every declined sort falls back | D1–D12, C1, C8, G7, X4, SA1, SA11, SA12, SC1, SC2, SF8, SG5, SH1 (first pool), H3, H4 (first live run), H7 |
 | M3 Freshness | Edits, uploads, state and access changes, deletes, grant and collection changes reach the index; outages fall back | C2–C7, I3, C9, X5, H5 |

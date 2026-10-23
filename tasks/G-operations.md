@@ -53,7 +53,10 @@ Milestone M7, except that G4's operations page starts in M1 (the rebuild) and gr
   rebuild; the plugin yaml version bump rule; a migration note per schema version).
 - **Decided 2026-10-20 (Q11.6):** the plugin ships inside ResourceSpace 11.1, so its version is
   ResourceSpace's and deployment follows the ResourceSpace release process; what remains here is the
-  rebuild-on-upgrade rule and the migration note per schema version.
+  rebuild-on-upgrade rule and the migration note per schema version. **The GitHub branch is the
+  working copy only (2026-10-23):** the release source is Montala's SVN trunk, into which Chris
+  moves the code by hand and leaves `harness/` out; so nothing in the plugin may depend on the
+  harness directory existing, and the core changes (I1, I3) travel in the same move.
 - **Size:** S · **Depends on:** B9
 - **Blocking questions:** Q9.7
 - **Proves it:** one deployment to the test system follows it without improvisation.
