@@ -64,6 +64,9 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   numeric `_f` only when `is_numeric` (the `$value == 1` bug); dates through A4 give `_q`, `_ts`
   (full dates), `_range_start/_end` (the value at its own precision; a date-range field's span)
   and, per Q3.4, `_k`; the `date_field_sort` key `0:` NULL, `1:` empty, `2:<value>` (P19).
+  **Verified 2026-10-23 (A3, A4):** `_q` is `string[]` and `_k` `int64[]` for every field (one type per
+  dynamic pattern), always sent as arrays, `array()` for no value, never a null inside; `nodes` and
+  `populated_field_ids` carry the `0` sentinel first (Q1.15); `date_field_sort` is always emitted.
 - **Fixture:** none (unit cases on values).
 - **Battery:** `harness/ab/B2_representations.php` — for every registry entry, value in → stored
   value out (the register's rows are the case list); the schema snapshot equals the generated
@@ -84,7 +87,8 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
 - **Must honour:** `nodes[]` from all nodes is what makes node filters on non-indexed fields and
   `!hasdata` work; category-tree ancestors are stored on the resource at save, so hierarchy needs
   nothing extra; the old indexer prepended a `0` so the arrays always exist (29 no-metadata
-  resources once lacked `populated_field_ids`) — Q1.15 decides sentinel or optional field;
+  resources once lacked `populated_field_ids`) — Q1.15 decided 2026-10-23: the `0` sentinel first in
+  both arrays;
   `created_date` was replaced by `creation_date` (day limit) and `date_field_sort` (P19, P20);
   `resource.modified` moves on every `resource_log()` call, so `modified_date` is a coarse signal.
 - **Fixture:** the base fixture (a resource with no metadata, one with `created_by` NULL, archive
@@ -92,7 +96,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
 - **Battery:** `harness/ab/B3_resource_fields.php` — the skeleton document of every fixture
   resource equals the expected one; a resource with no nodes; the date sort key for NULL, empty,
   year-only and full values.
-- **Blocking questions:** Q1.15 (new), Q7.1 (whether `hit_count` / `user_rating` are here)
+- **Blocking questions:** Q1.15 (decided 2026-10-23), Q7.1 (decided: they are)
 
 ### B4 — Resource document builder
 - **Covers:** register sections 1–2 assembled; the field-type matrix end to end.
@@ -161,7 +165,8 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   cascade into membership and grant reference failures); `per_page`/chunk caps; concurrency never
   above the server's cores − 2; leave the server's own batch size alone; fresh upsert 770–1,800
   docs/s, re-upsert 540/s, four parallel ≈ 2×, 2,000-doc chunks no faster than 500 (P16); never
-  create a collection here.
+  create a collection here; every import passes `dirty_values=reject`, since without it the server
+  coerces a numeric string into an int field (verified 2026-10-23; A2's client does this).
 - **Fixture:** none (documents from B4–B6 on the fixture).
 - **Battery:** `harness/ab/B7_import_verify.php` — a chunk with one bad line reports that line; a
   422 and a simulated 503 are handled; concurrency halves; the count check passes on a complete

@@ -20,6 +20,14 @@ Milestone M0. Everything else builds on these five modules.
     editable set, the read-only health block, the lockable actions and the `config.php`-only knobs
     are listed in decisions.md (Q9.1).
   - Comments terse, in the plugin's existing style (P36).
+  - **Built 2026-10-23 (`7f27516e`):** `include/options.php` holds the accessor
+    `typesense_search_option('x')` (`$typesense_search_x_override ?? $typesense_search_x`),
+    `typesense_search_option_save()` (locked options kept, a blank key keeps the stored key, the prefix
+    generated on first save) and the page definition; `config.php` is defaults only, with the
+    `config.php`-only knobs `_search_timeout`, `_import_timeout`, `_filter_max_ops`, `_import_max_docs`,
+    `_import_max_bytes`, `_import_concurrency`, `_worker_batch`, `_flush_max_rows`, `_breaker_failures`,
+    `_breaker_cooldown`, `_log_retention_days`, `_max_rows`; yaml 1.0 with `disable_group_select: 1`;
+    the Q8.3 test passed (decisions, 2026-10-23).
 - **Blocking questions:** Q0.13 (decided), Q0.14 (decided), Q9.1 (decided), Q9.2 (superseded by Q12.1, decided)
 - **Proves it:** plugin activates on a clean install; setup page renders; a per-group override
   changes behaviour in a request made by a user of that group (the Q8.3 test).
@@ -51,6 +59,11 @@ Milestone M0. Everything else builds on these five modules.
   - **Breaker** (Q8.6 decided, 2026-10-20): trips on transport failures and 5xx only, never on a 4xx;
     open = immediate fallback with no network call; half-open probe against `/health` after a
     cooldown; state readable by the setup page (G1) and by the flush (C3), which skips while open.
+  - **Built 2026-10-23 (`b4fdf943`):** `include/client.php` (the contract) and `include/client_curl.php`
+    (the transport), with two back-off knobs added to `config.php`; the breaker's state sits behind a
+    getter and setter in `client.php` holding a static until it is wired to A6's store (a follow-up);
+    `client.php` is 1,110 lines and wants a split at a seam (README rule 2). Imports pass
+    `dirty_values=reject`: without it the server coerces a numeric string into an int field.
 - **Blocking questions:** Q8.6 (decided), Q9.1 (decided), Q9.10 (decided), Q1.9 (decided), Q12.1 (decided), Q12.2 (decided)
 - **Proves it:** a client battery on the local Typesense: window shapes, 422 and 400 handling, import
   line errors surfaced, breaker trips on repeated failures and resets, GET/POST choice by size.
@@ -71,8 +84,8 @@ Milestone M0. Everything else builds on these five modules.
     the construction of a separate index that can consume a lot of memory for long string fields";
     missing values: numeric "always sorted to the end regardless of the sort order", string empty or
     missing "the highest value" (end ascending, top descending), and `field(missing_values: first|last)`
-    overrides both — an earlier live note said the option did not exist: verify on 30.2 in A3's
-    battery. `_eval(<filter expression>)` and `_rand([seed])` are sort expressions in 30.0.
+    overrides both — verified on 30.2 in A3's battery (2026-10-23): the option exists and puts the
+    missing values first. `_eval(<filter expression>)` and `_rand([seed])` are sort expressions in 30.0.
   - **Composite sort keys** (Q7.2): a core sort with more than three keys is one fixed-width key built
     by B2 at index time, valid because core applies one direction to every key of a sort; each part
     encodes "no value" explicitly (`0:`/`1:`/`2:` as the date key does) because missing-value
@@ -81,6 +94,13 @@ Milestone M0. Everything else builds on these five modules.
   - `created_by` optional (NULL for CLI-created resources); `created_date` was replaced by
     `creation_date` (day limit) and `date_field_sort` (text sort key) (P19, P20).
   - Dynamic field patterns `field_.*_<suffix>`; explicit fields where a per-field option is needed.
+  - **Built 2026-10-23 (`5e2da2e6`, `include/schema.php`, snapshot `harness/ab/expected/A3_schema_v1.json`):**
+    a dynamic pattern has one type, so `_q` is `string[]` and `_k` `int64[]` for every field and a scalar
+    is rejected; `nodes` and `populated_field_ids` (holding the `0` sentinel first, Q1.15) and
+    `date_field_sort` are required, `created_by`, `user_rating` and `rating` optional; a fourth sort
+    field and a multi-byte token separator are refused by the server; the names come from
+    `typesense_search_tenancy_name()` (A8 completes that seam) and `typesense_search_schema_metadata()`
+    is the base the rebuild merges the identity into.
   - Per-collection synonyms are gone in 30.x; synonym sets instead.
   - **Every active field's values are indexed** (Q1.1 decided (b), 2026-10-20): the index flags decide
     `query_by` membership and the word filters at query time, not presence in the document; the
@@ -117,6 +137,13 @@ Milestone M0. Everything else builds on these five modules.
   - Epochs (`_ts`, `creation_date`, `modified_date`) and the day-limit cut-off use the time zone of
     the MySQL values: RS stores server-local time, so PHP's default zone and MySQL's session zone
     must agree — a battery case at a DST change and at midnight.
+  - **Built 2026-10-23 (`c9e35d4c`, `include/dates.php`):** `typesense_search_dates_parse()` gives the `_q`
+    prefixes (year, year-month, full date; `2024-00` kept), the fourteen-digit `_k` and the precision;
+    `_range_bounds()` returns null for a form to decline; `_timestamp()` uses PHP's default zone and null
+    for no value; `_day_limit()` as core's `curdate() - interval N day`; a BCE value gets no key; `_k` is
+    an array and B2 emits `array()` for no key. Typesense's string sort is collation-like (case- and
+    accent-insensitive, punctuation ignored at the first level, letters after digits), not MySQL's byte
+    order: D9's date sort must allow for it.
 - **Blocking questions:** Q3.4 (decided)
 - **Proves it:** a unit table of every form above, the padded and EDTF ends, invalid dates, and the
   sort key.
@@ -137,6 +164,13 @@ Milestone M0. Everything else builds on these five modules.
     invisible characters stripped as `cleanse_string` does (P33).
   - Fragments: every substring ≥ `$partial_index_min_word_length` of each word, lower-cased, as
     `add_partial_index()` does; mean 49 per filename, ~108 MB for 114,596 filenames.
+  - **Built 2026-10-23 (`2903acb0`, `include/text.php`):** `typesense_search_text_indexable($value, $html)`
+    gives one string per translation in core's order (tags stripped keeping `<a>`, the cap, tag parts via
+    core's `strip_tags_and_attributes()`, then `_clean()`); `_ss` is that array, `_s` and `_text` the
+    strings joined by a space, `_p` the fragments of each through core's `split_keywords()`; core restarts
+    keyword positions per translation. Typesense glues unlisted symbols, NBSP, tab and the soft hyphen,
+    keeps a BOM, ZWSP or word joiner inside a token, folds accents, and a phrase does not cross `string[]`
+    elements but spans a joined string.
 - **Blocking questions:** Q1.4 (decided), Q1.3 (decided)
 - **Proves it:** unit cases for BOM/NBSP/word-joiner, `<p>hello`, a link whose URL words core indexes,
   `~en:A~fr:B` with a phrase spanning the two translations, the 500-character cap, and fragment sets
@@ -163,6 +197,9 @@ Milestone M0. Everything else builds on these five modules.
     fine, but the flag must survive a PHP-FPM restart and must default to *not ready* on a fresh
     install.
   - Plugin configuration (`set_plugin_config`) is for options, not state; the two never mix.
+  - **Built 2026-10-23 (`abd8128d`, `include/state.php`):** the table comes from the plugin's
+    `dbstruct/table_typesense_search_state.txt` and the harness creates plugin tables too; A2's breaker is
+    not yet rewired to the store.
 - **Blocking questions:** Q9.11 (decided)
 - **Proves it:** a unit battery (set, get, JSON round trip, a counter incremented from two processes,
   prefix isolation); B8, B9, C4, C7 and G1 read and write state only through it.

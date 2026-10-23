@@ -504,7 +504,7 @@ is a test to run, not a question.)
   the 500-character cap, invisible characters (A5, SK3) · **Q1.5** stemming/tokenisation, accents
   (A3, SA12) · **Q1.7** type names and usernames as words (SA9) · **Q1.9** Typesense version
   (A2) · **Q1.12** complete-indexed fields (SK3) · **Q1.13** the 500-character cap (SK3) · **Q1.14**
-  the registry as the extension contract (B2) · **Q1.15** the `0` sentinel in the node arrays (B3)
+  the registry as the extension contract (B2) · **Q1.15** the `0` sentinel in the node arrays (B3) — decided 2026-10-23
 - **Q2.1** which keyword quirks to copy, decline, improve (SA*) · **Q2.4** stop words (SA2, SA3,
   SB5) · **Q2.5** phrases under stemming (SA3; moot if Q2.14 pre-stems) · **Q2.6** negated phrase
   (SA4) · **Q2.7** OR groups (SA7) · **Q2.8** punctuation and commas (SA6, SB4) · **Q2.9** type-name

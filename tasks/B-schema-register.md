@@ -26,8 +26,8 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `creation_date` | int64 | `resource.creation_date` epoch | | D5 day limit | R | 1 |  |
 | `modified_date` | int64 | `resource.modified` epoch | sort | D9 modified sort | R (coarse: every `resource_log()`) | 1 |  |
 | `date_field_sort` | string | `$date_field` value as `0:`/`1:`/`2:<value>` | sort, no stem | D9 date sort, Q7.1 (B) | R; cfg (`$date_field`) | 1 |  |
-| `nodes` | int32[] | every `resource_node` row | facet | SC1, D7, SK1 | R (E9–E19 node writers: several gaps until C9) | 1 |  |
-| `populated_field_ids` | int32[] | fields with any node, from all nodes | | SF6, SF10 | R | 1 |  |
+| `nodes` | int32[] | every `resource_node` row | facet; required, `0` first (Q1.15 decided 2026-10-23) | SC1, D7, SK1 | R (E9–E19 node writers: several gaps until C9) | 1 |  |
+| `populated_field_ids` | int32[] | fields with any node, from all nodes | required, `0` first (Q1.15) | SF6, SF10 | R | 1 |  |
 | `date_year`, `date_month`, `date_day` | int32 | `$date_field` value components, absent when 0 | optional | SD2 | R; cfg | planned (Q3.13) |  |
 | `hit_count`, `user_rating`, `rating` | int32 | `resource.hit_count` (the cron copy of `new_hit_count`), `resource.user_rating` (the star average), `resource.rating` (the legacy column from the rating field) | | SG2, D9; parts of the packed keys below | E27 (hit counts: rebuild only; ratings: the `modifyuserrating` hook and field edits) | planned (Q7.2 decided by the marks) |  |
 | `ur_hits`, `hits_ur`, `date_ref`, `rating_ur` | int64, sort | packed keys built by B2: (user rating, hit count), (hit count, user rating), (`$date_field` as days, ref), (rating, user rating); fixed bit widths, "no value" = the minimum so NULL sorts as in MySQL in both directions | sort | popularity = `ur_hits, date_ref`; relevance with keywords = `_text_match, ur_hits, date_ref`; keyword-less relevance = `hits_ur, date_ref`; rating = `rating_ur`, then `_text_match` or hit count, then ref (D9, SG2) | R; E27; cfg (`$date_field`) | planned (Q7.2) |  |
@@ -49,12 +49,12 @@ today) · **cfg** a configuration snapshot diff (E25–E27).
 | `_s` | single-line text (types 0, 13) that is indexed and not numeric | string, stem per Q2.14 (no facet — dropped, Q1.2 decided 2026-10-20) | A5 `clean()` + cap (Q1.13) | SB1, D4 | R | 1 |  |
 | `_text` | multi-line, large, TinyMCE (types 1, 5, 8), indexed | string, stem per Q2.14 | A5 (markup per Q1.4) | SB1, D4 | R | 1 |  |
 | `_ss` | fixed lists (types 2, 3, 7, 9, 12): the option names | string[], facet, stemmed iff `$stemming` (already so in the old schema) | A5 `clean()` (BOM stripped, P33); translations per Q1.4 | SC3; D4 (option words as keywords, indexed fields only) | R (E20 node rename: gap until C9) | 1 |  |
-| `_q` | dates (types 4, 6, 10, 14): year, year-month, full date; numeric single-line (`field_constraint = 1`): the plain value | string[] / string, never stem | A4 representations; numbers verbatim | SD1, SE1, SA9 (Q2.11) | R | 1 |  |
+| `_q` | dates (types 4, 6, 10, 14): year, year-month, full date; numeric single-line (`field_constraint = 1`): the plain value | string[] always (one type per pattern; a scalar is rejected, verified 2026-10-23), never stem | A4 representations; numbers verbatim | SD1, SE1, SA9 (Q2.11) | R | 1 |  |
 | `_f` | numeric single-line, `is_numeric` values only | float | the number | SE1, SG4 | R | 1 |  |
 | `_ts` | — | — | — | dropped (Q1.2 decided 2026-10-20): the range pair carries the value at its own precision | — | — | dropped |
 | `_range_start`, `_range_end` | — | — | — | out of version 1 (Q3.4 decided (a), 2026-10-21): SD3 uses `_k`; the date-range field type gets `_k_start` / `_k_end` when SD4's rows are confirmed | — | — | dropped |
 | `_p` | partial-indexed text | string[] | A5 `fragments()` (every substring ≥ `$partial_index_min_word_length`); in `query_by` so a bare fragment matches as in core (Q1.3 decided 2026-10-21, K5) | SB6, SA5 (leading wildcards) | R; cfg (min length) | 1 |  |
-| `_k` | every date type: the value's digits padded to fourteen places (`YYYYMMDDHHMMSS`) as an integer; no key for a non-digit value | int64 | A4 (raw digits, non-real dates kept; bounds built the same way, the end padded to 235959) | SD3 | R | 1 (Q3.4 decided 2026-10-21) |  |
+| `_k` | every date type: the value's digits padded to fourteen places (`YYYYMMDDHHMMSS`) as an integer; no key for a non-digit value | int64[] (two keys for a date-range field; `array()` when there is no key, verified 2026-10-23) | A4 (raw digits, non-real dates kept; bounds built the same way, the end padded to 235959) | SD3 | R | 1 (Q3.4 decided 2026-10-21) |  |
 | `_c` | complete-indexed text: one token per value | string, no tokenisation | the whole value | SK3 | R | planned (Q1.12) |  |
 | `_w` | text fields: the whole value when the cap applies to `_s`/`_text` | string | A5 without the cap | SK3 (wildcards past the cap) | R | planned (Q1.13) |  |
 | `_sort` | fields core can order by (`$sort_fields`) | string / float | lower-cased key; numeric fields use `_f` | SG4 | R | planned (Q7.9) |  |

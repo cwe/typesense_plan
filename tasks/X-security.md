@@ -76,6 +76,9 @@ difference is never an accepted difference.
 - **Size:** S · **Depends on:** A1
 - **Must honour:** the old `reindex.php` had no guard; core ships `include/.htaccess` only; an
   offline job runs as the admin who queued it.
+- **Done by H1 (2026-10-23):** the deny `.htaccess` in `scripts/` and `harness/`, the `PHP_SAPI` guards
+  in every harness entry, `scripts/reindex.php` and the tests bridge; the remainder (the page actions,
+  the nginx rule) is built with X1.
 - **Blocking questions:** Q12.6 (decided)
 - **Proves it:** an HTTP request to each script, each harness entry and the bridge returns 403 or
   404, or the script exits before including core; a GET to a setup action changes nothing.

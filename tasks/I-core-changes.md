@@ -30,9 +30,14 @@ void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 mov
   core returns it; `false` lets core continue to `search_special()` and the standard query; the hook
   fires before both, with `$sql_filter`, `$sql_join` and `$select` already built (the keyword
   criteria are baked into them).
+- **Built 2026-10-23 (`0e5e607b`):** the mechanism is a scoped flag, `do_search_access_check(...$args)`
+  in `include/search_functions.php`, used by thirteen gate calls at ten sites (the decisions row of
+  that date lists them); never a nineteenth `do_search()` parameter, since `pages/search.php` already
+  passes nineteen arguments. Battery `harness/ab/I1_hook_order.php`; the smoke battery's `!collection`
+  case now reaches the hook.
 - **Blocking questions:** Q11.1 (decided), Q11.2 (decided), Q0.4 (decided)
-- **Proves it:** a stock RS checkout plus this patch runs the plugin; `CORE_PATCHES.md` lists it with
-  its reason.
+- **Proves it:** a stock RS checkout plus this patch runs the plugin; the 11.1 change list (I4) carries
+  it with its reason (`CORE_PATCHES.md` is void since Q11.6).
 
 ### I2 — The collection access gate helper (G1)
 - **Builds:** a shared function in `include/search_functions.php` extracted from
@@ -86,6 +91,9 @@ void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 mov
   create keyword rows; `dsk:264-268` `field:a;b` drops an unmatched alternative; `title:-word`
   excludes nothing (B17); `pages/search.php:612`, `614` pass 19 arguments to an 18-parameter
   `do_search()`.
+- **The 11.1 change list so far:** I1 (2026-10-23, `0e5e607b`): the `external_search` hook before
+  `search_special()`, and `do_search_access_check()` at the thirteen access-gate calls — see the
+  decisions row of that date.
 - **Blocking questions:** Q11.3, Q7.3, Q7.5, Q4.8, Q4.10, Q2.13
 - **Proves it:** every item has a row; the chosen PRs or issues are filed and referenced.
 

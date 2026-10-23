@@ -43,6 +43,15 @@ existing code the rebuild is likely to keep (Q10.11).
     names are the new ones); the batteries are re-cut per package as packages land; `trace/` is
     retired; `results/` is cleared. Core's side of a wildcard or full-text case is an emulation
     until H9.
+  - **Built 2026-10-23 (`5e2da2e6`):** `ab/boot.php`, `ab/fixture_lib.php` with `ab/fixtures/base.php` and
+    `fx_load()` for per-package additions, `ab/accepted_divergences.php` (empty), `run_all.sh`,
+    `summarise.php` (writes `results/summary.md` and `results/verdicts.json`), the bridge
+    `tests/000010_typesense_smoke.php` (exit 2 = skipped); the veto reason is read from the plugin's one
+    `debug()` line `typesense_search: outcome=<served|declined|failed> ... reason=<text>`; `fx_index()`
+    calls `typesense_search_rebuild_generation()` once B8 exists; the private Typesense uses port 18208
+    and the prefix `harness`; a case may carry a hand-derived expected set, which the core side must
+    match. On the Windows PC (from 2026-10-23) the harness runs through Docker Desktop: `run.ps1`,
+    `battery.ps1`, `check.ps1` and the compose in `harness/docker/` (the Docker runner task, in progress).
 - **Blocking questions:** Q10.1 (decided), Q10.2 (decided), Q10.3 (decided), Q10.11 (decided), Q10.12 (decided), Q10.13 (decided)
 - **Proves it:** the smoke battery runs green on a clean checkout with one command.
 

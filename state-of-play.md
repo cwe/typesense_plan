@@ -84,7 +84,8 @@ A meeting copy of the review exists as a Claude doc (keep in step with the repo 
   related-keyword pair is antony/anthony; both API test users hide states 1–3 (`z1 z2 z3`); numeric
   test field 170 holds 12 values.
 - A seeded test system exists (the test-system seeder tool) for data the YSP database lacks.
-- Local machine: Typesense 30.2 binary, PHP 8.5, no MySQL.
+- Local machine: until 2026-10-23 a Mac with a Typesense 30.2 binary and PHP 8.5, no MySQL; from
+  2026-10-23 a Windows 11 PC with Docker Desktop and nothing native (see the entry of that date).
 
 ## Measured headline figures
 
@@ -122,3 +123,14 @@ A meeting copy of the review exists as a Claude doc (keep in step with the repo 
 **2026-10-21:** the foundations questions decided (schema, client, state, tenancy, dates, text, testing); M0 waits only on the security set and the server list; scope for 11.1: nothing is cut.
 
 **2026-10-23:** check findings complete for all 77 rows (code, data, live, second database) and folded into the tasks; code branch `typesense_search` created from the updated master, which already ships the 0.1 plugin the rewrite replaces.
+
+**2026-10-23, later — M0 built on `typesense_search`:** H1 and A3 `5e2da2e6`, A1 `7f27516e`, A4 `c9e35d4c`,
+A5 `2903acb0`, A2 `b4fdf943`, A6 `abd8128d`, I1 `0e5e607b`, each proved by its battery in
+`plugins/typesense_search/harness/ab/` (H1 19, A1 37, A2 75, A3 57, A4 95, A5 102, A6 38, I1 29 checks, all
+green) and phpcs-clean; the 0.1 search interception, functions and reindex script are gone. Still open in M0:
+A8 (tenancy) and X1 with X3's remainder, both briefed; A2's breaker state lives in a seam inside `client.php`
+until it is wired to A6's store; `include/client.php` is 1,110 lines against the six-hundred-line rule. H9
+(the MySQL mode) is briefed to run early for the check register. Environment: a Windows 11 PC, both
+repositories under `C:\dev`, Docker Desktop for every check (the Docker runner for the harness is the first
+task on this machine; until it lands nothing here can run a battery). The plan was not amended as these tasks
+closed; this entry and the decisions rows of the same date catch it up.
