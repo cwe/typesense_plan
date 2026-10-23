@@ -76,7 +76,16 @@ void, I4's table is the 11.1 change list rather than a patch list, I3 and C9 mov
   to a typed hook parameter; `!related` over 120 s; the form's `!properties` + `!list` collision;
   `startdate:`/`enddate:` dead code; `$ignore_filters` effectively dead; `view.php` next/previous
   fetching all rows; the page offset with collections above results; the `J` join's missing
-  featured-type condition.
+  featured-type condition. **Found by the check reading (2026-10-22):** `dsk:504` assigns instead
+  of appending the hidden-field clause for wildcards, breaking the `excludefieldsfromkeywordsearch`
+  hook; `sf:953-956` tests `e<n>` with a stale `$n` so custom states are never blocked in
+  editable-only; `dsk:566-567` `!empty` on a non-global field with no type overlap produces `IN ()`;
+  `sf:1619` `!integrityfail <word>` silently a plain search; `sf:1629-1632` admin `!noningested`
+  applies no `$sql_filter`; `dsk:183-190` range bounds not reset between keywords; `nf:333`
+  option names matched at top level only; `dsk:427-430` and `787` wildcard and phrase searches
+  create keyword rows; `dsk:264-268` `field:a;b` drops an unmatched alternative; `title:-word`
+  excludes nothing (B17); `pages/search.php:612`, `614` pass 19 arguments to an 18-parameter
+  `do_search()`.
 - **Blocking questions:** Q11.3, Q7.3, Q7.5, Q4.8, Q4.10, Q2.13
 - **Proves it:** every item has a row; the chosen PRs or issues are filed and referenced.
 

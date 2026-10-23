@@ -22,6 +22,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     selection-collection search on the same page once set it falsely.
   - The master toggle, the per-group override, the ready flag and the breaker all decide fallback
     before any work; Typesense-only mode per Q0.6 / Q6.5.
+- **Code facts (2026-10-23, [checks-findings.md](search/checks-findings.md)):** a refs-only special search carries no order in core (`sf:1770-1780` drops `ORDER BY`), so G42's refs-only shape is compared as a set for specials; `returnsql` bypasses the share-key check; `access_override` skips the rca joins, `T`, confidential, the whole archive block and the z filter (`sf:801-886`); `go` only gates keyword-usage logging, which core still performs when a plugin answers (`ds:374`).
 - **Blocking questions:** Q0.6, Q6.3, Q6.5
 - **Proves it:** a hook battery: each request mode falls back; a null parameter is accepted; the badge
   flag only on the grid search; the breaker open → fallback.
@@ -114,6 +115,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
   - `$ignore_filters` does **not** disable restrictions (core uses it only in keyword parsing).
   - `$smartsearch` keeps the saved archive states instead of the defaults (G40): the old plugin always
     fell back for it; serving it is the archive rule with the flag honoured (Q5.11).
+- **Code facts (2026-10-23, [checks-findings.md](search/checks-findings.md)):** the z exclusion is `(archive NOT IN (z states) OR created_by = U)` when `$uploader_view_override` is on — the default — and a plain `NOT IN` otherwise (`sf:887-900`); the archive defaults apply when `count($archive) == 0 || ($archive_standard && !$smartsearch)`, and `$archive_standard` is a page global set only by `pages/search.php:331-332` (`sf:833-839`); the pending filter is `(archive <> -2 OR created_by = U) AND (archive <> -1 OR created_by = U)`, widened by `ert<type>` (`sf:854-869`); `!list…`, `!hasdata` and `!integrityfail` skip the `archive IN` clause but keep the pending and z filters (`sf:825-832`); `$ignore_filters` is dead in practice.
 - **Blocking questions:** Q4.4, Q4.5, Q6.3, Q6.6, Q5.11, Q6.9
 - **Proves it:** restriction battery plus a config matrix (`$search_all_workflow_states`,
   `$collections_omit_archived`, `$uploader_view_override`, `$special_search_honors_restypes`).
@@ -184,6 +186,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
     SG2 and the schema register); a keyword search keeps `_text_match` first (the listed exception). A single-field sort matches MySQL's NULL placement with
     `field(missing_values: first)` ascending and `(missing_values: last)` descending; a composite
     encodes "no value" in each part instead.
+- **Code facts (2026-10-23, [checks-findings.md](search/checks-findings.md)):** core's keyword `score` is `h.score`, a sum of a non-aggregated `resource_node.hit_count` per union row (`dsu:39`, `dsk:722-729`), fed only by views from node-token searches and copied daily — near zero on the test system, non-zero on 6,590 rows of the second database; `r.rating` is never written by core from a field; the title key is the `field8` copy column, `VARCHAR(200)`, compared truncated at 200 in the column collation; `resource_type.order_by` may be NULL (last on DESC); `order_by=field<n>` on the date field equals the date sort.
 - **Blocking questions:** Q7.1, Q7.2, Q7.4, Q7.8
 - **Proves it:** sort battery on a ties fixture; live date and modified order equal to core both ways.
 

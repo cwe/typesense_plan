@@ -30,6 +30,7 @@ token split; everything in SC, SD and SE goes through the same lookup.
   combinations fixture; a field named with a slash).
 - **Battery:** `harness/ab/SB1_field_word.php` — B1, B8, B9, B15, B20, B21, H3, H25, I6, I7, I11
   and a lookup table test over every flag combination.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** an unknown field name turns the colon into a space (`dsk:111-115`), so `sculpture:` and `:sculpture` are the word alone — unless a field with an empty name exists, which core tolerates; duplicate short names resolve to the first row by ref and a NULL `active` flag hides a field (B2); a plain number in a field is this ordinary word search (`42` also matches `42.5`, misses `042`).
 - **Blocking questions:** Q3.11
 - **Open questions:** Q3.17 (the exact case and character rules of the name match)
 
@@ -51,6 +52,7 @@ token split; everything in SC, SD and SE goes through the same lookup.
   core into the node bucket and only needs dropping (SC2).
 - **Fixture:** the base fixture (`"title:launch party"`).
 - **Battery:** `harness/ab/SB2_quoted_field_terms.php` — B2, B3, B4, harness B2, B3, S2, S3, S7.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** the supported quoted form is `"title:henry moore"` — words resolved without stemming, an adjacency chain `position + 1` restricted to the field (`dsk:82-99`, `758-845`); `title:"henry moore"` is two re-quoted tokens, henry in the field AND moore anywhere, without stemming or related keywords — an accidental parse.
 - **Blocking questions:** Q3.2
 - **Open questions:** Q3.18 (is the backtick-quoted bare-colon value a phrase or an AND?)
 
@@ -66,6 +68,7 @@ token split; everything in SC, SD and SE goes through the same lookup.
 - **Fixture:** the 40-completion set (harness Q2).
 - **Battery:** `harness/ab/SB3_field_wildcards.php` — B6, B7, H5, harness Q2, I3, P17 (a wildcard
   on a date field returns nothing in core).
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `title:*scape` is `k.keyword LIKE '%scape' AND resource_type_field = <title>` on the keyword table (`dsk:513-518`, `631-646`); `field:nik*` is full text restricted to the field and reaches non-indexed values; `field:ni*` (two letters) is the LIKE branch and reaches keywords only; `camera:*ikon` is 0 on the test system because `camera` has no keywords.
 - **Blocking questions:** Q3.10, Q2.3
 
 ### SB4 — Punctuation inside a field value
@@ -92,6 +95,7 @@ token split; everything in SC, SD and SE goes through the same lookup.
   vetoed B16 and answered B17/B18 wrongly (0 and 4,226 / 10,564). Going beyond core (a real
   negated field term) is Q3.8.
 - **Battery:** `harness/ab/SB5_field_negation_stop.php` — B16, B17, B18, harness N5a.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `title:-sculpture` is re-quoted, runs the phrase branch with `$omit`, creates a `-sculpture` keyword that no node maps to and excludes nothing (`dsk:769-787`, `827-836`) — proposed bug; `title:sculpture,landscape` becomes the phrase "sculpture landscape" in the field (the field form of Core 10).
 - **Blocking questions:** Q3.8, Q2.4
 
 ### SB6 — Partial indexing

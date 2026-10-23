@@ -55,6 +55,7 @@ milestone M4; SK1 is the slice of Q1.1 that the catalogue makes concrete.
   active).
 - **Battery:** `harness/ab/SK2_inactive_hidden_fields.php` — K6, K12, harness A18, A35, A36, B17,
   14_inactive cases.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** hidden = any named field that is inactive or not viewable, index flags ignored (`rf:7871-7893`); active means `active == 1`, so a NULL flag hides the field (94 fields on the second database); a field with an empty name is never hidden; `field:word` on a hidden field returns false before the hook, a hidden node token is silently dropped (`ds:534-536`).
 - **Blocking questions:** Q6.7 (confirm P37)
 
 ### SK3 — Complete indexing and the 500-character cap

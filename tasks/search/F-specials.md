@@ -35,6 +35,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   non-numeric argument means 1000, not a veto.
 - **Battery:** `harness/ab/SF1_last.php` — F1–F5, F69, H12, the 11 existing last cases, D16/D16b,
   16_core_bugs `!last + node`.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!lastN, word`: the keyword after the first space applies, `N` from `explode(',')[0]` (`sf:1127-1135`), proved live (`!last100, sculptre` = 1); through the API the hundred are listed ascending (P29's upper-case `DESC` test).
 - **Blocking questions:** Q4.3, Q11.3
 
 ### SF2 — `!collection`
@@ -66,6 +67,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Battery:** `harness/ab/SF2_collection.php` — the rows above, the 13 collection cases, F30–F32
   (R/h users, access_override), T1/T2 (upload-share gate), the parity plan's Phase 2 matrix
   (users × collections × queries × `fetchrows`) live.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!collection` skips `resource_type IN` and the archive parameter but keeps the pending and z filters (`sf:751`, `825-902`); collection order is `c.sortorder asc, c.date_added DESC, r.ref asc` (`sf:3196-3207`); collections of 577,722 members with sort orders exist on the second database.
 - **Blocking questions:** Q5.1, Q5.2, Q5.3, Q5.4, Q5.8, Q4.6, Q5.9, Q5.10, Q6.8
 
 ### SF3 — `!list` and `!listall`
@@ -126,6 +128,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   because `populated_field_ids` comes from all nodes (B3); `restypes` per Q4.4.
 - **Battery:** `harness/ab/SF6_hasdata.php` — F42–F44, H29, harness 21 (non-indexed, inactive,
   hidden field), R4.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!hasdata` has no archive clause; pending and z filters and restypes apply; the node join reduces the set (12 → 5 on the test system).
 - **Blocking questions:** Q4.4
 
 ### SF7 — `!archivepending` and `!userpending`
@@ -176,6 +179,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   orientation pi s wmax wmin`); `file_size` in bytes vs the form's MB; the collision with `!list`.
 - **Fixture:** resources with extension, size, dimensions and preview flags set.
 - **Battery:** `harness/ab/SF9_properties.php` — F50–F62, H30, J2, J11.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `fext`: `*` → `%`, a leading `-` → `NOT`, a leading `.` stripped, `LIKE` in the column collation (`sf:1566-1578`) — `jp*` is jpg, jpeg and jpf on the test system; `orientation`: `COALESCE(height, 0) > COALESCE(width, 0)` through a LEFT JOIN on `resource_dimensions`, so a resource with no dimensions row is square (`sf:1588-1606`); an unknown property name adds no filter (`sf:1539`).
 - **Blocking questions:** Q4.1, Q4.2, Q4.10
 - **Open questions:** Q4.11 (the key set and the unknown-key rule)
 
@@ -191,6 +195,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   resource types applied correctly, or replicate the bugs, or veto (Q4.8 / Q11.3); the name form
   resolved through SB1's lookup.
 - **Battery:** `harness/ab/SF10_empty.php` — F45–F49, harness I7.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!empty` with restypes: the inner type clause is correlated and inert (F47), and `search_filter()`'s `resource_type IN` limits the result (`dsk:551-568`, `sf:751-758`); a non-global field with no type overlap produces `IN ()`, a SQL error (Q11.3).
 - **Blocking questions:** Q4.8, Q11.3
 
 ### SF11 — `!related` and `!relatedpushed`
@@ -224,6 +229,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   and it is a plain search: everything (F65).
 - **Serve:** the three filters; the non-admin `!noningested` per Q4.9's rule for "everything".
 - **Battery:** `harness/ab/SF13_flags.php` — F63–F65 for an admin and a standard user.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!integrityfail` matches the exact string only — with a keyword it silently runs as a plain search (`sf:1619`); `!noningested` for a non-admin falls through to everything, and for an admin runs with no `$sql_filter` at all (`sf:1629-1632`).
 - **Blocking questions:** Q4.1, Q4.2
 
 ### SF14 — `!geo`

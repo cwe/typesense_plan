@@ -40,5 +40,6 @@ and both are the same parse rule — one disposition has to win (decisions.md).
   shaped like the posted form.
 - **Battery:** `harness/ab/SJ1_form_strings.php` — J1–J4, J11, I12 and the search bar's rebuilt
   text (harness 25), each case built from form input; live: the J rows.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** only text after the first space survives a special prefix (`ds:125-133`); the user ref of `!contributions9,title:park, sculpture` survives as `9,title:park,` coerced to 9 by the `i` binding (`sf:1438-1458`); with `$checkbox_and` the form sends `word, , @@a, @@b`, each token its own AND bucket; the dropdown branch at `sf:280-291` is unreachable (dropdowns post `nodes_searched`); the `startdate` / `enddate` inputs are dead.
 - **Blocking questions:** Q3.2, Q4.10
 - **Open questions:** Q10.14 (the forms the API cannot send are covered locally)

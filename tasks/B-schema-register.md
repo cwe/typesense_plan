@@ -64,7 +64,8 @@ match; `_s`, `_text` and `_ss` apply to every active field of their type (Q1.1 d
 2026-10-20) and the index flags decide `query_by` membership and the word filters at query time; `_p`
 needs `partial_index`; a field on the exclusion list (G9) gets no representation and its nodes stay
 out of `nodes[]` and `populated_field_ids[]`; `_q`, `_f`, `_k`, `_range_*` apply to every date or numeric field
-regardless of flags (Q3.16); inactive fields get no representations (P37, Q6.7); a field hidden by
+regardless of flags (Q3.16); inactive fields — `active` not exactly 1, NULL included, as core tests it
+(`rf:7880-7888`) — get no representations (P37, Q6.7); a field hidden by
 permission is indexed but excluded from `query_by` and field filters at query time (catalogue K12).
 
 ## 3. Memberships and grants

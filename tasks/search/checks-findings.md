@@ -181,3 +181,116 @@ alternative; `pages/search.php:612`, `614` pass 19 arguments to an 18-parameter 
 
 Live (light): `camera:*ikon` (A12/B7), `sc*zzzz` (A13), `The` (A17), the H11/H28/H38 data queries,
 G21 with two states, F69's refs, J9's nodes alone. Fixture or H9: every "fixture" entry above.
+
+## Database confirmations (2026-10-22, read-only queries on the test system)
+
+| Row | What the data says | Effect |
+|---|---|---|
+| F48 | field 170 (`numberfield`) is type 0, **global**, `field_constraint = 1`, indexed; it has no per-type mapping | the inner type clause is the global-field form, inert as read; `search_filter()`'s `resource_type IN (1)` is what limits the result — proposal stands (must) |
+| G25, G27 | field 12 (`date`) is type 10 with `field_constraint` NULL and `sort_method` 0; field 8 (`title`) is type 0, constraint 0, `sort_method` 0 | G25 is `field12 desc, r.ref desc`, identical to the date sort; G27 is `field8 desc, r.ref desc`, identical to the title sort — both must |
+| G13 | `rating` and `user_rating` are NULL on all 114,596 resources | the rating sort reduces to `score`, then ref — the identity with G18 is explained; `r.rating` a legacy constant — must |
+| G19 | `resource_type.order_by`: Document NULL, Images of artworks 10, Photography 20, Film and video 30, 3D 40, Audio 50, Consent forms 60, YSP Archive 70 | the expected `resourcetype desc` sequence is types 8, 7, 4, 6, 3, 1, 5, then 9 (NULL last) — must, expectation writable |
+| F52 | extensions matching `jp%`: jpg 77,886, jpeg 5,772, **jpf 1** | "jpg and jpeg" was wrong by one resource: the rule is the LIKE — must with the LIKE as the expectation |
+| H11 | collection 3808 has 55 members, `sortorder` 0–54 with no NULL, every `date_added` identical | the key **is** exercised: the descending refs come from `sortorder` — must; the earlier doubt is cleared |
+| H28 | refs 416 (state 0, type 3, carries node 389), 4460 (state 2, no 389), 8692 (state 3, carries 389); none holds field 170 | for the test users (z1–z3) only 416 is visible and it carries 389, so `!list… @@389` = 1 = F38: the node join was a no-op on this data — the row needs a visible ref without node 389 to show the join acting; proposal stands (must by construction) |
+| H29 | 12 resources hold field-170 data, 5 of them carry node 389 | the node join acts (12 → 5) — must, confirmed on data |
+| C23 | node 388 is "Portrait" and 389 "Landscape", both options of field 88 (`orientation`) | `orientation:landscape, @@388` really is landscape AND portrait on one field: the two-bucket AND was exercised and 0 is the right answer — must, confirmed |
+| H38 | collection 3618's 949 members are all type 1, state 0 | "types and states ignored" was **not** demonstrated by this data; the code says so, the row needs a collection with mixed types and states — proposal stands (must) |
+| I7 | no field with an empty name | I7 = I6 on this database; the nameless-field hazard stands for others |
+| B17 and the side effects | `keyword` holds `-sculpture` (369138), `land;sun` (369135), `nikon` (369137), `scpture` (369134), `sculpture;landscape` (369136), created in sequence by the catalogue run, all with hit count 0 | the fingerprint of B17's path and of the wildcard side effects (A13, A15, K2, A16): confirmed; a catalogue run changes the database it measures |
+| G21 | states present: −2 (1), −1 (51), 0 (100,862), 1 (321), 2 (4,029), 3 (2,387), 5 (365), 6 (46), 7 (253), 8 (6,281) | a rerun with `archive=0,8` exercises the status sort (8 before 0 descending) |
+| G8 | state 2 holds 4,029 resources by 6 creators | whether a test user owns one, which the uploader override would reveal, needs the API users' refs |
+
+No proposed mark changes. Two rows (H28, H38) are confirmed by code but their test data cannot
+show the mechanism; both need a different example when the live rows are re-cut.
+
+## Live confirmations (2026-10-22, the MySQL-only API user, one call every five seconds)
+
+| Row | Search | Core | Effect |
+|---|---|---|---|
+| A12, B7 | `camera:*ikon` | 0 | the leading wildcard is the keyword-table LIKE: `camera` has no keywords, so nothing, where RLIKE over node names would have found the 23,412 nikon values — the corrected rule is **confirmed** |
+| K3 | `camera:ni*` | 0 | a two-letter prefix takes the LIKE branch; `camera:nik*` (three letters) is the full-text branch and finds 23,412 — the threshold is **confirmed** |
+| A13 | `sc*pture` / `sc*zzzz` | 69,679 / 69,679, identical first refs | the text after `*` is inert; only the prefix before it counts — the tokenizer-accident reading is **confirmed**; proposal stays **no** |
+| A17 | `the` / `The` | 100,862 / 276 | the `$noadd` test is case-sensitive on the no-whitespace path: `the` is skipped and returns everything, `The` is resolved as a keyword and finds 276 resources — the case rule is **confirmed**, and the stop word does exist as a keyword on some nodes |
+| F69 | `sculptre` / `!last100, sculptre` / `!last100` | 1 / 1 / 100 | the keyword applies under `!last` (the one `sculptre` resource, not 100); with `wilde` (34,212 matches) the 100 newest matches start at ref 124302 against 127488 for `!last100` alone, consistent with the newest *matching* resources — **confirmed** |
+| J9 | `sculpture, @@6125` / `, @@6130` / both | 176 / 108 / 0 | both nodes resolve, the sets are disjoint (176 + 108 = J8's 284), so the AND of two tokens is real — **confirmed** |
+| G21 | `sculpture`, status order, states 0 and 8 | 52,848, the first five all state 8 | the status key is exercised with two states — **confirmed** |
+
+Also seen: `!last` through the API lists its hundred newest in **ascending** ref order, the known
+P29 quirk (the outer `ORDER BY` tests for an upper-case `DESC`, and the API passes `desc`).
+
+**Standing of the check rows after the code read, the data and the live calls:** every row's
+mechanism is established with citations; no proposed mark changed; H28 and H38 need a different
+example to exercise their mechanism; G8 needs the test users' refs; the fixture cases are package
+work. The marks are Chris's to set.
+
+## The second database: are the cases genuine? (2026-10-23, read-only profile)
+
+The mechanisms above are core's code, so they do not depend on data. What a second installation
+tests is whether each case's *premise* holds on a differently shaped database, and which cases only
+work because of a shape the test system happens to have. Profile of the 1.38 M-resource database
+(263 fields, 31 user groups, 9 resource types, 4.0 M keywords):
+
+**Cases that hold there as they stand**
+- The non-indexed text field is `camera` again (field 52; 491 distinct values, 40 starting "nik"),
+  so K2, K3, K4, A12 and B7 run unchanged — with one new twist below.
+- `rating` and `user_rating` are NULL on every resource there too (G12, G13), and the extensions
+  matching `jp%` are jpg and jpeg only (F52 — "jpg and jpeg" would have been right there by accident,
+  which is the point: the LIKE is the rule).
+- Resource types have distinct `order_by` values 10–90 with no NULL (G19 exercisable; the NULL-last
+  case is the test system's).
+- Options sharing a word exist (C4, C12), many option names carry spaces, and **no option name
+  carries a byte-order mark** — C7's oddity is test-system data, not a rule.
+- Stop words are indexed on some nodes there too (`a` 318 mappings, `the` 1, `and` 2), so A17's
+  case rule has data on both systems.
+- Junk keywords from past searches already exist there: 200 containing `;` and 1,317 with a leading
+  dash among 4,004,966 — the side effect B17, A15, A13 and K2 leave is present on a production-shaped
+  database, not a harness artefact.
+- A group with a search filter exists (1 of 31; 6 filters), 4 groups hold `v`, 9 hide fields with
+  `f-`, 19 carry `z` states: the gate uses (Q12.4), K12 and the z cases are all real there.
+
+**Cases the second database makes stronger than the first**
+- Timed date values at scale: `datecreated` (type 10) holds 82,025 values, 81,866 with a time of
+  day — D4 and D23 are the common case there, not a corner.
+- Partial dates: 122 `-00` values in `dateofpublication` (D5, J13).
+- Collections of 577,722, 206,453 and 197,211 members with `sortorder` set and varying `date_added`
+  (H11 exercised), and several with four types and five states (H38 exercisable, which the test
+  system could not).
+- A category tree of 29,141 nodes, 29,111 of them children: core's option-name match sees top-level
+  nodes only (`nf:333`), so `field:name` for a child fails there at scale — a genuine rule the test
+  system barely touched.
+- `keywords` is a dynamic keyword list of 146,633 options (C12's field type at scale).
+- 145 values over 500 characters in one field (longest 4,477) and more in four others: K10 is real.
+- 400,143 external access keys and 24,717 custom-access grants: the share-key and grant cases (SF2,
+  D6, X4) have abundant data; but **no confidential resource at all** (access 2), so that case is
+  fixture-only there.
+- 6,590 `resource_node` rows carry a hit count (max 120), so core's keyword `score` is non-zero for
+  some nodes there — the one place the relevance difference (Q7.1) will actually show.
+
+**Cases that are fixture-only there (the data shape does not exist)**
+- No date-range field type (14): D24, D25, SD4. No numeric single-line field (`field_constraint = 1`
+  on a text field): E1–E7, K11, SE1. No non-indexed date field (every date field is indexed): D22.
+  No partial- or complete-indexed field: B14, K5, K9, SB6, SK3. No related keywords: A21, A22,
+  SA10. No states 1, 2 or 8 (states present: −2, −1, 0, 3, 5): G8 and G21 need other states there.
+- These stay in the plan on principle 11 — the rules are core's — but they are proved on the
+  fixture, and the second dataset (H8) cannot smoke-test them.
+
+**Two genuine rules the second database surfaced**
+- **A NULL `active` flag hides a field.** `resource_type_field.active` is nullable (default 1); 94
+  fields there have NULL, 62 of them holding 10,059 values (for example a second `nationality`, several
+  description fields). `get_hidden_indexed_fields()` keeps a field visible only when `active == 1`
+  (`rf:7880-7888`), so a NULL-active field is excluded from every keyword union and its values are
+  unsearchable by word in core on that system. P37 and K6 must copy the test exactly: active means
+  `== 1`, not "not 0".
+- **Duplicate field names.** Ten short names are used twice there (`camera` twice, both active;
+  the others one active, one NULL). `field:name` resolves with `SELECT ref, type … WHERE name = ?`
+  and takes the first row (`dsk:105`, `117`), with no ordering — in practice the lowest ref. The
+  plugin's field lookup (SB1, Q3.17) must pick the same row, and the hazard is worth a line in the
+  documentation.
+
+**Verdict.** No check case rests on a mechanism peculiar to the test system; the mechanisms are
+code. What was test-system-specific is now named: the BOM options (C7), the one non-indexed date
+field (D22), the numeric field (E, K11), the date-range field (D24, D25), the one related-keyword
+pair (A21, A22), the confidential resources, state 8, and `jpf`. The second database adds the
+timed-date, huge-collection, deep-tree, long-value and NULL-active cases that the fixture must carry
+so the plugin is not tuned the other way either.

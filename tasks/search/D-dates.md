@@ -27,6 +27,7 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
 - **Fixture:** the base fixture (date field 12 with full, year-only and time-bearing values,
   expiry field 95); add a month-only value and a second value on one resource.
 - **Battery:** `harness/ab/SD1_date_values.php` — the rows above, harness I10, O17, N3a, N3b.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** a date value is `dn.name LIKE 'value%'` (`dsk:146-158`) — a value stored with a time matches a date prefix (81,866 of 82,025 values on the second database carry a time); the index flag is never read; `date:2024;2025` reaches the date branch before the OR handling and finds nothing; a value and a range on one field are three ANDed joins.
 - **Blocking questions:** — (P32 confirmed)
 - **Open questions:** Q3.14 (two values and `;` on a date field)
 
@@ -78,6 +79,7 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
   a value with a time at 23:30 on the end day).
 - **Battery:** `harness/ab/SD3_date_ranges.php` — the rows above, harness B53–B57, N4a–N4c, the
   `_range_*` vs `_k` figures recorded for the decision.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** ranges are string comparisons `name >= start` and `name <= end 23:59:59` (`dsk:179-203`), the form pads a blank day with `-31` (`sf:3369`) and the EDTF box with `-00` / `-99` (`sf:3334-3344`); `$rangestart` / `$rangeend` are never reset between keywords (`dsk:183-190`), so a later end-only term inherits an earlier start — a core quirk for Q11.3, not replicated.
 - **Blocking questions:** Q3.4
 
 ### SD4 — Date-range fields (start/end pairs)
@@ -94,6 +96,7 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
   pair spanning a year boundary.
 - **Battery:** `harness/ab/SD4_date_range_fields.php` — D24, D25, harness B58, 16_core_bugs "the
   stored start date" / "year of the stored range".
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** a date-range field's two nodes are indistinguishable to the joins, so the rule is **overlap** — some node ≥ start and some node ≤ end — not containment (`dsk:179-203`, `def:78-79`, `rf:856-857`); an enclosing range matches; `_k` stored as an array reproduces it (`_k:>=S && _k:<=E`); no such field exists on the second database, so the fixture carries it.
 - **Blocking questions:** Q3.5, Q11.3
 
 ### SD5 — Date fields not flagged for indexing
@@ -108,4 +111,5 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
   words). This is a slice of Q1.1 that can be decided on its own.
 - **Fixture:** a date field with `keywords_index = 0` (as field 96 is for text).
 - **Battery:** `harness/ab/SD5_non_indexed_dates.php` — D22, D23, harness O1, O2.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** the date branch never reads `keywords_index` and nodes exist for every value (`nf:121`, `145`, `rf:2783-2790`), so Q1.1 (b) and `_q` regardless of flags cover it; every date field on the second database is indexed, so the case is fixture-only there.
 - **Blocking questions:** Q3.6, Q3.16

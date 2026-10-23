@@ -85,6 +85,12 @@ rule), A17 (by design), C7 (test data).
 what the plugin does on versions before the fix (copy the wrong result, or decline so core gives it)
 and H7's battery becomes a regression test of the fix.
 
+**Added 2026-10-23 (from the check reading, checks-findings.md):** eleven more defects on I4's list —
+the wildcard hidden-field clause that discards a hook's clause, the stale loop variable in the
+editable-only filter, `!empty`'s `IN ()`, `!integrityfail` with a word, admin `!noningested` without
+a filter, range bounds inherited between keywords, top-level-only option matching, keyword rows
+created by searches, dropped OR alternatives, `title:-word` excluding nothing, the 19-argument calls.
+
 ### Q11.4 — Tracking upstream
 How the fork follows RS releases (rebase `typesense` onto each release? merge?), who does it, and
 how the patch list is checked after each one.

@@ -26,5 +26,6 @@ sign; one bound is an exact value). One package, milestone M4.
 - **Fixture:** the base fixture's price field 90 (100, 50, 12.5, 250, abc); add a negative, a
   zero and a duplicate value (the live field-170 set).
 - **Battery:** `harness/ab/SE1_numeric.php` — E1–E7, H16, K11, harness B40, B44, N11a, O3.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** a plain number is an ordinary keyword search in the field, needing the field indexed; `numrange` is accepted for any type-0 field with no `field_constraint` check and casts the text to double (`dsk:205-245`), which the form never emits for a text field — proposed decline for E7; no numeric field exists on the second database.
 - **Blocking questions:** Q3.7 (the non-numeric-field case and whether to add open-ended
   comparisons)

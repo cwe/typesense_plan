@@ -37,6 +37,7 @@ status is recalled (it is the Core 8 row, governed by Q11.3).
 - **Fixture:** a ties fixture (equal titles, empty titles, NULL extensions).
 - **Battery:** `harness/ab/SG1_text_sorts.php` — each row both directions on the ties fixture,
   then live first-five refs against the catalogue.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** the title key is the `field8` copy column, `VARCHAR(200)`, compared truncated in the column collation; `resource_type.order_by` may be NULL (last on DESC; the second database has none); `file_path` is populated only for non-ingested resources and was never exercised (G17 proposed no); the status key needs two states to show.
 - **Blocking questions:** Q7.2, Q7.8
 
 ### SG2 — Rating and popularity
@@ -58,6 +59,7 @@ status is recalled (it is the Core 8 row, governed by Q11.3).
   for keyword-less relevance (387 of core's top 400 reproduced).
 - **Battery:** `harness/ab/SG2_rating_popularity.php` — G12, G13 on a fixture with known counts;
   live first-five refs.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `score` is the non-aggregated `resource_node.hit_count` sum (D9), `r.rating` is never written from a field, `user_rating` is NULL unless `$user_rating` is on — both NULL everywhere on both databases.
 - **Blocking questions:** Q7.1, Q7.2, Q8.9
 
 ### SG3 — Colour

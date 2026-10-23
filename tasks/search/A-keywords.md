@@ -46,6 +46,7 @@ per-row plan is in [coverage.md](coverage.md).
 - **Fixture:** the base fixture (`the sunset`, `sunset of harbour`).
 - **Battery:** `harness/ab/SA2_stop_words.php` — A17, A18, harness A3/A4/N29 and the field case
   from SB5 run here too.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** the `$noadd` test is case-sensitive on the no-whitespace path, which never lowercases: `the` is skipped and returns everything, `The` resolves as a keyword (276 on the test system); stop words are indexed on some nodes on both databases (`a` has 318 mappings on the second).
 - **Blocking questions:** Q2.4
 
 ### SA3 — Quoted phrases
@@ -68,6 +69,7 @@ per-row plan is in [coverage.md](coverage.md).
   phrase spans two values of one multi-value field.
 - **Battery:** `harness/ab/SA3_phrases.php` — A6, A7, A8, I8, H14 and the stemming cases S9–S13
   with `$stemming` on and off; core's side on the MySQL mode (H9).
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** an unbalanced quote (`"sculpture`) is re-quoted by the special-character rule and runs through the phrase branch — no stemming, no related keywords (`dsk:270-289`, `758-766`); a NOT phrase is a filter `r.ref NOT IN (phrase chain)` (`dsk:827-836`) and a `$noadd` word inside the phrase widens the adjacency gap (`dsk:780-782`, `818`).
 - **Blocking questions:** Q2.5, Q2.4
 - **Open questions:** Q2.14 (pre-stemming on both sides would make this package trivial)
 
@@ -115,6 +117,7 @@ per-row plan is in [coverage.md](coverage.md).
 - **Decision note (2026-10-20):** Q1.1 is (b) — every active field's values are in the index, so A11,
   K2 and K3 can be exact; what remains is Q2.3's mechanism; a field excluded on the setup page (G9)
   makes the wildcard forms decline for users who can see it.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** three mechanisms, not one (`dsk:585-716`): a trailing `word*` of three or more characters that is not a stop-word prefix and has none of `-+@<>().;` is full text `+word*` over every visible node name, indexed or not; shorter or stop-word-prefixed, it is `LIKE 'wo%'` on the keyword table (indexed fields only); a leading `*word` is `LIKE '%word'` on the keyword table (indexed fields plus partial-index infixes), never RLIKE; a keyword with a non-word character (`land*;sun*`) is RLIKE over node names; `sc*pture` is full text with `sc` the required prefix and `pture` inert; every wildcard search creates the bare keyword as a side effect (`dsk:427-430`); related keywords never apply to wildcards.
 - **Blocking questions:** Q2.3, Q1.1 (decided)
 - **Open questions:** Q2.16 (short wildcards), Q2.17 (wildcard inside a word)
 
@@ -246,6 +249,7 @@ per-row plan is in [coverage.md](coverage.md).
   is noticed.
 - **Battery:** `harness/ab/SA11_unknown_words.php` — A30, A31, harness 12 (row shape of the
   suggestion), "not consulted" asserted.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** an unknown word returns a suggestion before the hook (`dsk:387-400`); any field-restricted or quoted search with an unknown word creates it as a keyword (`dsk:427-430`, `787`), so a later run of the same word is an ordinary search — the catalogue's own runs did this (`scpture`, `-sculpture`, `sculpture;landscape` on the test system).
 - **Blocking questions:** Q2.12
 
 ### SA12 — Stemming and the stemmer

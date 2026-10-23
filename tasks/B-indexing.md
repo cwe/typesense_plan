@@ -69,6 +69,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   value out (the register's rows are the case list); the schema snapshot equals the generated
   register; the local Typesense accepts one sample document per pattern; `schema_version()`
   changes when an entry is added.
+- **Code facts (2026-10-23, [checks-findings.md](search/checks-findings.md)):** `field:name` resolves with `SELECT ref, type FROM resource_type_field WHERE name = ?` and takes the first row (`dsk:105`, `117`) — duplicate short names exist in real data (ten on the second database, `camera` twice, both active), so the lookup takes the lowest ref and the documentation names the hazard; a field is active only when `active == 1` (`rf:7880-7888`): NULL counts as inactive (94 fields on the second database, 62 holding values).
 - **Blocking questions:** Q1.2, Q1.5, Q2.14, Q3.4, Q3.12
 - **Open questions:** Q1.14 (confirm the registry as the extension contract and the protocol)
 

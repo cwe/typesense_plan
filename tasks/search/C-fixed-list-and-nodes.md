@@ -58,6 +58,7 @@ the token must be handled), SC3 is M4.
   translated option `~en:Germany~fr:Allemagne`).
 - **Battery:** `harness/ab/SC2_resolved_options.php` — the rows above, harness B22, P9 (a value
   given in another language), S2.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** an option name and a node token of the same field are two AND buckets (`ds:519-545`, `dsk:259-265`, `dsn:17-18`); option-name matching sees top-level nodes only (`nf:333`, `$recursive = false`), so a tree child is unreachable as `field:name` — 29,111 children on the second database; with `$checkbox_and` the form sends `word, , @@a, @@b` and the double comma is harmless (`ds:529-530`).
 - **Blocking questions:** — (confirm the drop rule with Q3.1)
 
 ### SC3 — Option text core does not resolve
@@ -91,4 +92,5 @@ the token must be handled), SC3 is M4.
   fixed-list field.
 - **Battery:** `harness/ab/SC3_unresolved_options.php` — C3, C4, C5, C7, C9, C12, B9, harness
   B23–B29, S8.
+- **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** one word of an option or dynamic keyword falls back to a keyword search restricted to the field and needs the field indexed (`dsk:291-296`, `516`); a wildcard on an option (`field:soc*`) is a full-text prefix on option names restricted to the field, works on non-indexed fields, and a two-letter prefix falls to the LIKE branch; `field:a;b` silently drops an alternative that is not an option name once another matches (`dsk:264-268`); the test system's byte-order-mark option names are data, not a rule (none on the second database).
 - **Blocking questions:** Q3.1, Q3.12, Q1.1
