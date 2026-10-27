@@ -13,67 +13,67 @@ Proposed marks: bug 3 · must 59 · n/a 7 · no 8.
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| A10 | NOT a phrase: `-"sculpture park"` | SA4 | Everything except resources with the phrase. | yes | **must**; fixture "park sculpture" not excluded |  |
-| A12 | Leading wildcard: `*scape` | SA5 | RLIKE on node names (".*?scape" at a word boundary). | **No** — not RLIKE over node names | **must**, rule corrected: keyword-suffix LIKE over indexed fields (fixture: value only in a non-indexed field → 0; in a partial-indexed field → infix match) |  |
-| A13 | Wildcard inside a word: `sc*pture` | SA5 | Goes to the full-text branch as "+sc*pture"; MySQL honours only the trailing part of the pattern, so this behaves like sc*. | partly | **no** — a tokenizer accident; decline (optional live check: `sc*zzzz` = `sc*pture`) |  |
+| A10 | NOT a phrase: `-"sculpture park"` | SA4 | Everything except resources with the phrase. | yes | **must**; fixture "park sculpture" not excluded | must |
+| A12 | Leading wildcard: `*scape` | SA5 | RLIKE on node names (".*?scape" at a word boundary). | **No** — not RLIKE over node names | **must**, rule corrected: keyword-suffix LIKE over indexed fields (fixture: value only in a non-indexed field → 0; in a partial-indexed field → infix match) | must |
+| A13 | Wildcard inside a word: `sc*pture` | SA5 | Goes to the full-text branch as "+sc*pture"; MySQL honours only the trailing part of the pattern, so this behaves like sc*. | partly | **no** — a tokenizer accident; decline (optional live check: `sc*zzzz` = `sc*pture`) | no |
 | A15 | OR of two wildcards: `land*;sun*` | SA7 | Semicolon forces the RLIKE branch: "(land.*?\|sun.*?)". | yes | **must** for the single-token / `field:` form; fixture must show the whitespace collapse |  |
-| A17 | Stop word alone: `the` | SA2 | Skipped ($noadd); no terms left, so everything. | yes | **must**, with the case rule copied exactly (live check `The`) |  |
-| A30 | Misspelt word: `sculptre` | SA11 | An unknown word gives no results and a sound-alike suggestion instead of an array; on the test system this misspelling happens to exist as a keyword, so A31 shows the real case. | mechanism yes; string no | **n/a** (core answers first); replace the string with one that cannot be a keyword and run it before any B/I row uses the word |  |
+| A17 | Stop word alone: `the` | SA2 | Skipped ($noadd); no terms left, so everything. | yes | **must**, with the case rule copied exactly (live check `The`) | must |
+| A30 | Misspelt word: `sculptre` | SA11 | An unknown word gives no results and a sound-alike suggestion instead of an array; on the test system this misspelling happens to exist as a keyword, so A31 shows the real case. | mechanism yes; string no | **n/a** (core answers first); replace the string with one that cannot be a keyword and run it before any B/I row uses the word | no |
 
 ## Group B
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| B3 | Quoted phrase in a field: `"title:henry moore"` | SB2 | Phrase search restricted to the field (the form the advanced search sends). | yes | **must**; fixture "Moore, Henry" (B2 matches, B3 must not) |  |
+| B3 | Quoted phrase in a field: `"title:henry moore"` | SB2 | Phrase search restricted to the field (the form the advanced search sends). | yes | **must**; fixture "Moore, Henry" (B2 matches, B3 must not) | must |
 | B4 | Quotes after the colon: `title:"henry moore"` | SB2 | Not the supported form: the tokens are title:"henry and moore", but the stray quotes are stripped, so it works out the same as B2. | partly — "quotes stripped" is really re-quote plus swallow | **no** — accidental parse; decline |  |
-| B7 | Leading wildcard in a field: `title:*scape` | SB3 | RLIKE restricted to the field. | **No** — LIKE on keywords, not RLIKE | **must**, corrected; live `camera:*ikon` = 0 proves LIKE |  |
-| B17 | NOT after the colon: `title:-sculpture` | SB5 | Quoted, then the word "-sculpture" is omitted: excludes nothing. | partly — not "omitted": a NOT against a junk keyword | **bug** — NOT inside a field term silently ignored and pollutes `keyword`; decline meanwhile |  |
+| B7 | Leading wildcard in a field: `title:*scape` | SB3 | RLIKE restricted to the field. | **No** — LIKE on keywords, not RLIKE | **must**, corrected; live `camera:*ikon` = 0 proves LIKE | must |
+| B17 | NOT after the colon: `title:-sculpture` | SB5 | Quoted, then the word "-sculpture" is omitted: excludes nothing. | partly — not "omitted": a NOT against a junk keyword | **bug** — NOT inside a field term silently ignored and pollutes `keyword`; decline meanwhile | bug |
 
 ## Group C
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| C4 | One word of an option: `usagerights:social` | SC3 | Not an option name, so a keyword search restricted to the field. | yes | **must**; fixture with two options sharing a word |  |
-| C5 | Wildcard on an option: `usagerights:soc*` | SC3 | LIKE on keywords within the field. | **No** — mechanism wrong | **must**, rule corrected; fixture: 2-letter wildcard, non-indexed fixed-list field |  |
-| C7 | AND of options: `materials:bronze, materials:wood` | SC3 | Two buckets: resources with both (the $checkbox_and form). On the test system the first option's name is stored with a leading byte-order mark, so it is not matched as an option and becomes a keyword search within the... | yes, BOM aside | **must**; fixture with clean names and resources holding one, both, neither |  |
-| C12 | One word of a dynamic keyword: `artistname:moore` | SC3 | Keyword search in the field. | yes | **must**; fixture with two options sharing a word |  |
-| C23 | Option name and a node of the same field: `orientation:landscape, @@388` | SC2 | Two buckets on one field: both options needed. | yes | **must**; fixture confirming 388's field |  |
+| C4 | One word of an option: `usagerights:social` | SC3 | Not an option name, so a keyword search restricted to the field. | yes | **must**; fixture with two options sharing a word | must |
+| C5 | Wildcard on an option: `usagerights:soc*` | SC3 | LIKE on keywords within the field. | **No** — mechanism wrong | **must**, rule corrected; fixture: 2-letter wildcard, non-indexed fixed-list field | must |
+| C7 | AND of options: `materials:bronze, materials:wood` | SC3 | Two buckets: resources with both (the $checkbox_and form). On the test system the first option's name is stored with a leading byte-order mark, so it is not matched as an option and becomes a keyword search within the... | yes, BOM aside | **must**; fixture with clean names and resources holding one, both, neither | must |
+| C12 | One word of a dynamic keyword: `artistname:moore` | SC3 | Keyword search in the field. | yes | **must**; fixture with two options sharing a word | must |
+| C23 | Option name and a node of the same field: `orientation:landscape, @@388` | SC2 | Two buckets on one field: both options needed. | yes | **must**; fixture confirming 388's field | must |
 
 ## Group D
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| D4 | Date stored with a time: `date:2017-05-10` | SD1 | The prefix still matches a value stored with a time of day. | yes | **must**; fixture with a timed value |  |
-| D5 | Range: `date:rangestart2024-01-01end2024-02-29` | SD3 | name >= start AND name <= "end 23:59:59". | yes | **must** (Q3.4 (a) reproduces it); fixture with a `-00` partial and a timed end-day value |  |
-| D7 | Range, end only: `date:rangeend2005-12-31` | SD3 | name <= end. | yes | **must**; add a row for the stale-bound quirk (`date:rangestart…, date:rangeend…`) |  |
-| D8 | Range as the EDTF box sends it: `date:rangestart2024-00-00end2024-12-99` | SD3 | "2024/2024" in the EDTF box becomes this; string comparison still brackets the year. | yes | **must**; fixture with a `2024-12-31 23:xx` value |  |
-| D9 | Range, end month without a day: `date:rangestart2024-01-01end2024-02-31` | SD3 | The form pads a missing day with 31; as a string "2024-02-31" is after every February date. | yes | **must** |  |
-| D16 | startdate / enddate form inputs: `startdate:2024-01-01, enddate:2024-12-31` | SD2 | search_form_to_search_query still assembles these, but no page posts the inputs and nothing in do_search handles them: unknown field names, so words and a suggestion. | yes | **n/a** |  |
-| D22 | Date field not flagged for indexing: `datephototaken:2024` | SD5 | Date terms join the node table directly, so the index flag does not matter. | yes | **must**; fixture only |  |
-| D23 | Same field, full date: `datephototaken:2012-01-26` | SD5 | Matches values stored with a time of day. | yes | **must** |  |
-| D25 | Date-range field, range: `daterangetest:rangestart2020-01-01end2021-12-31` | SD4 | Start value >= start AND end value <= end, as strings. | **No** | **must** with the rule corrected to overlap (two `_k` values per resource; `_k:>=S && _k:<=E` over an array gives exactly this); fixture: partial overlap, enclosing, outside, open-ended |  |
-| D27 | OR on a date: `date:2024;2025` | SD1 | No OR for dates: LIKE "2024;2025%", nothing. | yes | **no** — no form emits it; declining gives core's empty answer |  |
+| D4 | Date stored with a time: `date:2017-05-10` | SD1 | The prefix still matches a value stored with a time of day. | yes | **must**; fixture with a timed value | must |
+| D5 | Range: `date:rangestart2024-01-01end2024-02-29` | SD3 | name >= start AND name <= "end 23:59:59". | yes | **must** (Q3.4 (a) reproduces it); fixture with a `-00` partial and a timed end-day value | must |
+| D7 | Range, end only: `date:rangeend2005-12-31` | SD3 | name <= end. | yes | **must**; add a row for the stale-bound quirk (`date:rangestart…, date:rangeend…`) | must |
+| D8 | Range as the EDTF box sends it: `date:rangestart2024-00-00end2024-12-99` | SD3 | "2024/2024" in the EDTF box becomes this; string comparison still brackets the year. | yes | **must**; fixture with a `2024-12-31 23:xx` value | must |
+| D9 | Range, end month without a day: `date:rangestart2024-01-01end2024-02-31` | SD3 | The form pads a missing day with 31; as a string "2024-02-31" is after every February date. | yes | **must** | must |
+| D16 | startdate / enddate form inputs: `startdate:2024-01-01, enddate:2024-12-31` | SD2 | search_form_to_search_query still assembles these, but no page posts the inputs and nothing in do_search handles them: unknown field names, so words and a suggestion. | yes | **n/a** | no |
+| D22 | Date field not flagged for indexing: `datephototaken:2024` | SD5 | Date terms join the node table directly, so the index flag does not matter. | yes | **must**; fixture only | must |
+| D23 | Same field, full date: `datephototaken:2012-01-26` | SD5 | Matches values stored with a time of day. | yes | **must** | must |
+| D25 | Date-range field, range: `daterangetest:rangestart2020-01-01end2021-12-31` | SD4 | Start value >= start AND end value <= end, as strings. | **No** | **must** with the rule corrected to overlap (two `_k` values per resource; `_k:>=S && _k:<=E` over an array gives exactly this); fixture: partial overlap, enclosing, outside, open-ended | must |
+| D27 | OR on a date: `date:2024;2025` | SD1 | No OR for dates: LIKE "2024;2025%", nothing. | yes | **no** — no form emits it; declining gives core's empty answer | no |
 
 ## Group E
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| E6 | Plain number in the field: `numberfield:42` | SE1 | Not a range: an ordinary keyword search for "42" in the field. | yes | **must** (it is SB1); fixture with `42.5`, `042` |  |
-| E7 | numrange on a text field: `title:numrange1\|10` | SE1 | Accepted for any type 0 field: compares title values as numbers. | yes | **no** — the form only emits numrange for `field_constraint = 1` fields (`render_functions.php:540-578`); incidental casting; decline |  |
+| E6 | Plain number in the field: `numberfield:42` | SE1 | Not a range: an ordinary keyword search for "42" in the field. | yes | **must** (it is SB1); fixture with `42.5`, `042` | must |
+| E7 | numrange on a text field: `title:numrange1\|10` | SE1 | Accepted for any type 0 field: compares title values as numbers. | yes | **no** — the form only emits numrange for `field_constraint = 1` fields (`render_functions.php:540-578`); incidental casting; decline | no |
 
 ## Group F
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| F37 | !unused: `!unused` | SF16 | In no collection. | yes | **must** if memberships are indexed (they are, with every collection type — Q5.7 decides which kinds) |  |
-| F39 | !listall: `!listall416:4460:8692` | SF3 | Same, by name "all"; the filter difference is in search_filter, which treats both alike. | yes | **must** — treat as `!list` |  |
-| F48 | !empty with a resource type: `!empty170` restypes=1 | SF10 | Candidates limited to the given types. | partly — right outcome, wrong mechanism | **must** (type filter by construction); DB: is field 170 global? |  |
-| F52 | !properties, extension wildcard: `!propertiesfext:jp*` | SF9 | * becomes %: jpg and jpeg. | yes for the mechanism | **must**, expectation written as the LIKE |  |
-| F59 | !properties orientation: `!propertiesorientation:portrait` | SF9 | Compares resource_dimensions height and width. | yes | **must**; fixture with a dimension-less resource |  |
-| F62 | !properties, unknown property: `!propertiesbogus:1` | SF9 | No filter added: everything. | yes | **must** — unknown property names ignored inside a real property search (fixture: `bogus:1;fext:jpg` = `fext:jpg`) |  |
-| F63 | !integrityfail: `!integrityfail` | SF13 | integrity_fail = 1 and a file present; all workflow states. | partly | **no** — maintenance flags set outside the indexing pipeline; decline |  |
-| F65 | !noningested (admin only): `!noningested` | SF13 | For admins: resources with a file_path. For anyone else no branch matches, so a plain search with no terms: everything. | yes, plus the unfiltered admin half | **bug** — F67's; decline meanwhile |  |
-| F69 | !last, comma before the keyword: `!last100, sculpture` | SF1 | The comma ends the number, so the last 100 that match (compare F4). | yes | **must**; live: refs compared with F1, or a rare word |  |
+| F37 | !unused: `!unused` | SF16 | In no collection. | yes | **must** if memberships are indexed (they are, with every collection type — Q5.7 decides which kinds) | must |
+| F39 | !listall: `!listall416:4460:8692` | SF3 | Same, by name "all"; the filter difference is in search_filter, which treats both alike. | yes | **must** — treat as `!list` | must |
+| F48 | !empty with a resource type: `!empty170` restypes=1 | SF10 | Candidates limited to the given types. | partly — right outcome, wrong mechanism | **must** (type filter by construction); DB: is field 170 global? | must |
+| F52 | !properties, extension wildcard: `!propertiesfext:jp*` | SF9 | * becomes %: jpg and jpeg. | yes for the mechanism | **must**, expectation written as the LIKE | must |
+| F59 | !properties orientation: `!propertiesorientation:portrait` | SF9 | Compares resource_dimensions height and width. | yes | **must**; fixture with a dimension-less resource | must |
+| F62 | !properties, unknown property: `!propertiesbogus:1` | SF9 | No filter added: everything. | yes | **must** — unknown property names ignored inside a real property search (fixture: `bogus:1;fext:jpg` = `fext:jpg`) | must |
+| F63 | !integrityfail: `!integrityfail` | SF13 | integrity_fail = 1 and a file present; all workflow states. | partly | **no** — maintenance flags set outside the indexing pipeline; decline | no |
+| F65 | !noningested (admin only): `!noningested` | SF13 | For admins: resources with a file_path. For anyone else no branch matches, so a plain search with no terms: everything. | yes, plus the unfiltered admin half | **bug** — F67's; decline meanwhile | no |
+| F69 | !last, comma before the keyword: `!last100, sculpture` | SF1 | The comma ends the number, so the last 100 that match (compare F4). | yes | **must**; live: refs compared with F1, or a rare word | must |
 
 ## Group G
 
@@ -102,13 +102,13 @@ Proposed marks: bug 3 · must 59 · n/a 7 · no 8.
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| H11 | Collection and keyword, collection order: `!collection3808 sculpture` order_by=collection, sort=asc, fetchrows=0,5 | SF2 | Keyword inside the collection, collection order. | yes | **must**; DB: `sortorder`, `date_added` of 3808's members |  |
-| H16 | Keyword and numeric range: `sculpture, numberfield:numrange0\|100` | SE1 | Union plus numeric join. | yes | **must**; fixture with a resource holding both |  |
-| H22 | Two wildcards: `sculpt*, land*` | SA5 | Two full-text unions. | yes | **must** |  |
-| H28 | List and node: `!list416:4460:8692 @@389` | SF3 | Ref list plus node join. | yes | **must**; DB: node 389 on the three refs |  |
-| H29 | Hasdata and node: `!hasdata170 @@389` | SF6 | Field join plus node join. | yes | **must** |  |
-| H31 | Everything at once: `sculpture, "sculpture park", @@389, orientation:landscape, date:2024, -"black and white"` restypes=1, archive=0, order_by=date, sort=desc, fetchrows=0,5 | SH1 | Keyword, phrase, node, option (same node twice), date, NOT phrase, type, state, order. | yes | **must**; the fixture must prove the NOT phrase and the adjacency separately; the full expectation is written out under "H31, the capstone" in checks-findings.md |  |
-| H38 | Resource types and collection ignored together: `!collection3618 sculpture` restypes=5, archive=8 | SF2 | Types and states are both ignored for a collection search; the keyword still applies. | partly — "states ignored" means the parameter | **must**; DB: 3618's members by type and state |  |
+| H11 | Collection and keyword, collection order: `!collection3808 sculpture` order_by=collection, sort=asc, fetchrows=0,5 | SF2 | Keyword inside the collection, collection order. | yes | **must**; DB: `sortorder`, `date_added` of 3808's members | must |
+| H16 | Keyword and numeric range: `sculpture, numberfield:numrange0\|100` | SE1 | Union plus numeric join. | yes | **must**; fixture with a resource holding both | must |
+| H22 | Two wildcards: `sculpt*, land*` | SA5 | Two full-text unions. | yes | **must**; Typesense `prefix=true` applies only to the last query word. Prefix filters combined with AND are a possible implementation; each term must search all eligible visible fields, including non-keyword-indexed fields, and may match a different field. Verify tokenisation parity and prefix-expansion completeness (`max_filter_by_candidates` defaults to 4); implementation parity remains unproved. See [Typesense 30.2 filter parameters](https://typesense.org/docs/30.2/api/search.html#filter-parameters). | must |
+| H28 | List and node: `!list416:4460:8692 @@389` | SF3 | Ref list plus node join. | yes | **must**; DB: node 389 on the three refs | must |
+| H29 | Hasdata and node: `!hasdata170 @@389` | SF6 | Field join plus node join. | yes | **must** | must |
+| H31 | Everything at once: `sculpture, "sculpture park", @@389, orientation:landscape, date:2024, -"black and white"` restypes=1, archive=0, order_by=date, sort=desc, fetchrows=0,5 | SH1 | Keyword, phrase, node, option (same node twice), date, NOT phrase, type, state, order. | yes | **must**; the fixture must prove the NOT phrase and the adjacency separately; the full expectation is written out under "H31, the capstone" in checks-findings.md | must |
+| H38 | Resource types and collection ignored together: `!collection3618 sculpture` restypes=5, archive=8 | SF2 | Types and states are both ignored for a collection search; the keyword still applies. | partly — "states ignored" means the parameter | **must**; DB: 3618's members by type and state | must |
 
 ## Group I
 
