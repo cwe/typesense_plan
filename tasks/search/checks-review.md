@@ -18,7 +18,7 @@ Proposed marks: bug 3 · must 61 · n/a 6 · no 10.
 | A10 | NOT a phrase: `-"sculpture park"` | SA4 | Everything except resources with the phrase. | yes | **must**; fixture "park sculpture" not excluded | must |
 | A12 | Leading wildcard: `*scape` | SA5 | RLIKE on node names (".*?scape" at a word boundary). | **No** — not RLIKE over node names | **must**, rule corrected: keyword-suffix LIKE over indexed fields (fixture: value only in a non-indexed field → 0; in a partial-indexed field → infix match) | must |
 | A13 | Wildcard inside a word: `sc*pture` | SA5 | Goes to the full-text branch as "+sc*pture"; MySQL honours only the trailing part of the pattern, so this behaves like sc*. | partly | **no** — a tokenizer accident; decline (optional live check: `sc*zzzz` = `sc*pture`) | no |
-| A15 | OR of two wildcards: `land*;sun*` | SA7 | Semicolon forces the RLIKE branch: "(land.*?\|sun.*?)". | yes | **must** for the single-token / `field:` form; fixture must show the whitespace collapse |  |
+| A15 | OR of two wildcards: `land*;sun*` | SA7 | Semicolon forces the RLIKE branch: "(land.*?\|sun.*?)". | yes | **must** for the single-token / `field:` form; fixture must show the whitespace collapse | must |
 | A17 | Stop word alone: `the` | SA2 | Skipped ($noadd); no terms left, so everything. | yes | **must**, with the case rule copied exactly (live check `The`) | must |
 | A30 | Misspelt word: `sculptre` | SA11 | An unknown word gives no results and a sound-alike suggestion instead of an array; on the test system this misspelling happens to exist as a keyword, so A31 shows the real case. | mechanism yes; string no | **n/a** (core answers first); replace the string with one that cannot be a keyword and run it before any B/I row uses the word | no |
 
@@ -27,7 +27,7 @@ Proposed marks: bug 3 · must 61 · n/a 6 · no 10.
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
 | B3 | Quoted phrase in a field: `"title:henry moore"` | SB2 | Phrase search restricted to the field (the form the advanced search sends). | yes | **must**; fixture "Moore, Henry" (B2 matches, B3 must not) | must |
-| B4 | Quotes after the colon: `title:"henry moore"` | SB2 | Not the supported form: the tokens are title:"henry and moore", but the stray quotes are stripped, so it works out the same as B2. | partly — "quotes stripped" is really re-quote plus swallow | **no** — accidental parse; decline |  |
+| B4 | Quotes after the colon: `title:"henry moore"` | SB2 | Not the supported form: the tokens are title:"henry and moore", but the stray quotes are stripped, so it works out the same as B2. | partly — "quotes stripped" is really re-quote plus swallow | **no** — accidental parse; decline | no |
 | B7 | Leading wildcard in a field: `title:*scape` | SB3 | RLIKE restricted to the field. | **No** — LIKE on keywords, not RLIKE | **must**, corrected; live `camera:*ikon` = 0 proves LIKE | must |
 | B17 | NOT after the colon: `title:-sculpture` | SB5 | Quoted, then the word "-sculpture" is omitted: excludes nothing. | partly — not "omitted": a NOT against a junk keyword | **bug** — NOT inside a field term silently ignored and pollutes `keyword`; decline meanwhile | bug |
 
