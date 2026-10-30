@@ -10,6 +10,9 @@ G42 is split into four subentries, giving 80 review entries.
 
 Proposed marks: bug 3 · must 61 · n/a 6 · no 10.
 
+Decided (Chris, 2026-10-29): bug 2 · must 61 · n/a 3 · no 14. Applied to `catalogue.md` and `coverage.md` on
+2026-10-30; the catalogue descriptions of A12, A13, B7, C5, D25 and B17 were corrected at the same time.
+
 
 ## Group A
 
@@ -67,7 +70,7 @@ Proposed marks: bug 3 · must 61 · n/a 6 · no 10.
 
 | Row | Search | Package | Catalogue claim | Held? | Proposed mark and what remains | Decision |
 |---|---|---|---|---|---|---|
-| F37 | !unused: `!unused` | SF16 | In no collection. | yes | **must** if memberships are indexed (they are, with every collection type — Q5.7 decides which kinds) | must |
+| F37 | !unused: `!unused` | SF16 | In no collection. | yes | **must** if memberships are indexed (they are, with every collection type — Q5.7 decides which kinds). **Note (Chris, 2026-10-29):** core's query is `r.ref NOT IN (SELECT c.resource FROM collection_resource c)` with no join on `collection.type` (`search_functions.php:1471-1484`), so a resource in only a user's private (type 0), selection (2), upload (1), share-upload (5) or request (6) collection is "used". Chris is not sure core *should* count the private and selection kinds; it is a core question (the documentation says "in no collection"). The membership index excludes selection, upload and share-upload collections (P27), so serving F37 exactly either widens what is indexed (Q5.7) or waits for core to decide what `!unused` means — see Q5.7 and SF16. | must |
 | F39 | !listall: `!listall416:4460:8692` | SF3 | Same, by name "all"; the filter difference is in search_filter, which treats both alike. | yes | **must** — treat as `!list` | must |
 | F48 | !empty with a resource type: `!empty170` restypes=1 | SF10 | Candidates limited to the given types. | partly — right outcome, wrong mechanism | **must** (type filter by construction); DB: is field 170 global? | must |
 | F52 | !properties, extension wildcard: `!propertiesfext:jp*` | SF9 | * becomes %: jpg and jpeg. | yes for the mechanism | **must**, expectation written as the LIKE | must |

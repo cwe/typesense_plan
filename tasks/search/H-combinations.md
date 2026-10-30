@@ -9,6 +9,10 @@ the rows together prove, run as a gate.
 *check*; the rest are *must*. H31, the capstone, being *check* means its exact expectation is confirmed
 against core before the gate is armed; the gate itself is unchanged.
 
+**Catalogue marks (2026-10-30):** H11, H16, H22, H28, H29, H31 and H38 are *must*; H32 stays a bug row. SH1 is
+required; H31's full expectation is written under "H31, the capstone" in [checks-findings.md](checks-findings.md),
+and its fixture proves the NOT phrase and the adjacency separately.
+
 ### SH1 — The combinations gate
 - **Rows:** H31 (the capstone) · every other H row is listed here and owned elsewhere: H1 H4 H6
   (SC1) · H2 H18 (SC2) · H3 H25 (SB1) · H5 (SB3) · H7 H8 H17 H21 (SD1) · H9 H10 (D5) · H11 H26 H38

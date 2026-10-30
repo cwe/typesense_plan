@@ -66,6 +66,8 @@ scope the phrase to the field (text) or resolve the option (fixed list)? Or veto
 **Catalogue marks (2026-10-20):** B3 (`"title:henry moore"`) and B4 (`title:"henry moore"`) are *check* —
 core's handling of both quoted forms is confirmed before the marks are final; SB2 keeps the rows.
 
+**Decided (2026-10-30):** B3 is *must* (fixture "Moore, Henry": B2 matches, B3 must not); B4 is *no* — an accidental parse (re-quote plus swallow), declined.
+
 ### Q3.3 — `basicyear:` / `basicmonth:` / `basicday:`
 Implement against the date field's representations (year, month, day parts are indexed in `_q`).
 Confirm, and confirm `$date_field` is the target when the dropdowns are used.
@@ -89,6 +91,8 @@ interval overlap as a served difference is out.
 **Catalogue marks (2026-10-20):** H35 (a date range with a node and a keyword), J5 (a start year only) and J6
 (months only) are *must*; J13 (a value and a range on one field) is *check*.
 
+**Decided (2026-10-30):** J13 is *must* — three joins ANDed; the fixture holds a `2024-05-00` value.
+
 **Decided 2026-10-21: option (a).** A fourteen-digit integer key `_k` per date value reproduces core's
 string comparison, non-real ends included; a stored year-month stays outside a range starting inside
 its month, as in core. `_k` enters the version-1 schema; `_range_start` / `_range_end` leave it (SD4
@@ -100,12 +104,18 @@ or veto? (Links Q11.3.)
 **Catalogue marks (2026-10-16):** D24 and D25 are *check* — Chris verifies core's behaviour on a
 date-range field before deciding.
 
+**Decided (2026-10-30):** D24 stays a bug row (Core 2). D25 is *must* with the rule corrected to overlap — some value ≥ start and some value ≤ end, because the two nodes of a range are not told apart — served by an array `_k` (an SD4 schema addition); the fixture covers partial overlap, enclosing, outside and open-ended ranges.
+
 ### Q3.6 — Field-specific searches on non-indexed fields
 Options: index every field's values (Q1.1); veto `field:value` when the field has no index flag
 (the lookup knows); accept 0 results. The test system has one such date field in use.
 
 **Catalogue marks (2026-10-20):** K11 (a number range on a non-indexed numeric field) is *check*; no such field
 exists on the test system.
+
+**Decided (2026-10-30):** K11 is *must* — every numeric field has `_q` / `_f` under Q1.1 (b); fixture only.
+
+**Standing after the sweep (2026-10-30):** the text rows (B12, B13, B19) are `=` under Q1.1 (b) — field terms filter the flagged fields only, so a non-indexed field matches nothing, as core; the veto option is closed for them. Dates and numbers are served regardless of the flag (D22, D23, K11).
 
 ### Q3.7 — Numeric fields
 Confirm plain `field:42` → `_q` exact (staged). `numrange` on a non-numeric text field: core compares
@@ -115,12 +125,16 @@ exist in core: add as an improvement or not?
 range and single-bound forms, live-validated on field 170); E6 (a plain number in a numeric field,
 which core treats as a keyword in the field) and E7 (`numrange` on a text field) are *check*.
 
+**Decided (2026-10-30):** E6 is *must* (it is SB1's path; fixture with `42.5` and `042`); E7 is *no* — the form emits `numrange` only for `field_constraint = 1` fields (`render_functions.php:540-578`), so the casting is incidental; declined.
+
 ### Q3.8 — Negation of field terms, dates, numbers and nodes inside OR groups
 Core cannot do any of these; the plugin vetoes negative field searches. Keep (consistent) or go
 beyond core?
 
 **Catalogue marks (2026-10-20):** B17 (`title:-sculpture`) is *check* — whether core really excludes nothing is
 confirmed before the mark is final (a bug would fall under Q11.3); SB5 keeps the row.
+
+**Decided (2026-10-30):** B17 is a *bug* row — the NOT inside a field term is resolved against a junk keyword that `resolve_keyword()` creates, so it excludes nothing and pollutes `keyword` (I4); declined meanwhile, disposition under Q11.3.
 
 ### Q3.9 — Node limits and toggles
 `$category_tree_search_use_and_logic` is implemented but untested — get a tree fixture before
@@ -132,6 +146,8 @@ Raise the server's `--filter-by-max-ops` on the target and the plugin's guard wi
 exhaustive?
 
 **Catalogue marks (2026-10-20):** H5 (a field wildcard and a node) is *must*.
+
+**Settled with H22 (2026-10-30):** `max_filter_by_candidates` is raised and the cap proved by SA5's battery; B6 and H5 are `=` as K3 already was.
 
 ### Q3.11 — Field name lookup
 Core matches short names exactly (case?); unknown names become two words (replicated). Confirm
@@ -149,6 +165,8 @@ Q3.1 for SC3, and that `_ss` is stored for every indexed fixed-list field (Q1.1)
 options) and C12 (one word of a dynamic keyword) are *check* — core's keyword-in-field fallback and the C7
 result are confirmed before the marks are final; SC3 keeps the rows. C23 (an option name and a node of the same
 field, SC2) is *check* for the same reason: its 0 in core is to be confirmed.
+
+**Decided (2026-10-30):** all five are *must*. C5's mechanism is corrected: a full-text prefix on option names restricted to the field (a two-letter wildcard takes the keyword LIKE branch instead), which works on non-indexed fields. C7's 0 was the BOM-prefixed option name — the fixture uses clean names and resources holding one, both and neither. C23's 0 is confirmed: both options of one field are needed.
 
 ### Q3.13 — `basicyear` / `basicmonth` / `basicday`: integer components or `_q` tokens?
 The dropdowns address `$date_field` only, with `LIKE "____-05-__%"` forms that `_q`'s year /
@@ -174,12 +192,16 @@ or veto when it is set? Which callers set it?
 **Catalogue marks (2026-10-20):** G41 is *check* — which callers set `$ignore_filters` and what core does
 with it are confirmed before the mark is final.
 
+**Decided (2026-10-30):** G41 is *n/a* — the flag is dead; nothing to build.
+
 ### Q3.16 — Non-indexed date and numeric fields as a slice of Q1.1
 Date and number terms join nodes in core, so the index flag never matters for them (D22, D23, K11).
 Index `_q` / `_f` / `_k` for every date and numeric field regardless of `keywords_index`, whatever
 Q1.1 decides for text? Recommendation: yes (SD5).
 **Catalogue marks (2026-10-16):** D22 and D23 (a date field not flagged for indexing) are *check*;
 if required, this is the slice that serves them.
+
+**Decided (2026-10-30):** D22 and D23 are *must*; every date field has `_q` and `_k` regardless of the flag (Q1.1 (b), Q1.2).
 
 ### Q3.17 — The exact rules of the field-name match
 Core compares the short name case-insensitively (I11) and whole (a slash is allowed, B9); a
@@ -192,7 +214,7 @@ SB2 and SB4 need `"title:henry moore"` and `exhibitiontitle:fabric-ation` as phr
 field (core's rule). Verify live whether `field_8_s:\`henry moore\`` requires adjacency; if it is an
 AND of words, choose between an accepted difference and a veto for multi-word field phrases.
 
-**Catalogue marks (2026-10-20):** B3 is *check* (see Q3.2).
+**Catalogue marks (2026-10-20):** B3 is *check* (see Q3.2). Decided *must* on 2026-10-30.
 
 ## Done when
 

@@ -39,7 +39,7 @@ Rec.: (a) — parity by construction for words, options and field terms; bare wi
 non-indexed fields become an accepted difference or a veto (Q2.3).
 Note (Q10.3): an approximate set is out, so (a) means those forms decline; (b) means they serve.
 Shapes: B1, B2, B4, SA5, SB3, SK1, SD5, SE1.
-Standing (2026-10-20): **required** — must rows A11, A27; check rows K2, K3; blocks A3, B1, SA5, SA8, SC3, SK1
+Standing (2026-10-20): **required** — must rows A11, A27; check rows K2, K3 (decided *must* 2026-10-30); blocks A3, B1, SA5, SA8, SC3, SK1
 - **Answer:** (b), for now — every active field's values are indexed; the flags decide reach, not presence. Plus an exclusion list on the setup page (G9). Revisit against different data sets (H8).
 - **Reason:** measured 2026-10-20: the non-indexed text is one field on each test database (26.7 MB of 37 MB on the first, 16.5 MB against 494 MB on the second), so (b) is cheap and attributable, while (a) would decline every wildcard and full-text search on both. See decisions.md.
 
@@ -65,7 +65,7 @@ non-indexed fixed-list field has no `_ss` and matches nothing, as core. Variant:
 match, veto wildcards and BOM names until proven.
 Rec.: serve via `_ss`.
 Shapes: SC3, B2.
-Standing (2026-10-20): Q3.1: **required** — blocks SC2, SC3 · Q3.12: **required** — must rows B9, C3, C9; check rows C4, C5, C7, C12; blocks B2, SC3
+Standing (2026-10-20): Q3.1: **required** — blocks SC2, SC3 · Q3.12: **required** — must rows B9, C3, C9; check rows C4, C5, C7, C12 (decided *must* 2026-10-30); blocks B2, SC3
 - **Answer:**
 - **Reason:**
 
@@ -77,7 +77,7 @@ inside their year, as in core); (b) interval overlap on `_range_start`/`_range_e
 Rec.: (a) if Q0.2 is parity — the advanced form produces these ends routinely.
 Note (Q10.3): overlap as a served difference is out; (a), or decline ranges with non-real ends.
 Shapes: A4, SD3, SD4, H35, J5, J6.
-Standing (2026-10-20): **required** — must rows D6, D19, H35, J5, J6; check rows D5, D7, D8, D9; blocks A4, B2, SD3
+Standing (2026-10-20): **required** — must rows D6, D19, H35, J5, J6; check rows D5, D7, D8, D9 (decided *must* 2026-10-30); blocks A4, B2, SD3
 - **Answer:** (a) a fourteen-digit integer key `_k` reproducing core's string comparison, non-real ends included; `_k` enters version 1, the range pair leaves it.
 - **Reason:** exact on every row; a stored year-month is outside a day or month range in core too; overlap would be the first set difference on the accepted list. decisions.md 2026-10-21.
 
@@ -205,7 +205,7 @@ the users at all?
 Note (Q10.3): keyword-less relevance must be exact — a composite sort key, exact as of the last
 rebuild; the remaining choice is whether that staleness is acceptable.
 Shapes: D9, A3, SG2, SC1 (node-only order), SF2 (Q5.3).
-Standing (2026-10-20): **required** — check rows G11; blocks A3, B3, D9, SG2 (pending check)
+Standing (2026-10-20): **required** — check rows G11 (decided *must* 2026-10-30, the Q7.1 difference accepted); blocks A3, B3, D9, SG2 (required since 2026-10-30)
 - **Answer:** (B) the hit-count cluster in version 1; keyword-less relevance exact via the packed keys, kept fresh by a new hook in `copy_hitcount_to_live()` plus the rating and edit hooks. Keyword searches ordered by relevance differ from core (per-search node-hit score): the one accepted difference, documented.
 - **Reason:** core refreshes hit counts at most daily, so the hook makes the order exact rather than stale; keyword-less relevance is the default order of every browse view. decisions.md 2026-10-20.
 
@@ -270,7 +270,7 @@ Standing (2026-10-20): **required** — blocks D3, SA1
 fragments where a field has them. Wildcards over non-indexed fields: core finds them — veto bare
 wildcards, index everything (Q1.1), or accept.
 Shapes: D3, SA1, SA5, SB3, SK1.
-Standing (2026-10-20): **required** — must rows A11; check rows A12, B7, H22, K2; blocks D3, D4, SA1, SA5, SB3, SK1
+Standing (2026-10-20): **required** — must rows A11; check rows A12, B7, H22, K2 (decided *must* 2026-10-30); blocks D3, D4, SA1, SA5, SB3, SK1
 - **Answer:**
 - **Reason:**
 
@@ -399,7 +399,7 @@ Standing (2026-10-20): **required** — blocks H1
 accepted-divergence list the runners consult. Who maintains the list; does an unlisted difference
 fail the run?
 Shapes: H1, H3, SH1, coverage.md.
-Standing (2026-10-20): **required** — blocks H1, SH1 (pending check)
+Standing (2026-10-20): **required** — blocks H1, SH1 (required since 2026-10-30)
 - **Answer:** served = exact set, total and order; relevance-to-text order the only listed
   exception; declines match their planned reason; core bugs per Q11.3; unlisted differences fail;
   the list in the harness, every entry citing a decision, Chris approving at merge. Decided
@@ -573,6 +573,13 @@ it blocks only parked packages; **uncited** when no row and no blocking line nam
 Q0.10 · Q0.11 · Q0.12 · Q1.14 · Q2.18 · Q5.5 · Q8.11 · Q9.8 · Q10.14 — answered when their task starts; nothing in the catalogue turns on them.
 
 Everything else in Part 3 is required.
+
+### Standing after the checks (2026-10-30)
+
+Every *check* row is decided ([tasks/search/checks-review.md](tasks/search/checks-review.md)): over the 80 review
+entries (G42 split into four) 61 *must*, 14 *no*, 3 *n/a*, 2 *bug*. No package is pending check: SD4, SD5, SF16,
+SG1, SG2, SG4, SH1 and SK3 are required; SG1 drops G17; SF13 keeps only `!locked`. Of the check-only questions,
+Q1.12 is now required (K9 is *must*); Q2.17 and Q6.4 are pruned (A13 and G38 are *no*). The gating list is unchanged.
 
 ### Part 3 questions decided
 

@@ -90,6 +90,8 @@ question builds editable-only searches.
 **Catalogue marks (2026-10-20):** G38 is *check* — core's editable-only behaviour is confirmed before the
 mark is final; the decline stands meanwhile.
 
+**Decided (2026-10-30):** G38 is *no* — editable-only searches decline to core until this question is taken up once synchronisation and read-time validation work; the stale-variable defect in core's custom-state loop goes to Q11.3.
+
 ### Q6.5 — Typesense-only mode and access
 If Q0.6 keeps it as a testing aid, document "never for real users" and make the setup page say so.
 If it becomes a mode, which gate uses must still fall back even in that mode?

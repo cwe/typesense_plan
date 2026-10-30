@@ -3,6 +3,10 @@
 A text field with `field_constraint = 1` takes `shortname:numrangeMIN|MAX` (`neg` is a minus
 sign; one bound is an exact value). One package, milestone M4.
 
+**Catalogue marks (2026-10-30):** E6 *must* (an ordinary keyword search in the field, SB1's path; fixture with
+`42.5` and `042`); E7 *no* — the form emits `numrange` only for `field_constraint = 1` fields, so the casting
+is incidental; H16 and K11 *must*.
+
 ### SE1 — `numrange` and plain numbers
 - **Rows:** E1 E2 E3 E4 E5 E6 E7 H16 K11
 - **Builds:** `field:numrange<min>|<max>` → `field_<ref>_f:[min..max]`; a single bound →

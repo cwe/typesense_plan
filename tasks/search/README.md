@@ -37,6 +37,16 @@ and are not started until their rows in [checks.md](checks.md) are confirmed; 1 
 5 are **parked** (SF14, SF15, SF17, SG3, SG5). A required package starts on its *must* rows; its *check* rows wait
 for the register.
 
+## Standing after the checks (2026-10-30)
+
+Every *check* row is decided ([checks-review.md](checks-review.md)) and the catalogue and coverage carry the
+marks. Of the 54 packages, 48 are **required** — the eight pending-check packages joined them (SD4, SD5, SF16,
+SG1, SG2, SG4, SH1, SK3); 1 is **bug only** (SF8); 5 are **parked**. SG1 drops G17, SF13 keeps only `!locked`,
+and SF16 is blocked by Q4.7 and Q5.7. Four packages carry schema additions outside version 1: SA5/SB3 (the
+reversed keyword), SD4 (an array `_k`), SG1 (the type-order key), SK3 (whole-value and uncapped keys).
+The `?` rows were then swept against the decisions log: 41 moved to `=`, and the 43 that remain each name a
+question still open (coverage.md Totals).
+
 ## Package format
 
 The task format of [../README.md](../README.md) plus four lines, so a package can be read on its

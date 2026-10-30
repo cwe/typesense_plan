@@ -15,8 +15,10 @@ every row that can be settled from core's source — what core actually does, wh
 claim holds, and a proposed mark — including two claims that were wrong (A12 / B7 leading wildcards,
 D25 date-range fields) and several test strings that could not show what they were meant to.
 
-Packages pending check (no *must* row): SD4, SD5, SF16, SG1, SG2, SG4, SH1, SK3. The pipeline tasks D1, D5, D6 and D9 own
-check rows too (G37, G38, G42, G8, G9, G40, G39, G11, G25) but are required regardless.
+**All 77 checks are complete (2026-10-30).** The decisions are in [checks-review.md](checks-review.md) (61 *must*,
+14 *no*, 3 *n/a*, 2 *bug* over 80 entries, G42 split into four) and were applied to the catalogue and to
+[coverage.md](coverage.md) the same day. No package is pending check: SD4, SD5, SF16, SG1, SG2, SG4, SH1 and SK3
+are required. The themes below are kept as the record of what each check was for.
 
 ## Wildcards beyond a trailing prefix
 

@@ -8,6 +8,11 @@ How the rows were measured, and what the old plugin returned for each, is in the
 (`docs/core-search-catalogue.md` on `typesense_search_catalogue`); the row IDs here are its IDs. The
 per-row plan is in [coverage.md](coverage.md).
 
+**Catalogue marks (2026-10-30):** the check rows are decided — A10, A15 and A17 *must*; A12 *must* with the
+rule corrected (a keyword-suffix LIKE over indexed fields, not RLIKE over node names; the reversed-keyword
+representation is SA5's schema addition); A13 and A30 *no* (declined); A16 stays a bug row. Every SA package is
+required.
+
 ### SA1 — Plain words
 - **Rows:** A1 A2 A3 A4 A32 A33 H24 · cross: I4 I5 (D2), A5 (SA12), A17/A18 (SA2)
 - **Builds:** in `search/criteria.php` — the plain-word path: `q` from `$keywords`, lower-cased, every

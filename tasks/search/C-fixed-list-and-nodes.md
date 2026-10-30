@@ -6,6 +6,10 @@ an exact option name into a node **before the hook**; anything it cannot resolve
 search inside the field. Three packages: SC1 and SC2 are milestone M2 (parity by construction, but
 the token must be handled), SC3 is M4.
 
+**Catalogue marks (2026-10-30):** C4, C5, C7, C12 and C23 are *must*; C5's mechanism is a full-text prefix on
+option names restricted to the field (a two-letter wildcard takes the keyword LIKE branch), not LIKE on
+keywords. SC3 is required with seven must rows.
+
 ### SC1 — Node tokens
 - **Rows:** C13 C14 C15 C16 C17 C18 C19 C20 C21 C22 I10 H1 H4 H6 · cross: H17 (SD1), H18 (SC2), H28 (SF3), H29 (SF6), H13 (SA4)
 - **Builds:** in `search/criteria.php` — `$node_bucket` → one `nodes:=[…]` clause per bucket,

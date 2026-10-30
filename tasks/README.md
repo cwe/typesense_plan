@@ -108,7 +108,8 @@ and **Battery** lines in the same way.
 
 **Deadline (Chris, 2026-10-20): finished before the end of 2026, shipping inside ResourceSpace 11.1.** Ten
 weeks from the date of the decision. The live work is 74 small and 37 medium tasks (parked and
-pending-check packages excluded), which does not fit in full at one developer's pace. **Scope (Chris, 2026-10-21): nothing is cut —
+pending-check packages excluded; the eight pending-check packages became required on 2026-10-30, adding
+their tasks), which does not fit in full at one developer's pace. **Scope (Chris, 2026-10-21): nothing is cut —
 the whole plan ships in 11.1.** That holds only with packages built in parallel sessions once D1–D12
 exist, the smoke battery run before every hand-over, review as the only serial step, and the check
 register worked early (H8 and H9 pulled forward to serve it).

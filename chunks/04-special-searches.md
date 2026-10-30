@@ -60,12 +60,18 @@ and `!noningested` are *check*); *check* — `!unused` (SF16); not required — 
 `!colourkey` (SF15), and `!rgb`, `!duplicates`, `!nodownloads`, `!report` stay on core (SF17), as
 planned. Still open: the order (Q4.2 batches the index fields).
 
+**Decided (2026-10-30):** F63 `!integrityfail` and F65 `!noningested` are *no* — a maintenance flag set outside the indexing pipeline, and F67's bug — so SF13 keeps only `!locked`. F37 `!unused` is *must*: SF16 is required but blocked by Q4.7 and Q5.7 (which collection kinds the membership index holds).
+
 **Catalogue marks (2026-10-20):** H30 (`!properties` and a date) and J11 (a property filter with terms) are
 *must*, so the `!properties` composition is required.
+
+**Settled (sweep, 2026-10-30):** *which* — by the marks above; *the fields* — each enters with its package, batched per release (Q1.6, Q4.2); *the order* — the M7 listing (SF9–SF16). The rows of SF9, SF11, SF12 and SF13 are `=` in coverage.md.
 
 ### Q4.2 — Index fields for them: one batch or per special?
 Each new special needs fields (chunk 1, Q1.6) and a rebuild. One schema change and one rebuild for
 all of them, or incremental?
+
+**Settled by Q1.2 and Q1.6 (2026-10-20):** per package through the registry, the additions batched into one rebuild per release.
 
 ### Q4.3 — Argument parsing: replicate core exactly, or parse strictly and veto?
 Core's parsing is inconsistent (space vs comma, digits from the whole token, case-sensitive
@@ -76,6 +82,8 @@ sensibly and accept differences. Recommendation: (b).
 **Catalogue marks (2026-10-16):** F3 and F4 (`!lastabc`, `!last100 word`) are *must*; F31 (`!resource`
 taking every digit, Core 3) and F69 (the comma form) are *check*; F41 (`!list` with commas) is not
 required.
+
+**Decided (2026-10-30):** F69 is *must* (the comma keeps the number; refs compared with F1 live); F31 stays a bug row.
 
 ### Q4.4 — `restypes` on specials
 Follow `search_filter` (apply to all but `!collection`) so API callers match core, or follow the
@@ -93,13 +101,15 @@ core altogether (simplest, and `$allow_smart_collections` is off by default)?
 ### Q4.7 — `!unused` (resources in no collection)
 Needs absence-of-match against the memberships collection. Verify Typesense can express it
 (a negated reference join) before deciding; otherwise it stays on core.
-**Catalogue marks (2026-10-16):** F37 is *check*.
+**Catalogue marks (2026-10-16):** F37 is *check*. **Decided (2026-10-30):** *must* — see the note under Q5.7; SF16 is blocked by Q4.7 and Q5.7.
 
 ### Q4.8 — `!empty<field>`
 Serve it correctly from `populated_field_ids` (diverging from core's bug), replicate the bug, or
 veto? (Links Q11.3.)
 **Catalogue marks (2026-10-16):** F45 and F47 are *must*, F48 is *check*; F46 and F49 (the name form,
 Core 5) are not required. F47 is a core bug (Core 6): *must* there means replicate or fix — Q11.3.
+
+**Decided (2026-10-30):** F48 is *must* — the type filter by construction (field 170 is global).
 
 ### Q4.9 — Unknown or misspelt specials
 Core returns everything. The plugin vetoes, so the user gets core's behaviour. Keep, or make the
@@ -123,6 +133,8 @@ and orientation from stored dimensions? An unknown key adds no filter in core, s
 is everything (F62): replicate, or veto?
 **Catalogue marks (2026-10-16):** `!properties` is *must*; F52 (`fext:jp*`), F59 (orientation) and
 F62 (an unknown key returns everything in core) are *check*.
+
+**Decided (2026-10-30):** F52, F59 and F62 are *must* — the extension wildcard as the LIKE, orientation from the dimensions (fixture with a dimension-less resource), unknown keys ignored inside a real property search (`bogus:1;fext:jpg` = `fext:jpg`).
 
 ## Done when
 

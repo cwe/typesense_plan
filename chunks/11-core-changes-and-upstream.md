@@ -81,6 +81,8 @@ the row's note; this question decides each one. Not marked: Core 4 (no row), D16
 (pending Chris's check), F23 (slow, not wrong), the CSV TypeError (no row), I1 and J3 (the parser's
 rule), A17 (by design), C7 (test data).
 
+**Decided (2026-10-30):** two more bug rows from the checks — B17 (`title:-sculpture` excludes nothing, a NOT against a junk keyword) and I3 (Core 10's field form) — nineteen in all.
+
 **Direction (2026-10-20, from Q11.1):** the default for a bug row is a fix in core; the row then decides
 what the plugin does on versions before the fix (copy the wrong result, or decline so core gives it)
 and H7's battery becomes a regression test of the fix.

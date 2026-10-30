@@ -21,10 +21,12 @@ before they are confirmed; SG3 stays parked and SG5 a decline. G43 keeps its mar
 status is recalled (it is the Core 8 row, governed by Q11.3).
 
 ### SG1 — Text-key sorts: title, status, resource type, extension, file path
-- **Rows:** G16 G17 G19 G20 G21 G24
+- **Rows:** G16 G19 G20 G21 G24 · G17 is *no* (2026-10-30): an unexercised admin-only key, declined
 - **Builds:** sort keys `title_sort` (case-insensitive, from `$view_title_field`), `archive`
   (already sortable — status is trivial), `resource_type_order` (`rty.order_by`, then type,
-  then ref), `file_extension`, `file_path`; the mapping of each `order_by` fragment.
+  then ref), `file_extension` (`file_path` dropped: G17 is *no*); the mapping of each `order_by` fragment.
+  G19's key holds the type's configured order, kept in sync (E24), and sorts with `missing_values:first`
+  ascending and `missing_values:last` descending so NULL order matches MySQL.
 - **Size:** M · **Depends on:** D9, A3, B2 · **Milestone:** M7
 - **Core:** title = `$view_title_field, ref`; status = `archive, ref`; resourcetype = the type's
   `order_by`, then type, then ref; extension = `file_extension, ref`; file_path = `file_path, ref`;
@@ -88,7 +90,7 @@ status is recalled (it is the Core 8 row, governed by Q11.3).
 - **Battery:** `harness/ab/SG4_field_sorts.php` — G25–G27, G43 on the fixture's join-column and
   non-join-column fields.
 - **Blocking questions:** Q7.2
-- **Open questions:** Q7.9
+- **Open questions:** Q7.9 — decided 2026-10-30: join-column fields only; G27 by a text sort key, G26 and G43 bug rows
 
 ### SG5 — Random
 - **Rows:** G23

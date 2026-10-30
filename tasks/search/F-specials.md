@@ -11,6 +11,9 @@ composition anyway), SF9 `!properties`, SF10 `!empty` (not the name form), SF11 
 parked as not required — SF14 `!geo`, SF15 `!colour`; SF17 confirmed on core. Rows marked *check*:
 F31, F37, F38, F39, F48, F52, F59, F62, F63, F65, F69.
 
+**Catalogue marks (2026-10-30):** the check rows are decided — F37, F39, F48, F52, F59, F62 and F69 *must*; F63
+and F65 *no* (SF13 keeps only `!locked`); F31 a bug row. SF16 is required, blocked by Q4.7 and Q5.7.
+
 One package per special or family. SF1–SF8 are milestone M5 (the data is indexed already);
 SF9–SF16 are M7, each needing its index fields (Q4.1 orders them, Q4.2 batches the schema change);
 SF17 is the list that stays on core. Every mode gets keyword, node and field matching from D4, so
@@ -180,8 +183,8 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Fixture:** resources with extension, size, dimensions and preview flags set.
 - **Battery:** `harness/ab/SF9_properties.php` — F50–F62, H30, J2, J11.
 - **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `fext`: `*` → `%`, a leading `-` → `NOT`, a leading `.` stripped, `LIKE` in the column collation (`sf:1566-1578`) — `jp*` is jpg, jpeg and jpf on the test system; `orientation`: `COALESCE(height, 0) > COALESCE(width, 0)` through a LEFT JOIN on `resource_dimensions`, so a resource with no dimensions row is square (`sf:1588-1606`); an unknown property name adds no filter (`sf:1539`).
-- **Blocking questions:** Q4.1, Q4.2, Q4.10
-- **Open questions:** Q4.11 (the key set and the unknown-key rule)
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields), Q4.10
+- **Open questions:** Q4.11 (the key set and the unknown-key rule) — decided 2026-10-30
 
 ### SF10 — `!empty`
 - **Rows:** F45 F46 F47 F48 F49
@@ -209,7 +212,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   freshness only through C9's `after_related_resources_changed` — `update_related_resource()` fires
   no hook today (E18), so until I3 lands the field is fresh nightly.
 - **Battery:** `harness/ab/SF11_related.php` — F22–F24 with a keyword, a node and a sort.
-- **Blocking questions:** Q4.1, Q4.2
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields)
 
 ### SF12 — `!images` and `!nopreview`
 - **Rows:** F29 F36
@@ -218,7 +221,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Core:** `has_image > 0` (F36 100,757) and `has_image = 0` (F29 105).
 - **Serve:** `has_image:>0` / `has_image:=0`; freshness through `afterpreviewcreation` (C5, E13).
 - **Battery:** `harness/ab/SF12_images.php` — F29, F36, with a keyword and restypes.
-- **Blocking questions:** Q4.1, Q4.2
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields)
 
 ### SF13 — `!locked`, `!integrityfail`, `!noningested`
 - **Rows:** F63 F64 F65
@@ -227,10 +230,12 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Core:** `lock_user <> 0` (F64); `integrity_fail = 1` and a file present, all states (F63);
   `!noningested` is for admins (resources with a `file_path`) — for anyone else no branch matches
   and it is a plain search: everything (F65).
-- **Serve:** the three filters; the non-admin `!noningested` per Q4.9's rule for "everything".
-- **Battery:** `harness/ab/SF13_flags.php` — F63–F65 for an admin and a standard user.
+- **Serve:** `!locked` only. F63 and F65 are *no* (2026-10-30): a maintenance flag set outside the indexing
+  pipeline, and F67's bug (the admin half applies no `$sql_filter`), so `!integrityfail` and `!noningested`
+  decline to core.
+- **Battery:** `harness/ab/SF13_flags.php` — F64 for an admin and a standard user; F63 and F65 assert the decline.
 - **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `!integrityfail` matches the exact string only — with a keyword it silently runs as a plain search (`sf:1619`); `!noningested` for a non-admin falls through to everything, and for an admin runs with no `$sql_filter` at all (`sf:1629-1632`).
-- **Blocking questions:** Q4.1, Q4.2
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields)
 
 ### SF14 — `!geo`
 - **Rows:** F25
@@ -240,7 +245,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
   separates latitude and longitude, `t` the two corners (53.5,−1.7 to 53.7,−1.4): 4,893.
 - **Serve:** a Typesense geo polygon or bounding-box filter on the point.
 - **Battery:** `harness/ab/SF14_geo.php` — F25, a box crossing 0° and the antimeridian.
-- **Blocking questions:** Q4.1, Q4.2
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields)
 
 ### SF15 — `!colour` and `!colourkey`
 - **Rows:** F26 F27
@@ -251,7 +256,7 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Serve:** prefix filters on `colour_key` (`E*`, and the second-character form needs either a
   second field or a token per position).
 - **Battery:** `harness/ab/SF15_colour.php` — F26, F27.
-- **Blocking questions:** Q4.1, Q4.2
+- **Blocking questions:** Q4.1, Q4.2 (both settled 2026-10-30: the marks, and Q1.6 for the fields)
 
 ### SF16 — `!unused`
 - **Rows:** F37
@@ -261,7 +266,15 @@ SF17 is the list that stays on core. Every mode gets keyword, node and field mat
 - **Serve:** absence of any membership — verify Typesense can express a negated reference join
   before deciding (Q4.7); otherwise a maintained `in_collections` count on the resource, or core.
 - **Battery:** `harness/ab/SF16_unused.php` — F37, after an add and a remove (freshness).
-- **Blocking questions:** Q4.7
+- **Note (2026-10-29, F37 marked must):** core's `!unused` is `r.ref NOT IN (SELECT c.resource FROM
+  collection_resource c)` with no join on `collection.type` (`search_functions.php:1471-1484`): a
+  resource held only in a user's private (type 0), selection (2), upload (1), share-upload (5) or
+  request (6) collection counts as used. Chris is not sure core should count the private and
+  selection kinds — a question for core, since the documentation says "in no collection". The
+  membership index excludes selection, upload and share-upload collections (P27), so an exact F37
+  needs either every kind indexed (Q5.7) or core's definition settled first; until then the plugin
+  cannot serve `!unused` identically and declines. Blocking question Q5.7 added.
+- **Blocking questions:** Q4.7, Q5.7
 
 ### SF17 — Specials that stay on core
 - **Rows:** F6 F7 F8 F28 F66

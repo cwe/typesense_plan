@@ -66,6 +66,8 @@ forms decline when a visible non-indexed text field exists; serving them approxi
 **Catalogue marks (2026-10-20):** K2 (`nikon*`) and K3 (`camera:nik*`), the wildcard forms over a field not
 flagged for indexing, are *check*; K1 and K7 are *must* and are answered by core before the hook.
 
+**Decided (2026-10-30):** the K check rows are *must* — K2, K3, K4, K8, K11 and K12 are served under Q1.1 (b); K9 needs a whole-value key and K10 an uncapped representation (SK3 schema additions).
+
 **Measured (2026-10-20), active fields, raw text held in node names:** on the test system (114,596
 resources) the flagged text fields hold 10.3 MB (23 fields, 472,221 values), the flagged option names
 25.1 MB, the flagged dates 2.0 MB; the non-flagged text fields hold 26.7 MB (5 fields, 209,935 values),
@@ -189,6 +191,8 @@ accept the difference? No such field exists on the test system; the fixture need
 **Catalogue marks (2026-10-20):** K9 (complete indexing) is *check*; no such field exists on the test system,
 so the check needs the fixture.
 
+**Decided (2026-10-30):** K9 is *must* — a whole-value keyword key (`_c`), an SK3 schema addition, not in version 1.
+
 ### Q1.13 — The 500-character cap
 Core turns only the first `$node_keyword_index_chars` characters of a value into keywords, but a
 wildcard reads the whole value (K10). Index two representations (the capped text for word matching,
@@ -198,6 +202,8 @@ cap matches in the plugin but not in core (harness A27: 1 / 2)?
 so the word-matching representation is capped like core's keywords.
 
 **Catalogue marks (2026-10-20):** K10 (a word beyond the 500th character) is *check*.
+
+**Decided (2026-10-30):** K10 is *must* — the capped text serves words; an uncapped representation serves trailing wildcards and the full-text box, while `*ord` and stop-word-prefixed wildcards are capped in core too (fixture: a unique word at character 600 — `word` 0, `wor*` 1, `*ord` 0, full-text box 1). An SK3 schema addition.
 
 ### Q1.14 — The registry as the extension contract
 Every index field as an entry in one registry (name or pattern, type, flags, the field types and

@@ -60,11 +60,17 @@ accept.
 **Catalogue marks (2026-10-20):** A12 (leading wildcard) and B7 (leading wildcard in a field) are *check* —
 Chris checks core's behaviour before the marks are final; SA5 and SB3 keep the rows meanwhile.
 
+**Decided (2026-10-30):** A12 and B7 are *must* with the rule corrected: core's leading wildcard is `LIKE '%scape'` on the keyword table — keywords of indexed fields and partial-index infixes only, never a non-indexed value, matching the keyword's end rather than a word boundary — not RLIKE over node names (`camera:*ikon` = 0 live). The reversed-keyword representation is scheduled with SA5.
+
 **Catalogue marks (2026-10-20):** H22 (two wildcards) and K2 (a wildcard over a non-indexed field) are *check*.
+
+**Decided (2026-10-30):** both are *must* — K2 under Q1.1 (b); H22 as two prefix terms ANDed, each over every eligible visible field, with tokenisation parity and the candidate caps (`max_filter_by_candidates`) proved by SA5's battery.
 
 **Q1.1 decided (b) on 2026-10-20:** the values of every active field are in the index, so wildcards over
 non-indexed fields are served once the mechanism here is settled; the question that remains is the
 mechanism for leading and inner wildcards and the candidate caps.
+
+**Standing after the sweep (2026-10-30):** the trailing form is settled (A11, H22, K2 all `=`: a prefix over every eligible visible field, caps proved by SA5's battery), the leading form by the reversed keyword (A12, B7), the inner form declined (A13). What is left of this question is SA1's prefix default (`prefix=false`) and the short-wildcard branch, which is Q2.16.
 
 ### Q2.4 — Stop words
 Strip `$noadd` words from `q` before sending (core skips them). A search that is only stop words:
@@ -87,8 +93,10 @@ outcome.
 **Catalogue marks (2026-10-20):** A10 (`-"sculpture park"`) is *check* — core's exclusion of the phrase is
 confirmed before the mark is final; SA4 keeps the row.
 
+**Decided (2026-10-30):** A10 is *must*; the fixture shows "park sculpture" is not excluded.
+
 **Catalogue marks (2026-10-20):** H23 (a phrase and a NOT phrase) is *no* — never served; A10 (the NOT phrase
-alone) stays *check*.
+alone) stays *check* — decided *must* on 2026-10-30.
 
 ### Q2.7 — OR-groups `a;b`
 Keep the veto. Core's bare `a;b` only works after a field search has created the combined keyword
@@ -102,6 +110,8 @@ operation count.
 **Catalogue marks (2026-10-20):** A15 (OR of two wildcards) moves from *must* to *check*, alongside A16. The
 mechanism decided here stands; whether A15 and A16 are served with it is confirmed after Chris checks core.
 
+**Decided (2026-10-30):** A15 is *must* for the single-token and `field:` forms, served with this mechanism; the fixture must show the whitespace collapse. A16 stays a bug row (Core 9).
+
 **Catalogue marks (2026-10-20):** H33 (a wildcard OR and a node) is *no*; H34 (a field OR and a node) is *must*,
 so the mechanism decided here is required for the field form at least; H32 (a bare OR and a node) is a bug
 row (Core 9) that Chris would check.
@@ -113,6 +123,8 @@ only in how it treats a punctuated single token. Replicate (quote it) or simplif
 
 **Catalogue marks (2026-10-20):** I2 (a comma without a space) is a bug row (Core 10) Chris would check; I3 (a
 comma inside a field term) is *check*.
+
+**Decided (2026-10-30):** I3 is a *bug* row as well — Core 10's field form — with the same disposition as I2.
 
 ### Q2.9 — Type-name and contributor-name words
 Index them (Q1.7) or veto searches containing a type name / username when `$index_contributed_by`?
@@ -179,6 +191,8 @@ it properly where fragments allow (partial-indexed fields only)? Recommendation:
 
 **Catalogue marks (2026-10-20):** A13 is *check* — whether core really treats `sc*pture` as `sc*` is confirmed
 before the mark is final; SA5 keeps the row.
+
+**Decided (2026-10-30):** A13 is *no* — a tokenizer accident: InnoDB honours the part before the `*`, so `sc*zzzz` = `sc*pture` live (69,679 both); declined, core answers.
 
 ### Q2.18 — Accent folding
 MySQL's default collations fold accents and so does Typesense, but the local harness cannot check

@@ -8,6 +8,10 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
 **Catalogue marks (2026-10-20):** SD1 required (13 must, 2 check); SD2 required (8 must, 1 check); SD3 required (5 must, 5 check); SD4 pending check (1 check, 1 bug); SD5 pending check (2 check). The check rows are in
 [checks.md](checks.md) under *Dates*; SD4 and SD5 are not started until theirs are done.
 
+**Catalogue marks (2026-10-30):** every check row decided — SD1 14 must (D27 *no*); SD2 8 must (D16 *no*: dead
+inputs); SD3 10 must (Q3.4 (a) reproduces the string ranges); SD4 required — D25 *must* with the overlap rule and
+an array `_k` (schema addition), D24 a bug row; SD5 required — D22 and D23 *must* (every date field has `_q` and `_k`).
+
 ### SD1 — Date values
 - **Rows:** D1 D2 D3 D4 D17 D18 D20 D21 D26 D27 D28 H7 H8 H17 H21 · cross: J13 (SD3: a value and a range on one field)
 - **Builds:** `field:<YYYY | YYYY-MM | YYYY-MM-DD>` → `field_<ref>_q:=<value>` (P32) for every date
@@ -87,11 +91,11 @@ milestone M4; SD3 is the one with an open design decision (Q3.4).
 - **Builds:** `field:<value>` and `field:range…` on a `FIELD_TYPE_DATE_RANGE` field.
 - **Size:** S · **Depends on:** SD1, SD3 · **Milestone:** M4
 - **Core:** a single value is meant to find ranges containing it but the parameters are bound in
-  the wrong order, so nothing (D24, Core 2); a range compares the stored start ≥ start and the
-  stored end ≤ end as strings (D25: 1).
-- **Serve:** correctly (`_range_start`/`_range_end` of the stored pair, which B4 already derives),
-  replicate the bug (nothing for a single value), or veto — Q3.5; the range form has a different
-  rule from SD3 (containment, not overlap) and must be tested separately.
+  the wrong order, so nothing (D24, Core 2); a range matches when some node ≥ start and some node
+  ≤ end as strings — overlap, since the two nodes of the pair are not told apart (D25: 1).
+- **Serve:** decided 2026-10-30 (Q3.5): the range form through an array `_k` holding both nodes
+  (`_k:>=S && _k:<=E`, a schema addition); the single-value form stays a bug row (D24, Q11.3).
+  The fixture covers partial overlap, enclosing, outside and open-ended ranges.
 - **Fixture:** the base fixture's field 91 (`2024-03-01` … `2024-03-10` on resource 14); add a
   pair spanning a year boundary.
 - **Battery:** `harness/ab/SD4_date_range_fields.php` — D24, D25, harness B58, 16_core_bugs "the

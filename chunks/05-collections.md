@@ -78,6 +78,14 @@ new core hooks (reorder, delete, empty, add-all, type change, copy) — see Q11.
 Confirm: selection, upload, share-upload and negative-ref collections are not. What about request,
 research and smart collections?
 
+**Note (2026-10-29, from F37 marked must):** `!unused` in core is `r.ref NOT IN (SELECT c.resource
+FROM collection_resource c)` with no type condition (`search_functions.php:1471-1484`), so a
+resource in only a private, selection, upload, share-upload or request collection is "used". Chris
+is not sure core *should* count the private and selection kinds. Two things turn on it: whether the
+membership index must hold every collection kind (not just the ones searches need), and whether
+`!unused`'s definition is raised with core (Q11.3) before SF16 reproduces it. Until it is settled,
+SF16 declines and core answers.
+
 ### Q5.8 — `J` with `j*` and no `-j`
 Prior decision P23 replicates core's any-collection join. Confirm, or raise the quirk with core
 (Q11.3) and serve the featured-only behaviour once core is fixed?
@@ -100,6 +108,8 @@ Serve it, or keep the fallback until Q4.6 settles what the plugin does with smar
 
 **Catalogue marks (2026-10-20):** G40 is *check* — core's smart-search handling of the saved states is
 confirmed before the mark is final.
+
+**Decided (2026-10-30):** G40 is *n/a* through the API; D5 must read `$archive_standard` when it reproduces `search_filter()`.
 
 ## Done when
 

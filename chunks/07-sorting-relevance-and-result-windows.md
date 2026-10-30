@@ -65,6 +65,8 @@ last rebuild. Still to say: is that staleness acceptable, or does keyword-less r
 **Catalogue marks (2026-10-20):** G11 (relevance) is *check* — Chris checks core's relevance order, the
 keyword and the keyword-less case, before the mark is final; the direction above stands meanwhile.
 
+**Decided (2026-10-30):** G11 is *must* with the Q7.1 difference accepted and documented: keyword searches order by the text-match score where core uses the matched-node hit-count sum; keyword-less relevance is exact.
+
 **Decided 2026-10-20: option (B).** The hit-count cluster is in the version-1 schema; a keyword-less search
 ordered by relevance is served exactly (hit count, user rating, date field, ref via the packed keys) and
 kept in step with core by a new hook at the end of `copy_hitcount_to_live()` — core copies hit counts
@@ -96,6 +98,8 @@ and the direction rows (G29, G30) stay *must*; popularity (G12), rating (G13), t
 (G17), resource type (G19), extension (G20), status (G21) and a date field by number (G25) are *check*,
 so SG1 and SG2 wait on Chris's check of core — what `rating`, `user_rating` and `hit_count` do there
 in particular; colour, random and country stay *no*. The packed keys remain the design for SG2.
+
+**Decided (2026-10-30):** G12, G13, G16, G19, G20, G21 and G25 are *must*; G17 (file path) is *no* — an unexercised admin-only key. G13 carries a second accepted difference: after `r.rating` and `user_rating`, the text-match score replaces core's hit-count tie-breaker for keyword searches, tested apart from G11. G19 indexes the type's configured order, kept in sync, sorted with `missing_values` first ascending and last descending. SG1 (without G17) and SG2 are required.
 
 ### Q7.3 — The row limit and next/previous
 Keep 25,000? Lower? For next/previous: make the plugin serve `-1` fully (20–37 s on the whole index —
@@ -136,6 +140,8 @@ per-field sort key.
 **Catalogue marks (2026-10-20):** G26 and G27 are *check*, so SG4 waits on the check; G43 keeps its mark
 until Chris recalls why it sat apart — it is the Core 8 row, and whether the bug is copied, fixed or
 declined is Q11.3, separate from the mark.
+
+**Decided (2026-10-30):** G27 is *must* (the title field by number, text order); G26 and G43 stay bug rows (Core 8); SG4 is required.
 
 ## Done when
 

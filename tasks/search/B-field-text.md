@@ -4,6 +4,10 @@
 the whole term is quoted. Six packages, milestone M4. SB1 is the hand-off point from D4's field
 token split; everything in SC, SD and SE goes through the same lookup.
 
+**Catalogue marks (2026-10-30):** B3 *must*; B4 *no* (an accidental parse); B7 *must* with the rule corrected
+(A12's keyword-suffix LIKE restricted to the field); B17 a bug row (a NOT inside a field term excludes nothing);
+I3 a bug row (Core 10); I6 and I7 *must*.
+
 ### SB1 — Field lookup and `field:word`
 - **Rows:** B1 B8 B15 B20 B21 H3 H25 I6 I7 I11 · cross: B9 (SC3: the value is a dynamic-keyword word), B19 B12 B13 (SK1)
 - **Builds:** the field lookup in `search/criteria.php` — short name → ref, type, `keywords_index`, `partial_index`,
@@ -69,7 +73,7 @@ token split; everything in SC, SD and SE goes through the same lookup.
 - **Battery:** `harness/ab/SB3_field_wildcards.php` — B6, B7, H5, harness Q2, I3, P17 (a wildcard
   on a date field returns nothing in core).
 - **Code facts (2026-10-23, [checks-findings.md](checks-findings.md)):** `title:*scape` is `k.keyword LIKE '%scape' AND resource_type_field = <title>` on the keyword table (`dsk:513-518`, `631-646`); `field:nik*` is full text restricted to the field and reaches non-indexed values; `field:ni*` (two letters) is the LIKE branch and reaches keywords only; `camera:*ikon` is 0 on the test system because `camera` has no keywords.
-- **Blocking questions:** Q3.10, Q2.3
+- **Blocking questions:** Q3.10 (settled with H22, 2026-10-30), Q2.3 (settled for the trailing and leading forms)
 
 ### SB4 — Punctuation inside a field value
 - **Rows:** B10 B11 I3

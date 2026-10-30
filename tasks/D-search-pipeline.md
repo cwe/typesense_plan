@@ -6,7 +6,7 @@ catalogue rows that belong to the pipeline (groups G, I and the request modes) a
 that owns them, and [search/coverage.md](search/coverage.md) has the full map.
 
 ### D1 — Hook entry
-- **Rows:** G37 G38 G42 (the request modes; local harness only)
+- **Rows:** G37 G38 G42.1 G42.2 G42.3 G42.4 (the request modes; local harness only — 2026-10-30: G37 n/a, G38 declines (Q6.4), refs-only and access_override served, disk usage and returnsql decline)
 - **Builds:** `hooks/all.php` `HookTypesense_searchAllExternal_search(...)`, `include/search/run.php`.
 - **Size:** S · **Depends on:** A1, A2
 - **Must honour:**
@@ -211,7 +211,7 @@ that owns them, and [search/coverage.md](search/coverage.md) has the full map.
   boundary with ties.
 
 ### D11 — Hydrate
-- **Rows:** G42 (the result shapes; local harness only)
+- **Rows:** G42.1 G42.4 (the result shapes served: refs-only and access_override; G42.2 disk usage and G42.3 returnsql decline; local harness only)
 - **Builds:** `include/search/hydrate.php` — rows from MySQL in Typesense order, shapes, validation
   hook (C8).
 - **Size:** M · **Depends on:** D10
