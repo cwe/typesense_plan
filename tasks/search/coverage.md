@@ -55,7 +55,7 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | B3 | Quoted phrase in a field: `"title:henry moore"` | 251 | 0 | SB2 | ? | Q3.2 / Q3.18 | must — fixture "Moore, Henry": B2 matches, B3 must not |  |
 | B4 | Quotes after the colon: `title:"henry moore"` | 251 | 1 | SB2 | ↩ | declined — accidental parse | no — an accidental parse (re-quote plus swallow); declined, core answers |  |
 | B5 | OR inside a field: `title:sculpture;landscape` | 5,120 | 0 | SA7 | = | Q2.7 mechanism 4: one filter clause with \|\| | must |  |
-| B6 | Wildcard in a field: `title:sculpt*` | 4,522 | 4,522 | SB3 | = | prefix restricted to the field; max_filter_by_candidates raised and proved by SA5's battery (Q3.10 settled with H22, 2026-10-30) | must |  |
+| B6 | Wildcard in a field: `title:sculpt*` | 4,522 | 4,522 | SB3 | = | prefix restricted to the field; max_filter_by_candidates raised and to be proved by SA5's battery (Q3.10 settled with H22, 2026-10-30) | must |  |
 | B7 | Leading wildcard in a field: `title:*scape` | 921 | 0 | SB3 | = | A12 restricted to the field | must — rule corrected: LIKE '%scape' on keywords restricted to the field (camera:*ikon = 0 live proves it) |  |
 | B8 | Another text field: `credit:wilde` | 18,879 | 18,879 | SB1 | = |  | must |  |
 | B9 | Field name with a slash: `photographer/videographer:wilde` | 33,517 | 100,862 | SC3 | ? | Q3.12 one word of a dynamic keyword | must |  |
@@ -298,7 +298,7 @@ Plan: `=` serve with core's result · `↩` decline, core answers · `≈` accep
 | H19 | Simple-search year and keyword: `basicyear:2024, sculpture` | 4,517 | 0 | SD2 | ? | Q3.3 | must |  |
 | H20 | Simple-search year and node: `basicyear:2024, @@389` | 4,169 | 0 | SD2 | ? | Q3.3 | must |  |
 | H21 | Two date fields: `date:2024, expirydate:2029` | 2,972 | 2,972 | SD1 | = |  | must |  |
-| H22 | Two wildcards: `sculpt*, land*` | 36,026 | 0 | SA5 | = | two prefix terms ANDed; parity proved by SA5's battery | must — each term a prefix over every eligible visible field; tokenisation parity and candidate caps (max_filter_by_candidates) proved by SA5's battery |  |
+| H22 | Two wildcards: `sculpt*, land*` | 36,026 | 0 | SA5 | = | two prefix terms ANDed; parity to be proved by SA5's battery | must — each term a prefix over every eligible visible field; tokenisation parity and candidate caps (max_filter_by_candidates) to be proved by SA5's battery |  |
 | H23 | Phrase and NOT phrase: `"sculpture park", -"black and white"` | 6,758 | 0 | SA4 | ↩ | not required — Q2.6 negated phrase (SA3 first) | no |  |
 | H24 | Four keywords: `sculpture landscape nature outdoor` | 19,608 | 19,608 | SA1 | = |  | must |  |
 | H25 | Two fields, node and date: `title:sculpture, credit:wilde, @@389, date:2024` | 65 | 65 | SB1 | = |  | must |  |

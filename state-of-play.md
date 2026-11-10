@@ -124,13 +124,11 @@ A meeting copy of the review exists as a Claude doc (keep in step with the repo 
 
 **2026-10-23:** check findings complete for all 77 rows (code, data, live, second database) and folded into the tasks; code branch `typesense_search` created from the updated master, which already ships the 0.1 plugin the rewrite replaces.
 
-**2026-10-23, later — M0 built on `typesense_search`:** H1 and A3 `5e2da2e6`, A1 `7f27516e`, A4 `c9e35d4c`,
-A5 `2903acb0`, A2 `b4fdf943`, A6 `abd8128d`, I1 `0e5e607b`, each proved by its battery in
-`plugins/typesense_search/harness/ab/` (H1 19, A1 37, A2 75, A3 57, A4 95, A5 102, A6 38, I1 29 checks, all
-green) and phpcs-clean; the 0.1 search interception, functions and reindex script are gone. Still open in M0:
-A8 (tenancy) and X1 with X3's remainder, both briefed; A2's breaker state lives in a seam inside `client.php`
-until it is wired to A6's store; `include/client.php` is 1,110 lines against the six-hundred-line rule. H9
-(the MySQL mode) is briefed to run early for the check register. Environment: a Windows 11 PC, both
-repositories under `C:\dev`, Docker Desktop for every check (the Docker runner for the harness is the first
-task on this machine; until it lands nothing here can run a battery). The plan was not amended as these tasks
-closed; this entry and the decisions rows of the same date catch it up.
+**2026-11-10 — the plan assumes no development work has been completed.** Every task in `tasks/` is to do,
+M0 included: no module, battery, harness file or core change is counted as built, the 11.1 change list is
+empty, and no row of `coverage.md` is ticked. Whatever a code branch holds from the attempt of 2026-10-23
+is, like the old `typesense` branch, reference only — not the base, not a dependency, and not evidence
+that a task is closed. What that attempt taught is kept where a builder meets it: the *Design* and
+*measured* lines of A1–A6, H1, I1, B2 and B7, and the decisions row "Typesense 30.2 facts". The
+environment stands: a Windows 11 PC, both repositories under `C:\dev`, Docker Desktop for every check;
+the Docker runner for the harness is part of H1.

@@ -59,6 +59,10 @@ Same decision as Q6.1 — answer once.
 Open decision 2: is a per-group `$typesense_search_enabled` override applied before the search hook
 runs? This is a test, not a question — record the result.
 
+**Observed 2026-10-23 on a prototype skeleton; not counted as done (2026-11-10):** the override was visible
+at the hook and lost to `$typesense_search_<option>_override`, as Q9.1 orders it. That is the expectation;
+A1's battery runs the test on the built skeleton and the result is recorded then.
+
 ### Q8.4 — Core hooks (Phase 2)
 The list in the plan's §6.11: node-layer `after_resource_nodes_changed`, `after_set_node`,
 before/after node delete, `after_update_resource_type`, `after_resource_custom_access_change`,

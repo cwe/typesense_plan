@@ -359,7 +359,7 @@ Terms of different kinds in one search. Everything is ANDed: keyword unions, phr
 | H19 | Simple-search year and keyword | `basicyear:2024, sculpture` | Date-field join plus union. | do_search_keywords.php:163 | – | 4,517 | SD2 | must |
 | H20 | Simple-search year and node | `basicyear:2024, @@389` | Date-field join plus node join. | do_search_keywords.php:163 | – | 4,169 | SD2 | must |
 | H21 | Two date fields | `date:2024, expirydate:2029` | Two date joins. | do_search_keywords.php:130 | – | 2,972 | SD1 | must |
-| H22 | Two wildcards | `sculpt*, land*` | Two full-text unions. | do_search_keywords.php:617 | – | 36,026 | SA5 | must — each term a prefix over every eligible visible field; tokenisation parity and candidate caps (max_filter_by_candidates) proved by SA5's battery |
+| H22 | Two wildcards | `sculpt*, land*` | Two full-text unions. | do_search_keywords.php:617 | – | 36,026 | SA5 | must — each term a prefix over every eligible visible field; tokenisation parity and candidate caps (max_filter_by_candidates) to be proved by SA5's battery |
 | H23 | Phrase and NOT phrase | `"sculpture park", -"black and white"` | Phrase union plus phrase NOT IN. | do_search_keywords.php:828 | – | 6,758 | SA4 | no |
 | H24 | Four keywords | `sculpture landscape nature outdoor` | Four unions ANDed. | do_search_union_assembly.php:55 | – | 19,608 | SA1 | must |
 | H25 | Two fields, node and date | `title:sculpture, credit:wilde, @@389, date:2024` | Two restricted unions, node join, date join. | do_search_union_assembly.php:38 | – | 65 | SB1 | must |

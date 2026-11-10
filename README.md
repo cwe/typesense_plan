@@ -3,8 +3,11 @@
 This repository holds the plan for writing the `typesense_search` ResourceSpace plugin **again**: the
 code areas to build, each as small ordered tasks; the facts learned so far that each task must
 respect; the questions that must be answered before each task starts; and the decisions as they are
-made. The code lives in `cwe/resourcespace` (branch `typesense`, `plugins/typesense_search`).
-Nothing here is code.
+made. The code will live in `cwe/resourcespace` on the branch `typesense_search`
+(`plugins/typesense_search`); the old plugin is on `typesense`, for reference only. Nothing here is code.
+
+**Status (2026-11-10): no development work is counted as complete.** Every task is to do; see
+[state-of-play.md](state-of-play.md).
 
 The existing plugin is not the base; what was learned from it is. [principles.md](principles.md)
 says how this repo is used to stop fragmented development.

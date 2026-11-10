@@ -4,6 +4,11 @@ The plugin, written again, as small tasks grouped by code area and ordered so ea
 needs. The background facts and the full question bank are in [../chunks/](../chunks/); each task
 below carries only the facts it must respect and the questions that block it.
 
+**Status (2026-11-10): nothing is built.** Every task in every area is to do, M0 included. A line marked
+*Design* or *measured* in a task records what an earlier attempt settled or observed; the task's battery
+proves it again. Completion is recorded only by a ticked row in [search/coverage.md](search/coverage.md)
+or the registers, and a dated line in [../state-of-play.md](../state-of-play.md).
+
 The search forms are cut to the **core search catalogue** (groups A–K, 300 rows): one work package
 per mechanism, each owning its rows, with its own fixture and battery — see
 [search/README.md](search/README.md) and the row-by-row map in [search/coverage.md](search/coverage.md).
@@ -38,6 +43,7 @@ plugins/typesense_search/
   include/
     typesense_search_functions.php  the loader and the shared helpers: requires the index and sync modules at load,
                                     the search/ modules only inside the search hook
+    options.php                   A1  the option accessor and the setup-page definition
     client.php                    A2  the client contract: size routing, chunking, breaker, timeouts
     client_curl.php               A2  the curl transport (swappable for the official library later)
     state.php                     A6  generation, ready, bulk_pending, snapshots, counters

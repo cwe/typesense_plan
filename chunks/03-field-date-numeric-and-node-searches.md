@@ -147,7 +147,7 @@ exhaustive?
 
 **Catalogue marks (2026-10-20):** H5 (a field wildcard and a node) is *must*.
 
-**Settled with H22 (2026-10-30):** `max_filter_by_candidates` is raised and the cap proved by SA5's battery; B6 and H5 are `=` as K3 already was.
+**Settled with H22 (2026-10-30):** `max_filter_by_candidates` is raised and the cap to be proved by SA5's battery; B6 and H5 are `=` as K3 already was.
 
 ### Q3.11 — Field name lookup
 Core matches short names exactly (case?); unknown names become two words (replicated). Confirm

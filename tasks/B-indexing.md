@@ -64,7 +64,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   numeric `_f` only when `is_numeric` (the `$value == 1` bug); dates through A4 give `_q`, `_ts`
   (full dates), `_range_start/_end` (the value at its own precision; a date-range field's span)
   and, per Q3.4, `_k`; the `date_field_sort` key `0:` NULL, `1:` empty, `2:<value>` (P19).
-  **Verified 2026-10-23 (A3, A4):** `_q` is `string[]` and `_k` `int64[]` for every field (one type per
+  **Measured on Typesense 30.2 (2026-10-23):** `_q` is `string[]` and `_k` `int64[]` for every field (one type per
   dynamic pattern), always sent as arrays, `array()` for no value, never a null inside; `nodes` and
   `populated_field_ids` carry the `0` sentinel first (Q1.15); `date_field_sort` is always emitted.
 - **Fixture:** none (unit cases on values).
@@ -166,7 +166,7 @@ fields, the sort keys, type names). None of them reopens the builder, the rebuil
   above the server's cores − 2; leave the server's own batch size alone; fresh upsert 770–1,800
   docs/s, re-upsert 540/s, four parallel ≈ 2×, 2,000-doc chunks no faster than 500 (P16); never
   create a collection here; every import passes `dirty_values=reject`, since without it the server
-  coerces a numeric string into an int field (verified 2026-10-23; A2's client does this).
+  coerces a numeric string into an int field (measured on 30.2, 2026-10-23; A2's `import()` passes it).
 - **Fixture:** none (documents from B4–B6 on the fixture).
 - **Battery:** `harness/ab/B7_import_verify.php` — a chunk with one bad line reports that line; a
   422 and a simulated 503 are handled; concurrency halves; the count check passes on a complete

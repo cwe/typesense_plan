@@ -64,13 +64,13 @@ Chris checks core's behaviour before the marks are final; SA5 and SB3 keep the r
 
 **Catalogue marks (2026-10-20):** H22 (two wildcards) and K2 (a wildcard over a non-indexed field) are *check*.
 
-**Decided (2026-10-30):** both are *must* — K2 under Q1.1 (b); H22 as two prefix terms ANDed, each over every eligible visible field, with tokenisation parity and the candidate caps (`max_filter_by_candidates`) proved by SA5's battery.
+**Decided (2026-10-30):** both are *must* — K2 under Q1.1 (b); H22 as two prefix terms ANDed, each over every eligible visible field, with tokenisation parity and the candidate caps (`max_filter_by_candidates`) to be proved by SA5's battery.
 
 **Q1.1 decided (b) on 2026-10-20:** the values of every active field are in the index, so wildcards over
 non-indexed fields are served once the mechanism here is settled; the question that remains is the
 mechanism for leading and inner wildcards and the candidate caps.
 
-**Standing after the sweep (2026-10-30):** the trailing form is settled (A11, H22, K2 all `=`: a prefix over every eligible visible field, caps proved by SA5's battery), the leading form by the reversed keyword (A12, B7), the inner form declined (A13). What is left of this question is SA1's prefix default (`prefix=false`) and the short-wildcard branch, which is Q2.16.
+**Standing after the sweep (2026-10-30):** the trailing form is settled (A11, H22, K2 all `=`: a prefix over every eligible visible field, caps to be proved by SA5's battery), the leading form by the reversed keyword (A12, B7), the inner form declined (A13). What is left of this question is SA1's prefix default (`prefix=false`) and the short-wildcard branch, which is Q2.16.
 
 ### Q2.4 — Stop words
 Strip `$noadd` words from `q` before sending (core skips them). A search that is only stop words:
